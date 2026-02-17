@@ -97,12 +97,13 @@
             {
                 for (int column = 0; column < customerData.GetLength(0); column++)
                 {
-                    formattedRow += customerData[column, row].PadRight(12);
+                    formattedRow += customerData[column, row].PadRight(15);
                     //TODO method to get the max length of each column
                     //then dynamically pad to column max + 2 or so.
-                    Console.Write(formattedRow);
+                    //Console.WriteLine(formattedRow);
                 }
-                Console.WriteLine();
+                Console.WriteLine(formattedRow);
+                formattedRow = "";
             } 
 
              
