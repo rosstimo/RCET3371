@@ -9,8 +9,8 @@
             //WriteToFile(filePath);
             //AppendToFile(filePath);
             //ReadFromFile(filePath);
-            ReadWholeFile(filePath);
-            
+            //ReadWholeFile("..\\..\\..\\UserData.txt");
+            ReadFileIntoArray("..\\..\\..\\UserData.txt");
             //pause
             Console.Read();
         }
@@ -53,6 +53,41 @@
                     Console.WriteLine(currentFile.ReadLine());
                 }
             }
+        }
+
+        static int CountOfLinesIn(string path)
+        {
+            int count = 0;
+            using (StreamReader currentFile = new StreamReader(path))
+            {
+                while (!currentFile.EndOfStream)
+                {
+                    currentFile.ReadLine();
+                    count++;
+                }
+            }
+            return count;
+        }
+
+        static string[,] ReadFileIntoArray(string path)
+        {
+            string[,] customerData = new string[4,CountOfLinesIn(path)];
+            string[] temp;
+            int customerNumber = 0;
+
+            using (StreamReader currentFile = new StreamReader(path))
+            {
+                while (!currentFile.EndOfStream)
+                {
+                    temp = currentFile.ReadLine().Split(",");
+                    customerData[0,customerNumber] = temp[0].Replace("\"$$","");
+                    customerData[1, customerNumber] = temp[1];
+                    customerData[2, customerNumber] = temp[2];
+                    customerData[3, customerNumber] = temp[3].Replace("\"","");
+                    customerNumber++;
+                }
+            }
+            return customerData;
         }
 
     }
