@@ -5,12 +5,12 @@
         static void Main(string[] args)
         {
             string filePath = "..\\..\\..\\TestFile.txt";
-
+            string[,] customerData = ReadFileIntoArray("..\\..\\..\\UserData.txt");
             //WriteToFile(filePath);
             //AppendToFile(filePath);
             //ReadFromFile(filePath);
             //ReadWholeFile("..\\..\\..\\UserData.txt");
-            ReadFileIntoArray("..\\..\\..\\UserData.txt");
+            DisplayCustomerData(customerData);
             //pause
             Console.Read();
         }
@@ -88,6 +88,24 @@
                 }
             }
             return customerData;
+        }
+
+        static void DisplayCustomerData(string[,] customerData)
+        {
+            string formattedRow = "";
+            for (int row = 0; row < customerData.GetLength(1); row++)
+            {
+                for (int column = 0; column < customerData.GetLength(0); column++)
+                {
+                    formattedRow += customerData[column, row].PadRight(12);
+                    //TODO method to get the max length of each column
+                    //then dynamically pad to column max + 2 or so.
+                    Console.Write(formattedRow);
+                }
+                Console.WriteLine();
+            } 
+
+             
         }
 
     }
