@@ -8,7 +8,8 @@
 
             //WriteToFile(filePath);
             //AppendToFile(filePath);
-            ReadFromFile(filePath);
+            //ReadFromFile(filePath);
+            ReadWholeFile(filePath);
             
             //pause
             Console.Read();
@@ -40,6 +41,17 @@
                 Console.WriteLine(currentFile.ReadLine());//pay read past end of file
                 Console.WriteLine(currentFile.ReadLine());
                 Console.WriteLine(currentFile.ReadLine());
+            }
+        }
+
+        static void ReadWholeFile(string path)
+        {
+            using (StreamReader currentFile = new StreamReader(path))
+            {
+                while (!currentFile.EndOfStream) 
+                {
+                    Console.WriteLine({currentFile.ReadLine());
+                }
             }
         }
 
