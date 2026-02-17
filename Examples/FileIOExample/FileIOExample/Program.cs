@@ -50,7 +50,7 @@
             {
                 while (!currentFile.EndOfStream) 
                 {
-                    Console.WriteLine({currentFile.ReadLine());
+                    Console.WriteLine(currentFile.ReadLine());
                 }
             }
         }
