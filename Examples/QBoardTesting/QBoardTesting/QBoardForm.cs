@@ -15,6 +15,82 @@ namespace QBoardTesting
         public QBoardForm()
         {
             InitializeComponent();
+            ExitButton.Click += ExitButton_Click;
+            SendButton.Click += SendButton_Click;
+        }
+
+        private void ConfigurePort()
+        {
+
+        }
+
+        private void Connect()
+        {
+            try
+            {
+                SerialPort.PortName = "COM3";
+                SerialPort.BaudRate = 115200;
+
+                SerialPort.Open();
+                MessageBox.Show("Connected to QBoard successfully!");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to connect to QBoard: {ex.Message}");
+            }
+
+
+        }
+
+        private void Disconnect()
+        {
+            if (SerialPort.IsOpen)
+            {
+                SerialPort.Close();
+                MessageBox.Show("Disconnected from QBoard.");
+            }
+        }
+
+        private void ExitButton_Click(object sender, EventArgs e)
+        {
+            Disconnect();
+            Close();
+        }
+
+        private void ConnectButton_Click(object sender, EventArgs e)
+        {
+            Connect();
+        }
+
+        private void SendAndRead()
+        {
+            byte[] buffer = { 0xF0 };
+            byte[] readBuffer;
+
+            if (!SerialPort.IsOpen)
+            {
+                MessageBox.Show("Serial port is not open.");
+            }
+            else
+            {
+                SerialPort.DiscardInBuffer();
+                SerialPort.Write(buffer, 0, buffer.Length);
+                System.Threading.Thread.Sleep(100); // Wait for response
+                readBuffer = new byte[SerialPort.BytesToRead];
+                SerialPort.Read(readBuffer, 0, readBuffer.Length);
+                foreach(byte b in readBuffer)
+                {
+                    //convert byte to hex and show ascii char and write to console in columns
+                    Console.WriteLine($"{b:X2} {b} {(char)b}");
+                }
+            }
+
+            
+        }
+
+        private void SendButton_Click(object sender, EventArgs e)
+        {
+            SendAndRead();
         }
     }
 }

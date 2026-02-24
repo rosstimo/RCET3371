@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.serialPort1 = new System.IO.Ports.SerialPort(this.components);
+            this.SerialPort = new System.IO.Ports.SerialPort(this.components);
             this.ExitButton = new System.Windows.Forms.Button();
             this.ConnectButton = new System.Windows.Forms.Button();
             this.SendButton = new System.Windows.Forms.Button();
@@ -52,6 +52,7 @@
             this.ConnectButton.TabIndex = 1;
             this.ConnectButton.Text = "&Connect";
             this.ConnectButton.UseVisualStyleBackColor = true;
+            this.ConnectButton.Click += new System.EventHandler(this.ConnectButton_Click);
             // 
             // SendButton
             // 
@@ -61,6 +62,7 @@
             this.SendButton.TabIndex = 2;
             this.SendButton.Text = "&Send";
             this.SendButton.UseVisualStyleBackColor = true;
+            this.SendButton.Click += new System.EventHandler(this.SendButton_Click);
             // 
             // QBoardForm
             // 
@@ -78,7 +80,7 @@
 
         #endregion
 
-        private System.IO.Ports.SerialPort serialPort1;
+        private System.IO.Ports.SerialPort SerialPort;
         private System.Windows.Forms.Button ExitButton;
         private System.Windows.Forms.Button ConnectButton;
         private System.Windows.Forms.Button SendButton;
