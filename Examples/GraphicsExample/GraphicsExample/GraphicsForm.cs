@@ -21,9 +21,17 @@ namespace GraphicsExample
         {
             Graphics g = DisplayPictureBox.CreateGraphics();
             Pen thePen = new Pen(Color.Red, 1);
-            
-            g.DrawLine(thePen, 0, 0, 100, 100);
+            float dx = DisplayPictureBox.Width / 2;
+            float dy = DisplayPictureBox.Height / 2;
+            float sx = DisplayPictureBox.Width / 100F; 
+            float sy = DisplayPictureBox.Height / 100F;
 
+            g.TranslateTransform(dx,dy);
+
+            g.ScaleTransform(sx, sy * -1);
+            
+            g.DrawLine(thePen, 0, 0, 50, 50);
+            g.DrawEllipse(thePen, 0, -50, 50, 100);
             g.Dispose();
             thePen.Dispose();
         }
@@ -43,6 +51,18 @@ namespace GraphicsExample
             thePen.Dispose();
         }
 
+        void DrawImage()
+        {
+            Graphics g = DisplayPictureBox.CreateGraphics();
+            Image image = Image.FromFile("C:\\Users\\TimR\\Documents\\github\\RCET3371\\resources\\cards\\AS.jpg");
+
+            g.ScaleTransform(0.25F, -0.25F);
+
+            g.DrawImage(image, 0, 0);
+
+            g.Dispose();
+        }
+
 
         // Event handlers below _______________________________________________
         private void Form1_Load(object sender, EventArgs e)
@@ -58,7 +78,8 @@ namespace GraphicsExample
         private void DrawButton_Click(object sender, EventArgs e)
         {
             DrawLine();
-            DrawDart(100,100);
+            //DrawDart(100,100);
+            //DrawImage();
         }
     }
 }
