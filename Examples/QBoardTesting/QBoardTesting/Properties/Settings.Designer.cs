@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace QY__Board_Testing.Properties
+namespace QBoardTesting.Properties
 {
 
 

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace QY__Board_Testing
+namespace QBoardTesting
 {
     internal static class Program
     {

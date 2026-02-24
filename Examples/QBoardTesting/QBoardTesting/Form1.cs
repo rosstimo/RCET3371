@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace QY__Board_Testing
+namespace QBoardTesting
 {
     public partial class Form1 : Form
     {
