@@ -1,6 +1,6 @@
 ﻿namespace QBoardTesting
 {
-    partial class Form1
+    partial class QBoardForm
     {
         /// <summary>
         /// Required designer variable.

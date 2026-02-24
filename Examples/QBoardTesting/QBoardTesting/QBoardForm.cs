@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace QBoardTesting
 {
-    public partial class Form1 : Form
+    public partial class QBoardForm : Form
     {
-        public Form1()
+        public QBoardForm()
         {
             InitializeComponent();
         }
