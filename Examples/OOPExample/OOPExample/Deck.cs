@@ -22,21 +22,36 @@ namespace OOPExample
         
         public Deck() 
         {
-            for (int suitIndex = 0; suitIndex < 3; suitIndex++)
+            this.CreateCards();
+            //this._deck.Shuffle();
+
+            //foreach  (Card theCard in this._deck.Shuffle())
+            //{
+            //    Console.WriteLine($"{theCard.Rank()} of {theCard.Suit()}");
+            //}
+        }
+
+        private void CreateCards()
+        {
+            for (int suitIndex = 0; suitIndex < 4; suitIndex++)
             {
-                for (int rankIndex = 0; rankIndex < 12; rankIndex++)
+                for (int rankIndex = 0; rankIndex < 13; rankIndex++)
                 {
                     Card currentCard = new Card(rankIndex, suitIndex);
                     this._deck.Add(currentCard);
                     //Console.WriteLine($"{currentCard.Rank()} of {currentCard.Suit()}");
                 }
             }
-            //this._deck.Shuffle();
-
-            foreach  (Card theCard in this._deck.Shuffle())
-            {
-                Console.WriteLine($"{theCard.Rank()} of {theCard.Suit()}");
-            }
+        }
+        public Card Deal()
+        {   
+            Card temp = this._deck.ElementAt(0);
+            this._deck.RemoveAt(0);
+            return temp;
+        }
+        public int CardsRemaining()
+        {
+            return this._deck.Count;
         }
     }
 }

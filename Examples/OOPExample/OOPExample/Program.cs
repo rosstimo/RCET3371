@@ -15,8 +15,9 @@
             //Console.WriteLine($"{AD.Rank()} of {AD.Suit()}");
 
             Deck newDeck = new Deck();
-
-
+            Card currentCard = newDeck.Deal();
+            Console.WriteLine($"{currentCard.Rank()} of {currentCard.Suit()}");
+            Console.WriteLine($"There are {newDeck.CardsRemaining()} cards left in the deck!");
             //pause
             Console.Read();
         }
