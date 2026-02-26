@@ -4,7 +4,18 @@
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello, World!");
+
+            Card myCard = new Card(13,13);
+            Card AS = new Card(1,0);
+            Card AD = new Card(1,1);
+            //myCard.RankIndex = 1; //read only
+            
+            Console.WriteLine($"{myCard.Rank()} of {myCard.Suit()}");
+            Console.WriteLine($"{AS.Rank()} of {AS.Suit()}");
+            Console.WriteLine($"{AD.Rank()} of {AD.Suit()}");
+
+            //pause
+            Console.Read();
         }
     }
 }
