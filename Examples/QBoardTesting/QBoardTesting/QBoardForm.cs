@@ -62,7 +62,7 @@ namespace QBoardTesting
             Connect();
         }
 
-        private void SendAndRead()
+        private void SendAndRead()//TODO take byte[] as arg then return byte[] received
         {
             byte[] buffer = { 0xF0 };
             byte[] readBuffer;
@@ -78,9 +78,13 @@ namespace QBoardTesting
                 System.Threading.Thread.Sleep(100); // Wait for response
                 readBuffer = new byte[SerialPort.BytesToRead];
                 SerialPort.Read(readBuffer, 0, readBuffer.Length);
+                //SerialPort.Read(readBuffer, 61, 1);
+
+                Console.WriteLine($"There are {readBuffer.Length} bytes");
+                Console.WriteLine((char)readBuffer[60]);
                 foreach(byte b in readBuffer)
                 {
-                    //convert byte to hex and show ascii char and write to console in columns
+                    //convert byte to hex and show ASCII char and write to console in columns
                     Console.WriteLine($"{b:X2} {b} {(char)b}");
                 }
             }
