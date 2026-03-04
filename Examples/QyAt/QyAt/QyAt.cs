@@ -102,6 +102,16 @@ namespace QyAt
         public static byte[] ReadStatus() => new[] { BuildCommandByte(CMD_READ_STATUS) };
 
         // 2: Write Digital Outputs (1 data byte)
+        /// <summary>
+        /// Builds a command packet to set the digital output states on the Qy@ board.
+        /// </summary>
+        /// <param name="outputs">
+        /// A byte where each bit represents the desired state of a digital output pin (1 = high, 0 = low).
+        /// Bit 0 is the first output, bit 1 is the second, etc.
+        /// </param>
+        /// <returns>
+        /// A byte array containing the command and data byte to send to the board.
+        /// </returns>
         public static byte[] WriteDigitalOutputs(byte outputs)
             => new[] { BuildCommandByte(CMD_WRITE_DIGITAL_OUT), outputs };
 
