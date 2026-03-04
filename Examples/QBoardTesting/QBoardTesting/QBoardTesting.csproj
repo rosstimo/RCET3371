@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="QBoard.cs" />
     <Compile Include="QBoardForm.cs">
       <SubType>Form</SubType>
     </Compile>
