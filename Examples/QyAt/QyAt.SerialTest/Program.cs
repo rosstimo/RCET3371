@@ -22,6 +22,57 @@ namespace QyAt.SerialTest
             using SerialPort? sp = Connect(args, out string? portName);
             if (sp == null)
                 return 2;
+            //prompt user to select command option: read settings, read status, read digital inputs in a loop, or write digital outputs.
+            Console.WriteLine("Select command:");
+            Console.WriteLine("  [1] Read Settings");
+            Console.WriteLine("  [2] Read Status");
+            Console.WriteLine("  [3] Write Digital Outputs (0x55)");
+            Console.WriteLine("  [4] Read Digital Inputs in a loop (press Q to quit)");
+            Console.WriteLine("  [5] Read Analog Inputs in a loop (press Q to quit)");
+            switch (Console.ReadLine()?.Trim())
+            {
+                case "1"    :
+                    buffer = SendCommand(QyBoard.ReadSettings(), sp);
+                    Console.WriteLine($"RX ({buffer.Length}):");
+                    HexDump(buffer);
+                    PrintDecodedSettings(buffer);
+                    break;
+                case "2":
+                    buffer = SendCommand(QyBoard.ReadStatus(), sp);
+                    HexDump(buffer);
+                    break;
+                case "3":
+                    SendCommand(QyBoard.WriteDigitalOutputs(0x55), sp);
+                    // Loop reading digital inputs every 100ms until the user presses the "Q" key.
+                    while (!Console.KeyAvailable || Console.ReadKey(true).Key != ConsoleKey.Q)
+                    {
+                        buffer = SendCommand(QyBoard.ReadDigitalInputs(), sp);
+                        HexDump(buffer);
+                        Thread.Sleep(100);
+                    }
+                    break;
+                case "4":
+                    // Loop reading digital inputs every 100ms until the user presses the "Q" key.
+                    while (!Console.KeyAvailable || Console.ReadKey(true).Key != ConsoleKey.Q)
+                    {
+                        buffer = SendCommand(QyBoard.ReadDigitalInputs(), sp);
+                        HexDump(buffer);
+                        Thread.Sleep(100);
+                    }
+                    break;
+                case "5":
+                    // Loop reading digital inputs every 100ms until the user presses the "Q" key.
+                    while (!Console.KeyAvailable || Console.ReadKey(true).Key != ConsoleKey.Q)
+                    {
+                        buffer = SendCommand(QyBoard.ReadAnalogInputs(AnalogInputMask.All), sp);
+                        HexDump(buffer);
+                        Thread.Sleep(100);
+                    }
+                    break;
+                default:
+                    Console.WriteLine("Invalid command.");
+                    return 3;
+            }
 
             // var settings = ReadSettingsFromBoard(sp);
             // if (settings == null)
@@ -31,16 +82,16 @@ namespace QyAt.SerialTest
             // HexDump(settings);
             // PrintDecodedSettings(settings);
 
-            buffer = SendCommand(QyBoard.ReadStatus(), sp);
-            HexDump(buffer);
-            SendCommand(QyBoard.WriteDigitalOutputs(0x55), sp);
-            // Loop reading digital inputs every 100ms until the user presses the "Q" key.
-            while (!Console.KeyAvailable || Console.ReadKey(true).Key != ConsoleKey.Q)
-            {
-                buffer = SendCommand(QyBoard.ReadDigitalInputs(), sp);
-                HexDump(buffer);
-                Thread.Sleep(100);
-            }   
+            // buffer = SendCommand(QyBoard.ReadStatus(), sp);
+            // HexDump(buffer);
+            // SendCommand(QyBoard.WriteDigitalOutputs(0x55), sp);
+            // // Loop reading digital inputs every 100ms until the user presses the "Q" key.
+            // while (!Console.KeyAvailable || Console.ReadKey(true).Key != ConsoleKey.Q)
+            // {
+            //     buffer = SendCommand(QyBoard.ReadDigitalInputs(), sp);
+            //     HexDump(buffer);
+            //     Thread.Sleep(100);
+            // }   
             return 0;
         }
 
