@@ -139,6 +139,19 @@ namespace QyAt
         }
 
         // 5: Read Analog Inputs (argument is a 4-bit mask selecting A1..A4)
+        /// <summary>
+        /// Builds a command packet to read analog inputs from the Qy@ board.
+        /// </summary>
+        /// <param name="mask">
+        /// A bitmask specifying which analog inputs (A1-A4) to read. Use <see cref="AnalogInputMask"/> flags (e.g., <c>AnalogInputMask.A1 | AnalogInputMask.A3</c>).
+        /// At least one input must be selected; otherwise, an <see cref="ArgumentException"/> is thrown.
+        /// </param>
+        /// <returns>
+        /// A byte array containing the command to send to the board for reading the selected analog inputs.
+        /// </returns>
+        /// <exception cref="ArgumentException">
+        /// Thrown if no analog input is selected in the mask.
+        /// </exception>
         public static byte[] ReadAnalogInputs(AnalogInputMask mask)
         {
             byte arg = (byte)((byte)mask & 0x0F);
