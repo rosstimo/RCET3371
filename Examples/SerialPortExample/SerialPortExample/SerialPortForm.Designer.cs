@@ -31,6 +31,7 @@
             this.components = new System.ComponentModel.Container();
             this.serialPort1 = new System.IO.Ports.SerialPort(this.components);
             this.ExitButton = new System.Windows.Forms.Button();
+            this.ConnectButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // ExitButton
@@ -43,11 +44,22 @@
             this.ExitButton.UseVisualStyleBackColor = true;
             this.ExitButton.Click += new System.EventHandler(this.ExitButton_Click);
             // 
+            // ConnectButton
+            // 
+            this.ConnectButton.Location = new System.Drawing.Point(510, 356);
+            this.ConnectButton.Name = "ConnectButton";
+            this.ConnectButton.Size = new System.Drawing.Size(136, 82);
+            this.ConnectButton.TabIndex = 1;
+            this.ConnectButton.Text = "&Connect";
+            this.ConnectButton.UseVisualStyleBackColor = true;
+            this.ConnectButton.Click += new System.EventHandler(this.ConnectButton_Click);
+            // 
             // SerialPortForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.ConnectButton);
             this.Controls.Add(this.ExitButton);
             this.Name = "SerialPortForm";
             this.Text = "Form1";
@@ -59,6 +71,7 @@
 
         private System.IO.Ports.SerialPort serialPort1;
         private System.Windows.Forms.Button ExitButton;
+        private System.Windows.Forms.Button ConnectButton;
     }
 }
 
