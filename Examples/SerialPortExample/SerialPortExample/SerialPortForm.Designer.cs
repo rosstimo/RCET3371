@@ -1,6 +1,6 @@
 ﻿namespace SerialPortExample
 {
-    partial class Form1
+    partial class SerialPortForm
     {
         /// <summary>
         /// Required designer variable.

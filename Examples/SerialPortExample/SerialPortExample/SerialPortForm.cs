@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace SerialPortExample
 {
-    public partial class Form1 : Form
+    public partial class SerialPortForm : Form
     {
-        public Form1()
+        public SerialPortForm()
         {
             InitializeComponent();
         }
