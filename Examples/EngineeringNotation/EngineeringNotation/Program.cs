@@ -4,12 +4,15 @@
     {
         static void Main(string[] args)
         {
-            decimal value = 100000m;
-            int fix = 6;
+            //test the engineering notation function with a sample value and fix
+            decimal value = 0.001555555555m;
+            int fix = 5;
 
-            //string engString = EngineeringNotation(value, fix);
-            //Console.WriteLine(value);
-            //Console.WriteLine(engString);
+            // get the engineering notation string for the value and fix
+            string engString = EngineeringNotation(value, fix);
+            // print the original value, the engineering notation string, and the pretty string with metric prefix and unit
+            Console.WriteLine(value);
+            Console.WriteLine(engString);
             Console.WriteLine(Pretty(value,"V",fix));
 
             //pause
@@ -24,32 +27,52 @@
         /// <returns>string formatted as engineering notation</returns>
         static string EngineeringNotation(decimal value, int fix)
         {
+            decimal mantissa = value;
+            int exponent = 0;
 
-            if (value >= 1 & value <= 999)
-            {
-                return value.ToString();//.Remove(fix +1);
-            }
-            else
-            {
-                string valueString = value.ToString("E");
-                string[] valueArray = valueString.Split("E");
-                decimal mantessa = decimal.Parse(valueArray[0]);
-                int exponant = int.Parse(valueArray[1]);
-                while (exponant % 3 != 0 & exponant > 3)
+            // loop until the exponent is a multiple of 3 and the mantissa is between 1 and 999
+            while (exponent % 3 != 0 || mantissa >= 1000 || mantissa < 1)
+            {                    
+                if (value >= 1000) // if the value is greater than or equal to 1000, divide by 10 and increment the exponent
                 {
-                    mantessa = mantessa * 10;
-                    exponant++;
+                    mantissa /= 10;
+                    exponent++;
                 }
-                    return $"{mantessa.ToString().Remove(fix + 1)}E{exponant.ToString()}";
+                else if (value < 1) // if the value is less than 1, multiply by 10 and decrement the exponent
+                {
+                    mantissa *= 10;
+                    exponent--;
+                }
+                else // if the value is between 1 and 999, we are done
+                {
+                    break;
+                }
             }
 
+            // round the mantissa to the specified number of significant figures
+            int temp = mantissa.ToString().Length;
+            while (mantissa.ToString().Length > fix+1)
+            {
+                mantissa = Math.Round(mantissa, temp);
+                temp--;
+            }
 
+            // return the mantissa and exponent as a string in engineering notation format
+            return $"{mantissa.ToString()}E{exponent.ToString()}";
         }
 
-        static string MetricPrefix(int exponant)
+
+        
+/// <summary>
+/// takes an exponent and returns the corresponding metric prefix
+/// </summary>
+/// <param name="exponent"></param>
+/// <returns>string representing the metric prefix for the given exponent</returns>
+        static string MetricPrefix(int exponent)
         {
             string prefix = "";
-            switch (exponant)
+            switch (exponent)
+
             {
                 case 9:
                     prefix = "G";
@@ -76,19 +99,26 @@
                     prefix = "p";
                     break;
                 default:
+                    prefix = $"E{exponent}";
                     break;
             }
             return prefix;
         }
 
-
+/// <summary>
+/// takes a decimal number value, a unit string, and an integer fix for significant figures, and returns a string formatted as engineering notation with the appropriate metric prefix and unit
+/// </summary>
+/// <param name="value"></param>
+/// <param name="unit"></param>
+/// <param name="fix"></param>
+/// <returns>string formatted as engineering notation with the appropriate metric prefix and unit</returns>
         static string Pretty(decimal value, string unit, int fix)
         {
             string engString = EngineeringNotation(value, fix);
             string[] temp = engString.Split("E");
             if (temp.Length == 2)
             {
-                return $"{engString[0]}{MetricPrefix(int.Parse(temp[1]))}{unit}";
+                return $"{temp[0]}{MetricPrefix(int.Parse(temp[1]))}{unit}";
             }
             else
             {
