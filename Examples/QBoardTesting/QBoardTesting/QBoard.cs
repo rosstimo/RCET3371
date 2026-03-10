@@ -26,5 +26,18 @@ namespace QBoardTesting
 {
     internal class QBoard
     {
+
+        /// <summary>
+        /// Null command. Signals End of packet USB, i2c, SPI, USART. (Optional) 
+        /// B0000xxxx
+        /// </summary>
+        /// <returns>Command Byte</returns>
+        public byte[] SendNull()
+        {
+            byte[] data = new byte[1];
+            data[0] = 0b0;
+            return data;
+        }
+
     }
 }
