@@ -30,13 +30,25 @@
         {
             this.components = new System.ComponentModel.Container();
             this.serialPort1 = new System.IO.Ports.SerialPort(this.components);
+            this.ExitButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
+            // 
+            // ExitButton
+            // 
+            this.ExitButton.Location = new System.Drawing.Point(652, 356);
+            this.ExitButton.Name = "ExitButton";
+            this.ExitButton.Size = new System.Drawing.Size(136, 82);
+            this.ExitButton.TabIndex = 0;
+            this.ExitButton.Text = "E&xit";
+            this.ExitButton.UseVisualStyleBackColor = true;
+            this.ExitButton.Click += new System.EventHandler(this.ExitButton_Click);
             // 
             // SerialPortForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.ExitButton);
             this.Name = "SerialPortForm";
             this.Text = "Form1";
             this.ResumeLayout(false);
@@ -46,6 +58,7 @@
         #endregion
 
         private System.IO.Ports.SerialPort serialPort1;
+        private System.Windows.Forms.Button ExitButton;
     }
 }
 
