@@ -94,6 +94,29 @@ namespace SerialPortExample
             SendData(data);
         }
 
+        int ReadAnalogOne()
+        {
+            byte[] data = { 0x51 };
+            byte[] response = SendData(data);
+            if (response.Length == 2)
+            {
+                return (response[0] << 2) + (response[1] >> 6);
+            }
+
+            return -1; //bad read of analog data
+        }
+        int ReadAnalogTwo()
+        {
+            byte[] data = { 0x52 };
+            byte[] response = SendData(data);
+            if (response.Length == 2)
+            {
+                return (response[0] << 2) + (response[1] >> 6);
+            }
+
+            return -1; //bad read of analog data
+        }
+
         byte[] ReadAnalog(byte analogInputs)
         {
             byte command = 0x50;
@@ -137,7 +160,11 @@ namespace SerialPortExample
         {
             SerialConnect();
             // WriteDigital(0x0f);
-            ReadAnalog(0x02);
+            //ReadAnalog(0x02);
+            while (true)
+            {
+                Console.WriteLine($"{ReadAnalogOne().ToString().PadLeft(5)} {ReadAnalogTwo().ToString().PadLeft(5)}");
+            }
         }
     }
 }
