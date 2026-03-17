@@ -4,6 +4,8 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Net.NetworkInformation;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
@@ -92,6 +94,36 @@ namespace SerialPortExample
             SendData(data);
         }
 
+        byte[] ReadAnalog(byte analogInputs)
+        {
+            byte command = 0x50;
+            byte[] data = {command};
+            byte[] response;
+            int highByte, lowByte, value;
+
+            analogInputs = (byte)(0x0f & analogInputs); //zero upper nibble
+            command = (byte)(command | analogInputs); //combine nibbles
+            //Console.WriteLine($"{command:X2}");
+
+
+            data[0] = command; //make byte array
+            while (true)
+            {
+                response = SendData(data);
+                //foreach (byte b in response)
+                //{
+                //    Console.Write($"{b} ");
+                //}
+                //Console.WriteLine();
+                highByte = response[0] << 2; //make upper byte 10 bit (11111111 to 1111111100)
+                lowByte = response[1] >> 6; //shift lsb bits to correct place (11000000 to 00000011)
+                value = highByte + lowByte;
+                Console.WriteLine(value);
+
+            }
+
+            return response;
+        }
 
 
 
@@ -104,7 +136,8 @@ namespace SerialPortExample
         private void ConnectButton_Click(object sender, EventArgs e)
         {
             SerialConnect();
-            WriteDigital(0x0f);
+            // WriteDigital(0x0f);
+            ReadAnalog(0x02);
         }
     }
 }
