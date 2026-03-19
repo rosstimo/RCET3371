@@ -62,6 +62,19 @@ namespace GraphicsExample
 
             g.Dispose();
         }
+        void DrawImageResource()
+        {
+            Graphics g = DisplayPictureBox.CreateGraphics();
+            //Image image = Image.FromFile("..\\..\\Resources\\2C.jpg");
+
+            Image image = Properties.Resources._8C;
+            
+            g.ScaleTransform(0.5F, 0.5F);
+
+            g.DrawImage(image, 0, 0);
+
+            g.Dispose();
+        }
 
 
         // Event handlers below _______________________________________________
@@ -77,9 +90,10 @@ namespace GraphicsExample
 
         private void DrawButton_Click(object sender, EventArgs e)
         {
-            DrawLine();
+            //DrawLine();
             //DrawDart(100,100);
             //DrawImage();
+            DrawImageResource();
         }
     }
 }
