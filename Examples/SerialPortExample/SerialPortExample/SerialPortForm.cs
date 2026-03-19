@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using System.IO.Ports;
+using System.Diagnostics.Tracing;
 namespace SerialPortExample
 {
     public partial class SerialPortForm : Form
@@ -17,7 +18,8 @@ namespace SerialPortExample
         public SerialPortForm()
         {
             InitializeComponent();
-            GetPorts();
+            //GetPorts();
+            GetQyAtBoards();
         }
 
         void GetPorts()
@@ -32,11 +34,38 @@ namespace SerialPortExample
                 PortsComboBox.SelectedIndex = 0;
             }
         }
-
-
-        void SerialConnect()
+        void GetQyAtBoards()
         {
-            serialPort1.PortName = "COM3";
+            string[] names = SerialPort.GetPortNames();
+            PortsComboBox.Items.Clear();
+            foreach (string name in names)
+            {
+                //connect
+                SerialConnect(name);
+                //test if it is QyAt board
+                if (IsQyAtBoard())
+                {
+                    PortsComboBox.Items.Add(name);
+                }
+                //close port
+                serialPort1.Close();
+            }
+            if (PortsComboBox.Items.Count > 0)
+            {
+                PortsComboBox.SelectedIndex = 0;
+            }
+            else
+            {   
+
+                PortsComboBox.Items.Add("None");
+                PortsComboBox.SelectedIndex = 0;
+            }
+        }
+
+        void SerialConnect(string portName)
+        {
+            serialPort1.Close();
+            serialPort1.PortName = portName;
             serialPort1.BaudRate = 115200;
             serialPort1.Parity = System.IO.Ports.Parity.None;
             //serialPort1.StopBits = System.IO.Ports.StopBits.None;
@@ -51,8 +80,7 @@ namespace SerialPortExample
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
-          
+                Console.WriteLine(ex.Message);
             }
             //Console.WriteLine("hello");
         }
@@ -145,8 +173,8 @@ namespace SerialPortExample
 
 
             data[0] = command; //make byte array
-            while (true)
-            {
+            //while (true)
+            //{
                 response = SendData(data);
                 //foreach (byte b in response)
                 //{
@@ -158,12 +186,23 @@ namespace SerialPortExample
                 value = highByte + lowByte;
                 Console.WriteLine(value);
 
-            }
+            //}
 
             return response;
         }
 
-
+        void UpdatePortStatus()
+        {
+            if (serialPort1.IsOpen)
+            {
+                PortStatusLabel.Text = serialPort1.PortName;
+            }
+            else
+            {
+                PortStatusLabel.Text = "None";
+                //GetQyAtBoards();
+            }
+        }
 
         //event handlers below here -------------------------------------------
         private void ExitButton_Click(object sender, EventArgs e)
@@ -173,13 +212,24 @@ namespace SerialPortExample
 
         private void ConnectButton_Click(object sender, EventArgs e)
         {
-            SerialConnect();
-            // WriteDigital(0x0f);
+            SerialConnect(PortsComboBox.SelectedItem.ToString());
+
+                            // WriteDigital(0x0f);
             //ReadAnalog(0x02);
-            while (true)
-            {
-                Console.WriteLine($"{ReadAnalogOne().ToString().PadLeft(5)} {ReadAnalogTwo().ToString().PadLeft(5)}");
-            }
+            //while (true)
+            //{
+                //Console.WriteLine($"{ReadAnalogOne().ToString().PadLeft(5)} {ReadAnalogTwo().ToString().PadLeft(5)}");
+            //}
+        }
+
+        private void PortStatusTimer_Tick(object sender, EventArgs e)
+        {
+            UpdatePortStatus();
+        }
+
+        private void RefreshPortsButton_Click(object sender, EventArgs e)
+        {
+            GetQyAtBoards();
         }
     }
 }
