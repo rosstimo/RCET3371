@@ -50,16 +50,16 @@ namespace OOPExample
             switch (this.RankIndex)
             {   
                 case 0:
-                    _rank = "King";
-                    break;
-                case 1:
                     _rank = "Ace";
                     break;
-                case 11:
+                case 10:
                     _rank = "Jack";
                     break;
-                case 12:
+                case 11:
                     _rank = "Queen";
+                    break;
+                case 12:
+                    _rank = "King";
                     break;
                 case > 12:
                     _rank = "Joker";
@@ -68,7 +68,7 @@ namespace OOPExample
                     _rank = "Joker";
                     break;
                 default://2 through 10
-                    _rank = this.RankIndex.ToString();
+                    _rank = (this.RankIndex + 1).ToString();
                     break;
             }
 

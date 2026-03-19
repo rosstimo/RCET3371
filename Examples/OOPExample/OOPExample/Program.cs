@@ -15,9 +15,11 @@
             //Console.WriteLine($"{AD.Rank()} of {AD.Suit()}");
 
             Deck newDeck = new Deck();
+            newDeck.Shuffled = false;
             while (true)
             {
-                Card currentCard = newDeck.DealRandom();
+                Console.Clear();
+                Card currentCard = newDeck.Deal();
                 Console.WriteLine(currentCard.PrettyName());
                 Console.WriteLine($"There are {newDeck.CardsRemaining()} cards left in the deck!");
                 Console.WriteLine(currentCard.ShortName());
