@@ -21,15 +21,21 @@ namespace OOPExample
 
         //property that determines if the cards are dealt in order or randomly. If true, cards are dealt in random order. If false, cards are dealt in the order they were created.
         public bool Shuffled { get; set; } = false; 
-        
+       
+        /// <summary>
+        /// Initializes a new instance of the Deck class, which creates a standard 52-card deck and shuffles it. 
+        /// </summary>
         public Deck() 
         {
             this.Shuffle();
-            //this._deck.Shuffle();
-
-
         }
 
+        /// <summary>
+        /// Initializes the deck with a full set of cards and marks it as shuffled.
+        /// </summary>
+        /// <remarks>Call this method to reset the deck to its original state containing all standard
+        /// cards. This operation clears any existing cards in the deck before repopulating it. After calling this
+        /// method, the deck is ready for dealing or further operations.</remarks>
         public void Shuffle()
         {
             this._deck.Clear();
@@ -39,10 +45,16 @@ namespace OOPExample
                 {
                     Card currentCard = new Card(rankIndex, suitIndex);
                     this._deck.Add(currentCard);
-                    //Console.WriteLine($"{currentCard.Rank()} of {currentCard.Suit()}");
                 }
             }
+            this.Shuffled = true;
         }
+
+        /// <summary>
+        /// Removes and returns a card from the deck. The specific card returned depends on the value of the Shuffled property.
+        /// If Shuffled is true, a random card is removed and returned. If Shuffled is false, the cards are removed in the order.
+        /// </summary>
+        /// <returns>A Card representing the removed card from the deck. If the deck is empty, returns a Joker Card.</returns>
         public Card Deal()
         {
             if (this.Shuffled)
