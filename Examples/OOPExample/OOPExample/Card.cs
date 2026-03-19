@@ -75,5 +75,16 @@ namespace OOPExample
             return _rank;
         }
 
+        public string PrettyName()
+        {
+            return $"{this.Rank()} of {this.Suit()}";
+        }
+
+        public string ShortName()
+        {
+            return $"{this.Rank()[0]}{this.Suit()[0]}";
+        }
+
+
     }
 }
