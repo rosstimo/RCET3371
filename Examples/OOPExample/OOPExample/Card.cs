@@ -77,14 +77,20 @@ namespace OOPExample
 
         public string PrettyName()
         {
-            return $"{this.Rank()} of {this.Suit()}";
+            if (this.Rank().ToString() == "Joker" | this.Suit().ToString() == "Joker")
+            {
+                return "Joker";
+            }
+            else
+            {
+                return $"{this.Rank()} of {this.Suit()}";
+            }
         }
 
         public string ShortName()
         {
             return $"{this.Rank()[0]}{this.Suit()[0]}";
         }
-
 
     }
 }

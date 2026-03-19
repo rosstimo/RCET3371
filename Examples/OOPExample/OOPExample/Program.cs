@@ -15,12 +15,15 @@
             //Console.WriteLine($"{AD.Rank()} of {AD.Suit()}");
 
             Deck newDeck = new Deck();
-            Card currentCard = newDeck.Deal();
-            Console.WriteLine($"{currentCard.Rank()} of {currentCard.Suit()}");
-            Console.WriteLine($"There are {newDeck.CardsRemaining()} cards left in the deck!");
-            Console.WriteLine(currentCard.ShortName());
-            //pause
-            Console.Read();
+            while (true)
+            {
+                Card currentCard = newDeck.DealRandom();
+                Console.WriteLine(currentCard.PrettyName());
+                Console.WriteLine($"There are {newDeck.CardsRemaining()} cards left in the deck!");
+                Console.WriteLine(currentCard.ShortName());
+                //pause
+                Console.ReadLine();
+            }
         }
     }
 }
