@@ -32,6 +32,7 @@
             this.serialPort1 = new System.IO.Ports.SerialPort(this.components);
             this.ExitButton = new System.Windows.Forms.Button();
             this.ConnectButton = new System.Windows.Forms.Button();
+            this.PortsComboBox = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // ExitButton
@@ -54,11 +55,20 @@
             this.ConnectButton.UseVisualStyleBackColor = true;
             this.ConnectButton.Click += new System.EventHandler(this.ConnectButton_Click);
             // 
+            // PortsComboBox
+            // 
+            this.PortsComboBox.FormattingEnabled = true;
+            this.PortsComboBox.Location = new System.Drawing.Point(539, 56);
+            this.PortsComboBox.Name = "PortsComboBox";
+            this.PortsComboBox.Size = new System.Drawing.Size(121, 28);
+            this.PortsComboBox.TabIndex = 2;
+            // 
             // SerialPortForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.PortsComboBox);
             this.Controls.Add(this.ConnectButton);
             this.Controls.Add(this.ExitButton);
             this.Name = "SerialPortForm";
@@ -72,6 +82,7 @@
         private System.IO.Ports.SerialPort serialPort1;
         private System.Windows.Forms.Button ExitButton;
         private System.Windows.Forms.Button ConnectButton;
+        private System.Windows.Forms.ComboBox PortsComboBox;
     }
 }
 

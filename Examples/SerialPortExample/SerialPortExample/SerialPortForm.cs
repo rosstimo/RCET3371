@@ -9,7 +9,7 @@ using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
-
+using System.IO.Ports;
 namespace SerialPortExample
 {
     public partial class SerialPortForm : Form
@@ -17,7 +17,22 @@ namespace SerialPortExample
         public SerialPortForm()
         {
             InitializeComponent();
+            GetPorts();
         }
+
+        void GetPorts()
+        {
+            string[] names = SerialPort.GetPortNames();
+            foreach (string name in names)
+            {
+                PortsComboBox.Items.Add(name);
+            }
+            if (PortsComboBox.Items.Count > 0)
+            {
+                PortsComboBox.SelectedIndex = 0;
+            }
+        }
+
 
         void SerialConnect()
         {
