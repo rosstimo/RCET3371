@@ -123,7 +123,6 @@ namespace OOPExample
         /// <returns>A random integer greater than or equal to zero and less than or equal to the specified maximum value.</returns>
         private int RandomNumberZeroTo(int max)
         {
-            Random random = new Random();
             return random.Next(0, max + 1);
         }
 
