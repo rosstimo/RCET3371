@@ -14,9 +14,10 @@
             //Console.WriteLine($"{AS.Rank()} of {AS.Suit()}");
             //Console.WriteLine($"{AD.Rank()} of {AD.Suit()}");
 
+            string userInput = "";
             Deck newDeck = new Deck();
             newDeck.Shuffled = false;
-            while (true)
+            do
             {
                 Console.Clear();
                 Card currentCard = newDeck.Deal();
@@ -24,8 +25,8 @@
                 Console.WriteLine($"There are {newDeck.CardsRemaining()} cards left in the deck!");
                 Console.WriteLine(currentCard.ShortName());
                 //pause
-                Console.ReadLine();
-            }
+                userInput = Console.ReadLine();
+            } while (userInput.ToLower() != "q");
         }
     }
 }
