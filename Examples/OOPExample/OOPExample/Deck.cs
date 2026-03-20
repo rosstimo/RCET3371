@@ -18,7 +18,7 @@ namespace OOPExample
     /// number of cards remaining.
     /// </summary>
     /// <remarks>The deck is initialized with 52 cards and can be shuffled or reset to its original state.
-    /// Cards can be dealt either in order or randomly, depending on the value of the Shuffled property. The class is
+    /// Cards can be dealt either in order or randomly, depending on the value of the DealRandomly property. The class is
     /// not thread-safe and is intended for single-threaded use. Use the CardsRemaining method to check how many cards
     /// are left before dealing.</remarks>
     internal class Deck
@@ -26,7 +26,7 @@ namespace OOPExample
         private List<Card> _deck = new List<Card>();
 
         //property that determines if the cards are dealt in order or randomly. If true, cards are dealt in random order. If false, cards are dealt in the order they were created.
-        public bool Shuffled { get; set; } = false; 
+        public bool DealRandomly { get; set; } = false; 
        
         /// <summary>
         /// Initializes a new instance of the Deck class, which creates a standard 52-card deck and shuffles it. 
@@ -53,17 +53,17 @@ namespace OOPExample
                     this._deck.Add(currentCard);
                 }
             }
-            this.Shuffled = true;
+            this.DealRandomly = true;
         }
 
         /// <summary>
-        /// Removes and returns a card from the deck. The specific card returned depends on the value of the Shuffled property.
-        /// If Shuffled is true, a random card is removed and returned. If Shuffled is false, the cards are removed in the order.
+        /// Removes and returns a card from the deck. The specific card returned depends on the value of the DealRandomly property.
+        /// If DealRandomly is true, a random card is removed and returned. If DealRandomly is false, the cards are removed in the order.
         /// </summary>
         /// <returns>A Card representing the removed card from the deck. If the deck is empty, returns a Joker Card.</returns>
         public Card Deal()
         {
-            if (this.Shuffled)
+            if (this.DealRandomly)
             {
                 return this.DealRandom();
             }

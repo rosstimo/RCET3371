@@ -16,7 +16,7 @@
 
             string userInput = "";
             Deck newDeck = new Deck();
-            newDeck.Shuffled = false;
+            newDeck.DealRandomly = false;
             do
             {
                 Console.Clear();
