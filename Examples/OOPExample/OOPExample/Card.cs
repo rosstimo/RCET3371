@@ -5,17 +5,16 @@ using System.Text;
 namespace OOPExample
 {
     /// <summary>
-    /// Represents a playing card with a specified rank and suit, providing methods to retrieve its display name, suit,
-    /// rank, and abbreviated form.
+    /// Represents a playing card with a specified rank and suit.
     /// </summary>
-    /// <remarks>Use the Card class to model standard playing cards or jokers in card games. The class exposes
-    /// properties and methods for obtaining human-readable and abbreviated representations of the card. Rank and suit
-    /// indices must be within valid ranges to represent standard cards; out-of-range values are treated as
-    /// jokers.</remarks>
+    /// <remarks>
+    /// Rank indices 0-12 represent Ace through King. Suit indices 0-3 represent Spades, Diamonds, Clubs, and Hearts.
+    /// Out-of-range values are treated as jokers.
+    /// </remarks>
     internal class Card
     {
         /// <summary>
-        /// Gets the zero-based index of the rank represented by this instance. 0 corresponds to Ace, 1 to 2, ..., 10 to Jack, 11 to Queen, 12 to King. Values outside this range are treated as jokers.
+        /// Gets the zero-based index of the rank represented by this instance. Valid range is 0-12: 0 corresponds to Ace, 1-9 to ranks 2-10, 10 to Jack, 11 to Queen, 12 to King. A value of -1 represents a joker; any value outside 0-12 is treated as a joker.
         /// </summary>
         public int RankIndex
         {
@@ -56,7 +55,7 @@ namespace OOPExample
         /// <summary>
         /// Returns the name of the suit for the current card.
         /// </summary>
-        /// <returns>A string representing the suit of the card. Returns "Joker" if the suit index is invalid.</returns>
+        /// <returns>One of "Spades", "Diamonds", "Clubs", "Hearts", or "Joker" if the suit index is invalid.</returns>
         public string Suit()
         {
             string _suit = "";  
@@ -82,14 +81,13 @@ namespace OOPExample
         }
 
         /// <summary>
-        /// Returns the display name of the card rank represented by the current instance.
+        /// Returns the display name of the card rank (e.g., "Ace", "Jack", "2").
         /// </summary>
-        /// <remarks>Use this method to obtain a human-readable rank name for display or comparison
-        /// purposes. The mapping follows standard playing card conventions, with special handling for out-of-range
-        /// values.</remarks>
-        /// <returns>A string containing the rank name. Returns "Ace" for index 0, "Jack" for index 10, "Queen" for index 11,
-        /// "King" for index 12, "Joker" for indexes less than 0 or greater than 12, or the numeric rank (2–10) for
-        /// other valid indexes.</returns>
+        /// <remarks>
+        /// Maps rank indices to standard playing card names: 0 → "Ace", 1-9 → "2"-"10", 10 → "Jack", 11 → "Queen", 12 → "King".
+        /// Invalid indices (< 0 or > 12) return "Joker".
+        /// </remarks>
+        /// <returns>The rank name as a string.</returns>
         public string Rank()
         {
             string _rank = "";
@@ -140,11 +138,15 @@ namespace OOPExample
         }
 
         /// <summary>
-        /// Returns a short string representation of the card, consisting of the first character of its rank and suit.
+        /// Returns a short string representation of the card, consisting of abbreviated rank and suit identifiers.
         /// </summary>
         /// <remarks>Use this method to obtain a concise identifier for a card, suitable for display or
-        /// logging where space is limited.</remarks>
-        /// <returns>A string containing the abbreviated rank and suit of the card. For example, "AS" for Ace of Spades.</returns>
+        /// logging where space is limited. The format varies based on the card type:
+        /// Standard cards use the first character of rank and suit (e.g., "AS" for Ace of Spades),
+        /// 10-rank cards use "10" followed by the suit's first character (e.g., "10H" for 10 of Hearts),
+        /// and jokers are represented as "JK".</remarks>
+        /// <returns>A string containing the abbreviated card identifier: "JK" for jokers, "10" + suit character 
+        /// for tens (e.g., "10S"), or rank character + suit character for all other cards (e.g., "AS", "KD").</returns>
         public string ShortName()
         {
             if (this.Rank().ToString() == "Joker" || this.Suit().ToString() == "Joker")
