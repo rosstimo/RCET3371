@@ -43,23 +43,10 @@ namespace OOPExample
         public Card(int rankIndex = -1, int suitIndex = -1)
         {
             //validate rank and suit index. If either is out of range, set both to -1 to represent a joker.
-            switch (rankIndex)
+            if (rankIndex < 0 || rankIndex > 12 || suitIndex < 0 || suitIndex > 3)
             {
-                case < 0:
-                    rankIndex = -1;
-                    break;
-                case > 12:
-                    rankIndex = -1;
-                    break;
-            }
-            switch (suitIndex)
-            {
-                case < 0:
-                    suitIndex = -1;
-                    break;
-                case > 3:
-                    suitIndex = -1;
-                    break;
+                rankIndex = -1;
+                suitIndex = -1;
             }
             //assign properties
             this.RankIndex = rankIndex;
@@ -142,7 +129,7 @@ namespace OOPExample
         /// the rank and suit in the format "Rank of Suit".</returns>
         public string PrettyName()
         {
-            if (this.Rank().ToString() == "Joker" | this.Suit().ToString() == "Joker")
+            if (this.Rank().ToString() == "Joker" || this.Suit().ToString() == "Joker")
             {
                 return "Joker";
             }
@@ -160,6 +147,14 @@ namespace OOPExample
         /// <returns>A string containing the abbreviated rank and suit of the card. For example, "AS" for Ace of Spades.</returns>
         public string ShortName()
         {
+            if (this.Rank().ToString() == "Joker" || this.Suit().ToString() == "Joker")
+            {
+                return "JK";
+            }
+            if (this.Rank().ToString() == "10")
+            {
+                return $"10{this.Suit()[0]}";
+            }
             return $"{this.Rank()[0]}{this.Suit()[0]}";
         }
 
