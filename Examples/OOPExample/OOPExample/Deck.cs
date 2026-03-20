@@ -24,6 +24,7 @@ namespace OOPExample
     internal class Deck
     {
         private List<Card> _deck = new List<Card>();
+        private readonly Random random = new Random(); // global random instance to avoid issues with multiple instances generating the same sequence of random numbers
 
         //property that determines if the cards are dealt in order or randomly. If true, cards are dealt in random order. If false, cards are dealt in the order they were created.
         public bool DealRandomly { get; set; } = false; 
@@ -122,8 +123,8 @@ namespace OOPExample
         /// <returns>A random integer greater than or equal to zero and less than or equal to the specified maximum value.</returns>
         private int RandomNumberZeroTo(int max)
         {
-            Random _random = new Random();
-            return _random.Next(0, max + 1);
+            Random random = new Random();
+            return random.Next(0, max + 1);
         }
 
     }
