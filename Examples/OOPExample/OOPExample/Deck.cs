@@ -28,7 +28,12 @@ namespace OOPExample
 
         // If true, cards are dealt in random order; if false, cards are dealt in creation order.
         public bool DealRandomly { get; set; } = false;
-       
+
+        /// <summary>
+        /// Gets the number of cards left in the deck.
+        /// </summary>
+        public int CardsRemaining => _deck.Count;
+
         /// <summary>
         /// Creates a new deck and shuffles it.
         /// </summary>
@@ -58,7 +63,7 @@ namespace OOPExample
         /// <summary>
         /// Removes and returns a card. If DealRandomly is true, returns a random card; otherwise, returns the top card.
         /// </summary>
-        /// <remarks>Call CardsRemaining() to check if the deck is not empty before dealing.</remarks>
+        /// <remarks>Check the CardsRemaining property to ensure the deck is not empty before dealing.</remarks>
         /// <returns>The removed card, or a Joker card if the deck is empty.</returns>
         public Card Deal()
         {
@@ -101,14 +106,7 @@ namespace OOPExample
             }
             return temp;
         }
-        /// <summary>
-        /// Returns the number of cards left in the deck.
-        /// </summary>
-        /// <returns>The count of cards remaining.</returns>
-        public int CardsRemaining()
-        {
-            return this._deck.Count;
-        }
+
 
         /// <summary>
         /// Returns a random integer between 0 and max (inclusive).

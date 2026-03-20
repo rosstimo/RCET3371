@@ -22,7 +22,7 @@
                 Console.Clear();
                 Card currentCard = newDeck.Deal();
                 Console.WriteLine(currentCard.PrettyName());
-                Console.WriteLine($"There are {newDeck.CardsRemaining()} cards left in the deck!");
+                Console.WriteLine($"There are {newDeck.CardsRemaining} cards left in the deck!");
                 Console.WriteLine(currentCard.ShortName());
                 //pause
                 userInput = Console.ReadLine();
