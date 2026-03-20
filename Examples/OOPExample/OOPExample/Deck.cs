@@ -10,13 +10,19 @@ namespace OOPExample
     [x] keep cards in a collection (list, stack, que) 
     [x] deal a card and remove it from the collection 
     [x] provide number of cards remaining
-    [ ] shuffle the deck (refresh/recreate cards in a full deck. maybe randomize)
+    [x] shuffle the deck (refresh/recreate cards in a full deck. maybe randomize)
     */
+
+    /// <summary>
+    /// Represents a standard deck of playing cards, providing functionality to shuffle, deal cards, and track the
+    /// number of cards remaining.
+    /// </summary>
+    /// <remarks>The deck is initialized with 52 cards and can be shuffled or reset to its original state.
+    /// Cards can be dealt either in order or randomly, depending on the value of the Shuffled property. The class is
+    /// not thread-safe and is intended for single-threaded use. Use the CardsRemaining method to check how many cards
+    /// are left before dealing.</remarks>
     internal class Deck
     {
-        private List<string> dinosaurs = new List<string>();
-        Queue<string> numbers = new Queue<string>();
-        Stack<string> letter = new Stack<string>();
         private List<Card> _deck = new List<Card>();
 
         //property that determines if the cards are dealt in order or randomly. If true, cards are dealt in random order. If false, cards are dealt in the order they were created.
@@ -100,14 +106,22 @@ namespace OOPExample
             }
             return temp;
         }
+        /// <summary>
+        /// Returns the number of cards currently remaining in the deck.
+        /// </summary>
+        /// <returns>The total count of cards left in the deck. Returns 0 if the deck is empty.</returns>
         public int CardsRemaining()
         {
             return this._deck.Count;
         }
+
+        /// <summary>
+        /// Generates a random integer between zero and the specified maximum value, inclusive.
+        /// </summary>
+        /// <param name="max">The upper bound of the random number to generate. Must be greater than or equal to zero.</param>
+        /// <returns>A random integer greater than or equal to zero and less than or equal to the specified maximum value.</returns>
         private int RandomNumberZeroTo(int max)
         {
-            //int _random = 0;
-            //random number 0 to max inclusive
             Random _random = new Random();
             return _random.Next(0, max + 1);
         }
