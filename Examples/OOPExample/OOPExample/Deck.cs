@@ -80,7 +80,7 @@ namespace OOPExample
             Card temp = new Card(-1, -1);
             if (this._deck.Count > 0)
             {
-                temp = this._deck.ElementAt(0);
+                temp = this._deck[0];
                 this._deck.RemoveAt(0);
             }
             return temp;
@@ -91,12 +91,12 @@ namespace OOPExample
         /// <returns>A random card, or a Joker card if the deck is empty.</returns>
         private Card DealRandom()
         {
-            int randomCard = 0;
+            int randomCard;
             Card temp = new Card(-1, -1);
             if (this._deck.Count > 0)
             {
                 randomCard = RandomNumberZeroTo(this._deck.Count - 1);
-                temp = this._deck.ElementAt(randomCard);
+                temp = this._deck[randomCard];
                 this._deck.RemoveAt(randomCard);
             }
             return temp;
