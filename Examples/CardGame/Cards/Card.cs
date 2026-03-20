@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace OOPExample
+namespace Cards
 {
     /// <summary>
     /// Represents a playing card with a specified rank and suit, providing methods to retrieve its display name, suit,

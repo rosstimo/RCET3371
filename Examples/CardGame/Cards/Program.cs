@@ -1,4 +1,4 @@
-﻿namespace OOPExample
+﻿namespace Cards
 {
     internal class Program
     {
