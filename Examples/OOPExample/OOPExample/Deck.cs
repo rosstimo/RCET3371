@@ -24,13 +24,13 @@ namespace OOPExample
     internal class Deck
     {
         private List<Card> _deck = new List<Card>();
-        private readonly Random random = new Random(); // global random instance to avoid issues with multiple instances generating the same sequence of random numbers
+        private readonly Random random = new Random(); // Single instance to ensure unique random numbers
 
-        //property that determines if the cards are dealt in order or randomly. If true, cards are dealt in random order. If false, cards are dealt in the order they were created.
-        public bool DealRandomly { get; set; } = false; 
+        // If true, cards are dealt in random order; if false, cards are dealt in creation order.
+        public bool DealRandomly { get; set; } = false;
        
         /// <summary>
-        /// Initializes a new instance of the Deck class, which creates a standard 52-card deck and shuffles it. 
+        /// Creates a new deck and shuffles it.
         /// </summary>
         public Deck() 
         {
@@ -38,11 +38,9 @@ namespace OOPExample
         }
 
         /// <summary>
-        /// Initializes the deck with a full set of cards and marks it as shuffled.
+        /// Resets the deck to 52 cards in standard order and enables random dealing.
         /// </summary>
-        /// <remarks>Call this method to reset the deck to its original state containing all standard
-        /// cards. This operation clears any existing cards in the deck before repopulating it. After calling this
-        /// method, the deck is ready for dealing or further operations.</remarks>
+        /// <remarks>Clears the deck and repopulates it. Sets DealRandomly to true.</remarks>
         public void Shuffle()
         {
             this._deck.Clear();
@@ -58,10 +56,10 @@ namespace OOPExample
         }
 
         /// <summary>
-        /// Removes and returns a card from the deck. The specific card returned depends on the value of the DealRandomly property.
-        /// If DealRandomly is true, a random card is removed and returned. If DealRandomly is false, the cards are removed in the order.
+        /// Removes and returns a card. If DealRandomly is true, returns a random card; otherwise, returns the top card.
         /// </summary>
-        /// <returns>A Card representing the removed card from the deck. If the deck is empty, returns a Joker Card.</returns>
+        /// <remarks>Call CardsRemaining() to check if the deck is not empty before dealing.</remarks>
+        /// <returns>The removed card, or a Joker card if the deck is empty.</returns>
         public Card Deal()
         {
             if (this.DealRandomly)
@@ -74,11 +72,9 @@ namespace OOPExample
             }
         }
         /// <summary>
-        /// Removes and returns the top card from the deck.
+        /// Removes and returns the top card.
         /// </summary>
-        /// <remarks>Callers should check the returned Card for validity if the deck may be empty. The
-        /// method modifies the deck by removing the returned card.</remarks>
-        /// <returns>A Card representing the top card of the deck. If the deck is empty, returns a Joker Card.</returns>
+        /// <returns>The top card, or a Joker card if the deck is empty.</returns>
         private Card DealOrdered()
         {
             Card temp = new Card(-1, -1);
@@ -90,11 +86,9 @@ namespace OOPExample
             return temp;
         }
         /// <summary>
-        /// Removes and returns a random card from the deck.
+        /// Removes and returns a random card.
         /// </summary>
-        /// <remarks>The method modifies the deck by removing the returned card. If called when the deck
-        /// is empty, the returned card will have invalid or default values. This method is not thread-safe.</remarks>
-        /// <returns>A randomly selected card from the deck. If the deck is empty, returns a Joker .</returns>
+        /// <returns>A random card, or a Joker card if the deck is empty.</returns>
         private Card DealRandom()
         {
             int randomCard = 0;
@@ -108,19 +102,19 @@ namespace OOPExample
             return temp;
         }
         /// <summary>
-        /// Returns the number of cards currently remaining in the deck.
+        /// Returns the number of cards left in the deck.
         /// </summary>
-        /// <returns>The total count of cards left in the deck. Returns 0 if the deck is empty.</returns>
+        /// <returns>The count of cards remaining.</returns>
         public int CardsRemaining()
         {
             return this._deck.Count;
         }
 
         /// <summary>
-        /// Generates a random integer between zero and the specified maximum value, inclusive.
+        /// Returns a random integer between 0 and max (inclusive).
         /// </summary>
-        /// <param name="max">The upper bound of the random number to generate. Must be greater than or equal to zero.</param>
-        /// <returns>A random integer greater than or equal to zero and less than or equal to the specified maximum value.</returns>
+        /// <param name="max">Maximum value (inclusive).</param>
+        /// <returns>Random integer between 0 and max.</returns>
         private int RandomNumberZeroTo(int max)
         {
             return random.Next(0, max + 1);
