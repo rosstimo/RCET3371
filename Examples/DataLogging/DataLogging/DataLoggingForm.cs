@@ -42,8 +42,10 @@ namespace DataLogging
         void GraphDataPoint(int dataX, int dataY)
         {
             Graphics g = DisplayPictureBox.CreateGraphics();
-            Pen thePen = new Pen(Color.Lime, 1);
-            g.DrawLine(thePen, dataX - 1, lastY, dataX, dataY);
+            Pen thePen = new Pen(Color.Black, 1);
+            g.DrawLine(thePen, dataX, 0, dataX, DisplayPictureBox.Height); //erase old line
+            thePen.Color = Color.Lime;
+            g.DrawLine(thePen, dataX - 1, lastY, dataX, dataY);// draw new data segment
             lastY = dataY;
             g.Dispose();
             thePen.Dispose();
@@ -70,6 +72,10 @@ namespace DataLogging
 
         void GetDataPoint()
         {
+            if (this.dataBuffer.Count >= 100)
+            {
+                dataBuffer.RemoveAt(0);
+            }
             this.dataBuffer.Add(RandomNumberBetween(100, 75));
         }
 
@@ -82,6 +88,7 @@ namespace DataLogging
 
         void UpdateGraph()
         {
+            //DisplayPictureBox.Refresh(); this causes visible flicker
             int dataX = 0;
             foreach (int dataY in this.dataBuffer)
             {
