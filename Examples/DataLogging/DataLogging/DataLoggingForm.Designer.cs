@@ -44,6 +44,7 @@
             this.DisplayPictureBox.Size = new System.Drawing.Size(619, 193);
             this.DisplayPictureBox.TabIndex = 0;
             this.DisplayPictureBox.TabStop = false;
+            this.DisplayPictureBox.MouseMove += DisplayPictureBox_MouseMove;
             // 
             // GraphButton
             // 
@@ -53,6 +54,7 @@
             this.GraphButton.TabIndex = 1;
             this.GraphButton.Text = "&Graph";
             this.GraphButton.UseVisualStyleBackColor = true;
+            this.GraphButton.Click += new System.EventHandler(this.GraphButton_Click);
             // 
             // ClearButton
             // 
@@ -62,6 +64,7 @@
             this.ClearButton.TabIndex = 2;
             this.ClearButton.Text = "&Clear";
             this.ClearButton.UseVisualStyleBackColor = true;
+            this.ClearButton.Click += new System.EventHandler(this.ClearButton_Click);
             // 
             // ExitButton
             // 
@@ -90,6 +93,8 @@
             this.ResumeLayout(false);
 
         }
+
+
 
         #endregion
 
