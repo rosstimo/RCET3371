@@ -12,6 +12,7 @@ namespace DataLogging
 {
     public partial class DataLoggingForm : Form
     {
+        private List<int> dataBuffer = new List<int>(); // data y values
         public DataLoggingForm()
         {
             InitializeComponent();
@@ -37,6 +38,17 @@ namespace DataLogging
             thePen.Dispose();
         }
 
+        int lastY = 0;
+        void GraphDataPoint(int dataX, int dataY)
+        {
+            Graphics g = DisplayPictureBox.CreateGraphics();
+            Pen thePen = new Pen(Color.Lime, 1);
+            g.DrawLine(thePen, dataX - 1, lastY, dataX, dataY);
+            lastY = dataY;
+            g.Dispose();
+            thePen.Dispose();
+        }
+
         void DrawLine()
         {
             Graphics g = DisplayPictureBox.CreateGraphics();
@@ -56,6 +68,28 @@ namespace DataLogging
             thePen.Dispose();
         }
 
+        void GetDataPoint()
+        {
+            this.dataBuffer.Add(RandomNumberBetween(100, 75));
+        }
+
+        private readonly Random random = new Random(); // Single instance to ensure unique random numbers
+        private int RandomNumberBetween(int max, int min = 0)
+        {
+            int temp = max - min;
+            return random.Next(0, temp + 1) + min;
+        }
+
+        void UpdateGraph()
+        {
+            int dataX = 0;
+            foreach (int dataY in this.dataBuffer)
+            {
+                GraphDataPoint(dataX, dataY);
+                dataX++;
+            }
+        }
+
         //Event Handlers ------------------------------------------------------
         private void ExitButton_Click(object sender, EventArgs e)
         {
@@ -64,7 +98,14 @@ namespace DataLogging
 
         private void GraphButton_Click(object sender, EventArgs e)
         {
-            DrawVerticalLine(100);
+            if (DataAqTimer.Enabled)
+            {
+                DataAqTimer.Enabled = false;
+            }
+            else
+            {
+                DataAqTimer.Enabled = true;
+            }
         }
 
         private void ClearButton_Click(object sender, EventArgs e)
@@ -76,6 +117,12 @@ namespace DataLogging
         {
             this.Text = e.X.ToString();
             DrawVerticalLine(e.X);
+        }
+
+        private void DataAqTimer_Tick(object sender, EventArgs e)
+        {
+            GetDataPoint();
+            UpdateGraph();
         }
     }
 }
