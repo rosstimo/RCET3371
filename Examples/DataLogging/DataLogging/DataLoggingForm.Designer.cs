@@ -28,20 +28,35 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.DisplayPictureBox = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.DisplayPictureBox)).BeginInit();
             this.SuspendLayout();
             // 
-            // Form1
+            // DisplayPictureBox
+            // 
+            this.DisplayPictureBox.Location = new System.Drawing.Point(12, 41);
+            this.DisplayPictureBox.Name = "DisplayPictureBox";
+            this.DisplayPictureBox.Size = new System.Drawing.Size(1193, 354);
+            this.DisplayPictureBox.TabIndex = 0;
+            this.DisplayPictureBox.TabStop = false;
+            // 
+            // DataLoggingForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Name = "Form1";
-            this.Text = "Form1";
+            this.ClientSize = new System.Drawing.Size(1217, 586);
+            this.Controls.Add(this.DisplayPictureBox);
+            this.Name = "DataLoggingForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "Data Logging";
+            ((System.ComponentModel.ISupportInitialize)(this.DisplayPictureBox)).EndInit();
             this.ResumeLayout(false);
 
         }
 
         #endregion
+
+        private System.Windows.Forms.PictureBox DisplayPictureBox;
     }
 }
 
