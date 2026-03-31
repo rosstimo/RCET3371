@@ -32,6 +32,8 @@ namespace DataLogging
             Pen thePen = new Pen(Color.Black, 1);
             g.DrawLine(thePen, oldX, 0, oldX, DisplayPictureBox.Height); //erase old line
             thePen.Color = Color.Lime;
+            g.DrawLine(thePen, 0, 0, 50, 50);
+
             g.DrawLine(thePen, newX, 0, newX, DisplayPictureBox.Height); //draw new line
             oldX = newX; //update oldX for next time
             g.Dispose();
@@ -41,9 +43,14 @@ namespace DataLogging
         int lastY = 0;
         void GraphDataPoint(int dataX, int dataY)
         {
+            //calculate scale factors
+            float sx = DisplayPictureBox.Width / 100F;
+            float sy = DisplayPictureBox.Height / 100F;
             Graphics g = DisplayPictureBox.CreateGraphics();
             Pen thePen = new Pen(Color.Black, 1);
-            g.DrawLine(thePen, dataX, 0, dataX, DisplayPictureBox.Height); //erase old line
+            g.ScaleTransform(sx, sy);//set scale so height and width are 100 units
+            g.DrawLine(thePen, dataX, 0, dataX, 100); //erase previous data segment
+            thePen.Width = 0.25F; //make the pen width thinner after scaling
             thePen.Color = Color.Lime;
             g.DrawLine(thePen, dataX - 1, lastY, dataX, dataY);// draw new data segment
             lastY = dataY;
@@ -62,7 +69,7 @@ namespace DataLogging
 
             g.TranslateTransform(dx, dy);
 
-            g.ScaleTransform(sx, sy * -1);
+            g.ScaleTransform(sx, sy *-1);
 
             g.DrawLine(thePen, 0, 0, 50, 50);
             g.DrawEllipse(thePen, 0, -50, 50, 100);
@@ -76,7 +83,7 @@ namespace DataLogging
             {
                 dataBuffer.RemoveAt(0);
             }
-            this.dataBuffer.Add(RandomNumberBetween(100, 75));
+            this.dataBuffer.Add(RandomNumberBetween(70, 40));
         }
 
         private readonly Random random = new Random(); // Single instance to ensure unique random numbers
