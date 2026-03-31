@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace DataLogging
 {
-    public partial class Form1 : Form
+    public partial class DataLoggingForm : Form
     {
-        public Form1()
+        public DataLoggingForm()
         {
             InitializeComponent();
         }
