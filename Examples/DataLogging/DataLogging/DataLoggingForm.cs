@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -80,11 +81,14 @@ namespace DataLogging
 
         void GetDataPoint()
         {
+            int currentData = RandomNumberBetween(2, 0); //Acquire the data
             if (this.dataBuffer.Count >= 100)
             {
                 dataBuffer.RemoveAt(0);
             }
-            this.dataBuffer.Add(RandomNumberBetween(2, 0));
+            this.dataBuffer.Add(currentData);
+            LogDataToFile(currentData);
+
         }
 
         private readonly Random random = new Random(); // Single instance to ensure unique random numbers
@@ -102,6 +106,14 @@ namespace DataLogging
             {
                 GraphDataPoint(dataX, dataY);
                 dataX++;
+            }
+        }
+        static void LogDataToFile(int currentData)
+        {
+            string path = $"..\\..\\logs\\{DateTime.Now.ToString("yyyyMMddhh")}_data.log";
+            using (StreamWriter currentFile = File.AppendText(path))
+            {
+                currentFile.WriteLine($"{DateTime.Now:yyyyMMddhhmmss}{DateTime.Now.Millisecond:D3},{currentData}");
             }
         }
 
