@@ -114,18 +114,26 @@ namespace DataLogging
         void GraphLogFile()
         {
             DataAqTimer.Enabled = false;
-            string path = $"..\\..\\logs\\{LogFileComboBox.SelectedItem.ToString()}";
-            string[] temp;
-            int dataX = 0;
-            this.xMax = CountOfLinesIn(path);
-            using (StreamReader currentFile = new StreamReader(path))
+            try
             {
-                while (!currentFile.EndOfStream)
+                string path = $"..\\..\\logs\\{LogFileComboBox.SelectedItem.ToString()}";
+                string[] temp;
+                int dataX = 0;
+                this.xMax = CountOfLinesIn(path);
+                using (StreamReader currentFile = new StreamReader(path))
                 {
-                    temp = currentFile.ReadLine().Split(',');
-                    GraphDataPoint(dataX, int.Parse(temp[1]));
-                    dataX++;
+                    while (!currentFile.EndOfStream)
+                    {
+                        temp = currentFile.ReadLine().Split(',');
+                        GraphDataPoint(dataX, int.Parse(temp[1]));
+                        dataX++;
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
             }
             xMax = 100;
         }
