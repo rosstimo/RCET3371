@@ -132,7 +132,6 @@ namespace DataLogging
             }
             catch (Exception ex)
             {
-
                 MessageBox.Show(ex.Message);
             }
             xMax = 100;
@@ -152,10 +151,17 @@ namespace DataLogging
         }
         static void LogDataToFile(int currentData)
         {
-            string path = $"..\\..\\logs\\{DateTime.Now.ToString("yyyyMMddhh")}_data.log";
-            using (StreamWriter currentFile = File.AppendText(path))
+            try
             {
-                currentFile.WriteLine($"{DateTime.Now:yyyyMMddhhmmss}{DateTime.Now.Millisecond:D3},{currentData}");
+                string path = $"..\\..\\logs\\{DateTime.Now.ToString("yyyyMMddhh")}_data.log";
+                using (StreamWriter currentFile = File.AppendText(path))
+                {
+                    currentFile.WriteLine($"{DateTime.Now:yyyyMMddhhmmss}{DateTime.Now.Millisecond:D3},{currentData}");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
         }
 
