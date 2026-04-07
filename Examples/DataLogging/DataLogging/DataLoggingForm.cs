@@ -68,7 +68,7 @@ namespace DataLogging
         {
             //calculate scale factors
             float sx = (float)(DisplayPictureBox.Width / xMax);
-            float sy = DisplayPictureBox.Height / yMax;
+            float sy = (float)DisplayPictureBox.Height / yMax;
             Graphics g = DisplayPictureBox.CreateGraphics();
             Pen thePen = new Pen(Color.Black, 1);
             g.ScaleTransform(sx, sy * -1);//set scale so height and width are 100 units
