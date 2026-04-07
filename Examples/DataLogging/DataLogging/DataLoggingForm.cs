@@ -17,10 +17,13 @@ namespace DataLogging
         public DataLoggingForm()
         {
             InitializeComponent();
+            LogFileComboBox.SelectedIndexChanged += LogFileComboBox_SelectedIndexChanged;
             SetDefaults();
 
 
         }
+
+
 
         void SetDefaults()
         {
@@ -29,10 +32,18 @@ namespace DataLogging
         }
         void LoadLogFiles()
         {
-            string[] logFiles = Directory.GetFiles("..\\..\\logs", "*.log");
-            foreach (string file in logFiles)
+            try
             {
-                LogFileComboBox.Items.Add(Path.GetFileName(file));
+                string[] logFiles = Directory.GetFiles("..\\..\\logs", "*.log");
+                foreach (string file in logFiles)
+                {
+                    LogFileComboBox.Items.Add(Path.GetFileName(file));
+                }
+
+            }
+            catch (Exception)
+            {
+                Directory.CreateDirectory("..\\..\\logs");
             }
         }
         private static int oldX = 0;
@@ -51,16 +62,17 @@ namespace DataLogging
         }
 
         int lastY = 0;
+        float xMax = 100, yMax = 100;
         void GraphDataPoint(int dataX, int dataY)
         {
             //calculate scale factors
-            float sx = DisplayPictureBox.Width / 100F;
-            float sy = DisplayPictureBox.Height / 100F;
+            float sx = (float)(DisplayPictureBox.Width / xMax);
+            float sy = DisplayPictureBox.Height / yMax;
             Graphics g = DisplayPictureBox.CreateGraphics();
             Pen thePen = new Pen(Color.Black, 1);
             g.ScaleTransform(sx, sy * -1);//set scale so height and width are 100 units
-            g.TranslateTransform(0, -100);// move origin down to bottom of graph
-            g.DrawLine(thePen, dataX, 0, dataX, 100); //erase previous data segment
+            g.TranslateTransform(0, -yMax);// move origin down to bottom of graph
+            g.DrawLine(thePen, dataX, 0, dataX, yMax); //erase previous data segment
             thePen.Width = 0.25F; //make the pen width thinner after scaling
             thePen.Color = Color.Lime;
             g.DrawLine(thePen, dataX - 1, lastY, dataX, dataY);// draw new data segment
@@ -73,7 +85,7 @@ namespace DataLogging
         void GetDataPoint()
         {
             int currentData = RandomNumberBetween(55,45); //Acquire the data
-            if (this.dataBuffer.Count >= 100)
+            if (this.dataBuffer.Count >= xMax)
             {
                 dataBuffer.RemoveAt(0);
             }
@@ -88,7 +100,7 @@ namespace DataLogging
             int temp = max - min;
             return random.Next(0, temp + 1) + min;
         }
-
+        
         void UpdateGraph()
         {
             //DisplayPictureBox.Refresh(); this causes visible flicker
@@ -98,6 +110,37 @@ namespace DataLogging
                 GraphDataPoint(dataX, dataY);
                 dataX++;
             }
+        }
+        void GraphLogFile()
+        {
+            DataAqTimer.Enabled = false;
+            string path = $"..\\..\\logs\\{LogFileComboBox.SelectedItem.ToString()}";
+            string[] temp;
+            int dataX = 0;
+            this.xMax = CountOfLinesIn(path);
+            using (StreamReader currentFile = new StreamReader(path))
+            {
+                while (!currentFile.EndOfStream)
+                {
+                    temp = currentFile.ReadLine().Split(',');
+                    GraphDataPoint(dataX, int.Parse(temp[1]));
+                    dataX++;
+                }
+            }
+            xMax = 100;
+        }
+        static int CountOfLinesIn(string path)
+        {
+            int count = 0;
+            using (StreamReader currentFile = new StreamReader(path))
+            {
+                while (!currentFile.EndOfStream)
+                {
+                    currentFile.ReadLine();
+                    count++;
+                }
+            }
+            return count;
         }
         static void LogDataToFile(int currentData)
         {
@@ -141,6 +184,10 @@ namespace DataLogging
         {
             GetDataPoint();
             UpdateGraph();
+        }
+        private void LogFileComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            GraphLogFile();
         }
     }
 }
