@@ -25,6 +25,15 @@ namespace DataLogging
         void SetDefaults()
         {
             DisplayPictureBox.BackColor = Color.Black;
+            LoadLogFiles();
+        }
+        void LoadLogFiles()
+        {
+            string[] logFiles = Directory.GetFiles("..\\..\\logs", "*.log");
+            foreach (string file in logFiles)
+            {
+                LogFileComboBox.Items.Add(Path.GetFileName(file));
+            }
         }
         private static int oldX = 0;
         void DrawVerticalLine(int newX)
@@ -81,7 +90,7 @@ namespace DataLogging
 
         void GetDataPoint()
         {
-            int currentData = RandomNumberBetween(2, 0); //Acquire the data
+            int currentData = RandomNumberBetween(55,45); //Acquire the data
             if (this.dataBuffer.Count >= 100)
             {
                 dataBuffer.RemoveAt(0);

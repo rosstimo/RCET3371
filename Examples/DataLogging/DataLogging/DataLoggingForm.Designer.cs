@@ -34,6 +34,7 @@
             this.ClearButton = new System.Windows.Forms.Button();
             this.ExitButton = new System.Windows.Forms.Button();
             this.DataAqTimer = new System.Windows.Forms.Timer(this.components);
+            this.LogFileComboBox = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.DisplayPictureBox)).BeginInit();
             this.SuspendLayout();
             // 
@@ -41,7 +42,7 @@
             // 
             this.DisplayPictureBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.DisplayPictureBox.Location = new System.Drawing.Point(11, 11);
-            this.DisplayPictureBox.Margin = new System.Windows.Forms.Padding(2);
+            this.DisplayPictureBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.DisplayPictureBox.Name = "DisplayPictureBox";
             this.DisplayPictureBox.Size = new System.Drawing.Size(619, 193);
             this.DisplayPictureBox.TabIndex = 0;
@@ -81,16 +82,26 @@
             // 
             this.DataAqTimer.Tick += new System.EventHandler(this.DataAqTimer_Tick);
             // 
+            // LogFileComboBox
+            // 
+            this.LogFileComboBox.FormattingEnabled = true;
+            this.LogFileComboBox.Location = new System.Drawing.Point(474, 207);
+            this.LogFileComboBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.LogFileComboBox.Name = "LogFileComboBox";
+            this.LogFileComboBox.Size = new System.Drawing.Size(157, 21);
+            this.LogFileComboBox.TabIndex = 5;
+            // 
             // DataLoggingForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(641, 317);
+            this.ClientSize = new System.Drawing.Size(643, 317);
+            this.Controls.Add(this.LogFileComboBox);
             this.Controls.Add(this.ExitButton);
             this.Controls.Add(this.ClearButton);
             this.Controls.Add(this.GraphButton);
             this.Controls.Add(this.DisplayPictureBox);
-            this.Margin = new System.Windows.Forms.Padding(2);
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "DataLoggingForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Data Logging";
@@ -108,6 +119,7 @@
         private System.Windows.Forms.Button ClearButton;
         private System.Windows.Forms.Button ExitButton;
         private System.Windows.Forms.Timer DataAqTimer;
+        private System.Windows.Forms.ComboBox LogFileComboBox;
     }
 }
 
