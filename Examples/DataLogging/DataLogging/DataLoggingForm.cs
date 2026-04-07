@@ -28,10 +28,12 @@ namespace DataLogging
         void SetDefaults()
         {
             DisplayPictureBox.BackColor = Color.Black;
+            DisplayPictureBox.Refresh();
             LoadLogFiles();
         }
         void LoadLogFiles()
         {
+            LogFileComboBox.Items.Clear();
             try
             {
                 string[] logFiles = Directory.GetFiles("..\\..\\logs", "*.log");
@@ -39,7 +41,6 @@ namespace DataLogging
                 {
                     LogFileComboBox.Items.Add(Path.GetFileName(file));
                 }
-
             }
             catch (Exception)
             {
@@ -173,6 +174,7 @@ namespace DataLogging
 
         private void GraphButton_Click(object sender, EventArgs e)
         {
+            SetDefaults();
             if (DataAqTimer.Enabled)
             {
                 DataAqTimer.Enabled = false;
