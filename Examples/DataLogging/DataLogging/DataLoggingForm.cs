@@ -69,24 +69,6 @@ namespace DataLogging
             thePen.Dispose();
         }
 
-        void DrawLine()
-        {
-            Graphics g = DisplayPictureBox.CreateGraphics();
-            Pen thePen = new Pen(Color.Red, 1);
-            float dx = DisplayPictureBox.Width / 2;
-            float dy = DisplayPictureBox.Height / 2;
-            float sx = DisplayPictureBox.Width / 100F;
-            float sy = DisplayPictureBox.Height / 100F;
-
-            g.TranslateTransform(dx, dy);
-
-            g.ScaleTransform(sx, sy *-1);
-
-            g.DrawLine(thePen, 0, 0, 50, 50);
-            g.DrawEllipse(thePen, 0, -50, 50, 100);
-            g.Dispose();
-            thePen.Dispose();
-        }
 
         void GetDataPoint()
         {
