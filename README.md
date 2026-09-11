@@ -2,7 +2,13 @@
 
 Student-facing course materials for RCET 3371.
 
-## Course materials
+## Fall 2026
+
+**[Start here: Fall 2026 course path](F26/README.md)**
+
+The Fall 2026 page identifies the current topic, what to read or practice next, assignments, examples, and upcoming material. Use it as the normal course entry point.
+
+## General course materials and reference
 
 - [Assignments](00-Assignments/)
 - [Examples](Examples/)
