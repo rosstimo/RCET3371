@@ -91,9 +91,9 @@ namespace GraphicsExample
         private void DrawButton_Click(object sender, EventArgs e)
         {
             //DrawLine();
-            //DrawDart(100,100);
+            DrawDart(100,100);
             //DrawImage();
-            DrawImageResource();
+            //DrawImageResource();
         }
     }
 }
