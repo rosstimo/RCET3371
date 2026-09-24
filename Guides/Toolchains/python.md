@@ -1,85 +1,182 @@
 # Python Toolchain Guide
 
-[Guides index](../README.md)
+[Toolchain setup index](README.md)
+
+## Goal
+
+Install Python and VS Code, run a first script, use a breakpoint, and create a project virtual environment.
 
 ## Course baseline
 
-Reference environment:
-
 - Python 3.14.x
 - standard CPython distribution
-- virtual environment for course projects that use third-party packages
-- pySerial for serial-host work
+- Visual Studio Code
+- Microsoft Python extension for VS Code
 
-A newer supported Python 3 release is acceptable only after the course examples/tests are verified.
+## 1. Install Python on Windows
 
-## Verify interpreter
+Official download:
+
+https://www.python.org/downloads/
+
+For current Python 3.14 on Windows, Python.org may direct you through the **Python Install Manager**. Install it using the official instructions.
+
+After installation, open a new terminal and verify:
+
+```text
+python --version
+py -3.14 --version
+```
+
+At least one command must clearly identify Python 3.14.x.
+
+To see which interpreter is running:
+
+```text
+py -3.14 -c "import sys; print(sys.executable)"
+```
+
+### Linux note
+
+Use your distribution's supported Python 3.14 package when available. Do not replace the distribution's system Python with a random installer. Verify with:
+
+```text
+python3 --version
+python3 -c "import sys; print(sys.executable)"
+```
+
+## 2. Install Visual Studio Code
+
+Download:
+
+https://code.visualstudio.com/Download
+
+Install with the normal options for your operating system.
+
+Launch VS Code.
+
+## 3. Install the Python extension
+
+1. Open the Extensions view in VS Code.
+2. Search for **Python** published by Microsoft.
+3. Install it.
+4. Open the Command Palette.
+5. Run **Python: Select Interpreter**.
+6. Choose the Python 3.14 interpreter you verified above.
+
+## 4. Create your first Python program
+
+Create a new folder named `hello3371-python`.
+
+Open that folder in VS Code.
+
+Create `hello.py`:
+
+```python
+course = "RCET 3371"
+section = 2
+
+print(f"Hello, {course}!")
+print(f"2 + 3 = {2 + 3}")
+print(f"Section = {section}")
+```
+
+Run from the integrated terminal:
 
 Windows:
 
-    py --version
-    py -3.14 --version
+```text
+py -3.14 hello.py
+```
+
+or, when `python` resolves to the verified interpreter:
+
+```text
+python hello.py
+```
+
+Expected output matches the C# example:
+
+```text
+Hello, RCET 3371!
+2 + 3 = 5
+Section = 2
+```
+
+Compare the behavior first. Then compare the syntax.
+
+## 5. Use the debugger once
+
+1. Click beside a `print` line to create a breakpoint.
+2. Choose **Run and Debug**.
+3. Select Python if asked.
+4. Inspect `course` and `section`.
+5. Step over one statement.
+6. Stop.
+
+## 6. Create a virtual environment
+
+From the project folder:
+
+Windows:
+
+```text
+py -3.14 -m venv .venv
+.venv\Scripts\activate
+python -c "import sys; print(sys.executable)"
+```
+
+PowerShell may require:
+
+```text
+.\.venv\Scripts\Activate.ps1
+```
 
 Linux/macOS:
 
-    python3 --version
+```text
+python3 -m venv .venv
+source .venv/bin/activate
+python -c "import sys; print(sys.executable)"
+```
 
-Also check the interpreter path when environments are confusing:
+After activation, select the `.venv` interpreter in VS Code.
 
-    python3 -c "import sys; print(sys.executable)"
+## 7. Install a package later
 
-## Virtual environment
+When serial work begins:
 
-Create:
+```text
+python -m pip install pyserial
+```
 
-    python3 -m venv .venv
+Using `python -m pip` ties the package operation to the interpreter you are actually running.
 
-Activate according to OS/shell, then verify:
+## 8. Troubleshooting
 
-    python -c "import sys; print(sys.executable)"
+### `python` opens the wrong version
 
-Install required packages:
+Use `py -3.14` on Windows and inspect `sys.executable`.
 
-    python -m pip install pyserial
+### VS Code runs a different Python than the terminal
 
-Use the interpreter to invoke pip so the package is installed into the environment you are actually using.
+Run **Python: Select Interpreter** and choose the same interpreter/virtual environment.
 
-## Run a program
+### Module is installed but import fails
 
-    python program.py
+Run:
 
-## Debugging
+```text
+python -m pip --version
+python -c "import sys; print(sys.executable)"
+```
 
-Use the IDE/editor debugger when useful, but preserve a command-line run path.
-
-Also use deliberate prints/logs when they express domain evidence:
-
-- exact input;
-- state transition;
-- parsed record;
-- error context.
-
-Do not replace structured debugging with random print statements.
-
-## Modules
-
-Use modules to separate responsibilities.
-
-Keep executable startup behind:
-
-    if __name__ == "__main__":
-        main()
-
-when a file should also be importable for testing/reuse.
-
-## Testing
-
-The standard library unittest framework is sufficient for many course exercises. pytest may be used only when the assignment/environment explicitly adopts it.
+Confirm both point to the same environment.
 
 ## References
 
 - Python downloads: https://www.python.org/downloads/
-- Python tutorial: https://docs.python.org/3/tutorial/
+- Python on Windows: https://docs.python.org/3/using/windows.html
 - venv: https://docs.python.org/3/library/venv.html
-- unittest: https://docs.python.org/3/library/unittest.html
-- pySerial: https://pyserial.readthedocs.io/en/latest/
+- VS Code: https://code.visualstudio.com/
+- VS Code Python: https://code.visualstudio.com/docs/languages/python
