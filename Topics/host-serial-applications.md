@@ -149,9 +149,36 @@ A useful progression is:
 Changing the input source should not require rewriting the parser.
 
 
-### Example 1: Python port listing
+### Example 1: enumerate candidate ports in C# and Python
 
-pySerial supplies serial.tools.list_ports for discovery. Returned metadata varies by platform, so code should tolerate missing fields.
+C#:
+
+```csharp
+using System.IO.Ports;
+
+foreach (string portName in SerialPort.GetPortNames())
+{
+    Console.WriteLine(portName);
+}
+```
+
+Python:
+
+```python
+from serial.tools import list_ports
+
+for port in list_ports.comports():
+    print(
+        port.device,
+        port.vid,
+        port.pid,
+        port.serial_number
+    )
+```
+
+Both examples discover candidates. Neither proves the correct device is attached.
+
+Port ordering is not a device-identity contract, and USB metadata can be absent or platform-dependent. Discovery should feed an identity step, not replace it.
 
 ### Example 2: device identity
 
@@ -161,7 +188,41 @@ Candidate port opens successfully. Host sends ID request. Expected device respon
 
 Only then does the application mark the device READY.
 
-### Example 3: separation
+### Example 3: read bytes without assuming one read equals one message
+
+C# transport boundary:
+
+```csharp
+using System.IO.Ports;
+
+using SerialPort port = new(portName, 115200)
+{
+    ReadTimeout = 500
+};
+
+port.Open();
+
+byte[] buffer = new byte[64];
+int count = port.Read(buffer, 0, buffer.Length);
+
+parser.Feed(buffer.AsSpan(0, count));
+```
+
+Python transport boundary:
+
+```python
+import serial
+
+with serial.Serial(port_name, 115200, timeout=0.5) as port:
+    data = port.read(64)
+    parser.feed(data)
+```
+
+In both languages, the transport reports **the bytes received by that read**. The parser owns message boundaries. A valid frame may arrive across several reads, and several frames may be present in one receive buffer.
+
+Keep the parser independently testable with fixed byte arrays. A real serial port is only one source of bytes.
+
+### Example 4: separation
 
 Weak:
 
@@ -226,6 +287,14 @@ Explain:
 - why hardware comes after deterministic tests.
 
 ## 11. References
+
+- Microsoft, `SerialPort.GetPortNames` — https://learn.microsoft.com/en-us/dotnet/api/system.io.ports.serialport.getportnames
+  - Used for: enumerating host serial-port names.
+- Microsoft, `SerialPort` — https://learn.microsoft.com/en-us/dotnet/api/system.io.ports.serialport
+  - Used for: host serial-port lifecycle and byte-oriented I/O.
+- pySerial documentation, `serial.Serial` and `serial.tools.list_ports` — https://pyserial.readthedocs.io/en/latest/
+  - Used for: Python serial lifecycle, reads, and port discovery.
+
 
 - Microsoft Learn, SerialPort — https://learn.microsoft.com/en-us/dotnet/api/system.io.ports.serialport
 - pySerial API — https://pyserial.readthedocs.io/en/latest/pyserial_api.html
