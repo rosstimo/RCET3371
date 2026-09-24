@@ -2,20 +2,16 @@
 
 All graded programming and software-system work in RCET 3371 lives here.
 
-The course uses one **Programming Assignments** grade category worth 50% of the final course grade.
+Programming Assignments are **50% of the course grade**. Canvas category weighting determines the course contribution; points below determine relative weight inside this category.
 
-## Point structure
-
-The category contains 1000 internal points:
-
-| Programming Assignment | Points | Sections |
-| --- | ---: | --- |
-| [Foundations Readiness](FoundationsReadiness/) | 100 | 1–2 |
-| [Cross-Language Engineering Model](CrossLanguageEngineeringModel/) | 250 | 3–6 |
-| [Protocol Data Logger](ProtocolDataLogger/) | 200 | 7–9 |
-| [Event-Driven Device/Host Controller](EventDrivenDeviceHostController/) | 250 | 10–11 |
-| [Integration/Verification Portfolio](IntegrationVerificationPortfolio/) | 200 | 12–16 |
-| **Total** | **1000** | |
+| Programming Assignment | Sections | Points | Category share |
+| --- | --- | ---: | ---: |
+| [Foundations Readiness](FoundationsReadiness/) | 1–2 | 100 | 10% |
+| [Cross-Language Engineering Model](CrossLanguageEngineeringModel/) | 3–6 | 250 | 25% |
+| [Protocol Data Logger](ProtocolDataLogger/) | 7–9 | 250 | 25% |
+| [Event-Driven Device/Host Controller](EventDrivenDeviceHostController/) | 10–11 | 200 | 20% |
+| [Integration and Verification Portfolio](IntegrationVerificationPortfolio/) | 12–16 | 200 | 20% |
+| **Total** |  | **1000** | **100%** |
 
 A *project* is simply a larger, multi-section Programming Assignment. Projects do not use a separate top-level directory or grade category.
 

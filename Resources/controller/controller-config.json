@@ -1,8 +1,0 @@
-{
-  "targetC": 25.0,
-  "deadbandC": 1.0,
-  "minimumOutputHoldSeconds": 5.0,
-  "sampleStaleTimeoutSeconds": 3.0,
-  "sensorMinimumC": -40.0,
-  "sensorMaximumC": 125.0
-}

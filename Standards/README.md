@@ -1,5 +1,10 @@
 # RCET 3371 Standards
 
-This directory contains the durable rules students are expected to follow when writing, documenting, testing, and submitting RCET 3371 work.
+These are the durable rules students are expected to follow unless a Programming Assignment explicitly overrides them.
 
-Assignment-specific instructions may override a general standard when the assignment states the override explicitly.
+- [Coding style](coding-style.md)
+- [Repository and submission](repository-and-submission.md)
+- [Documentation](documentation.md)
+- [Verification evidence](verification-evidence.md)
+
+Assignment-specific instructions may override a general standard only within the stated assignment scope.
