@@ -130,6 +130,25 @@ Do not catch every exception merely to hide it.
 
 ## 6. Worked examples
 
+### Bridge example: grow one file write into a record contract
+
+Start with familiar output:
+
+```csharp
+File.AppendAllText("log.txt", "21.5\n");
+```
+
+Then make one record slightly more useful:
+
+```text
+2026-09-24T10:00:00,21.5,OK
+```
+
+Write three records. Reopen the file. Split and parse them back. Verify the reconstructed values match what was written.
+
+Only after that round trip works should you add configuration files, log rotation, corrupt-record recovery, or richer serialization. The first new idea is simply that a file format is a contract between the writer and the future reader.
+
+
 ### Example 1: structured CSV contract
 
 Header:
