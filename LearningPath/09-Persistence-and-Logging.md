@@ -14,7 +14,8 @@ You should be able to:
 
 ## Learn
 
-- [Persistence, logging, and configuration](../Topics/persistence-logging-configuration-and-error-handling.md)
+- [Persistence, logging, and configuration](../Topics/persistence-file-contracts.md)
+- [Logging and replay](../Topics/logging-replay.md)
 
 ## Practice
 

@@ -14,7 +14,8 @@ You should be able to:
 
 ## Learn
 
-- [UI and visualization](../Topics/ui-and-visualization.md)
+- [UI and visualization](../Topics/ui-architecture-retained-state.md)
+- [Engineering visualization](../Topics/engineering-visualization.md)
 
 ## Practice
 

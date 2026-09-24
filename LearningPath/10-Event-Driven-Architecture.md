@@ -14,7 +14,9 @@ You should be able to:
 
 ## Learn
 
-- [Event-driven architecture](../Topics/event-driven-device-host-architecture.md)
+- [Event-driven architecture](../Topics/state-machines-event-models.md)
+- [Timing and nonblocking behavior](../Topics/timing-nonblocking-behavior.md)
+- [Hysteresis, interlocks, and fault handling](../Topics/hysteresis-interlocks-fault-handling.md)
 - [State and timing quick reference](../References/state-and-timing-reference.md)
 
 ## Practice

@@ -265,39 +265,7 @@ A C# program may build perfectly and then fail at runtime because it tries to op
 
 That is not a compiler error.
 
-## 8. Familiar Windows Forms event
-
-Start with ordinary RCET 2265 event handling.
-
-Form field:
-
-```csharp
-private int count = 0;
-```
-
-Button handler:
-
-```csharp
-private void countButton_Click(object sender, EventArgs e)
-{
-    count++;
-    countLabel.Text = count.ToString();
-}
-```
-
-Trace three clicks:
-
-| Event | count before | count after | label |
-| --- | ---: | ---: | --- |
-| click 1 | 0 | 1 | 1 |
-| click 2 | 1 | 2 | 2 |
-| click 3 | 2 | 3 | 3 |
-
-That is enough event-driven architecture for this section.
-
-Custom Paint events, redraw behavior, larger application state models, and concurrency arrive later.
-
-## 9. Troubleshooting sequence
+## 8. Troubleshooting sequence
 
 When a new environment fails:
 
@@ -310,7 +278,7 @@ When a new environment fails:
 
 Do not begin by reinstalling every tool.
 
-## 10. Practice
+## 9. Practice
 
 1. In the C# and Python examples, which parts of the algorithm stayed the same?
 2. Why does the XC8 example not print `5` to a terminal?
@@ -320,7 +288,7 @@ Do not begin by reinstalling every tool.
 6. Why is the PIC16F883 device selection part of the build?
 7. In the WinForms counter, why must `count` live outside the Click handler if it must remember prior clicks?
 
-## 11. Answer reasoning
+## 10. Answer reasoning
 
 1. Inputs, addition, function/method call, returned result, and stored answer are conceptually the same.
 2. A bare microcontroller does not provide the host console used by desktop applications.
@@ -330,7 +298,7 @@ Do not begin by reinstalling every tool.
 6. The compiler/assembler/linker must generate code and memory placement appropriate to the actual processor.
 7. A local variable created inside the handler would be recreated on each call. The form field survives between Click events.
 
-## 12. Ready to continue when
+## 11. Ready to continue when
 
 Without notes, explain:
 
@@ -341,7 +309,7 @@ Without notes, explain:
 - target versus programmer;
 - what successful first-build evidence means.
 
-## 13. References
+## 12. References
 
 - [Complete course setup](../Guides/Toolchains/README.md)
 - [C#/.NET setup](../Guides/Toolchains/csharp-dotnet.md)
