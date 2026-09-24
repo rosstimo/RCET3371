@@ -124,6 +124,28 @@ Useful engineering UI state can include:
 
 ## 6. Worked examples
 
+### Bridge example: move from a Label value to one plotted point
+
+Start with a value you already know how to display:
+
+```text
+sample = 2.5 V
+range  = 0.0 V to 5.0 V
+```
+
+Normalize it:
+
+```text
+normalized = (2.5 - 0.0) / (5.0 - 0.0) = 0.5
+```
+
+If the graph area is 200 pixels high, that value is halfway through the available range.
+
+Work one point by hand before writing a plotting loop. Verify the top/bottom coordinate direction in the UI framework. Then plot two points, then a collection.
+
+The graph is a presentation of model data. The pixels are not the only copy of the measurement.
+
+
 ### Example 1: resize-safe plot
 
 Store:
