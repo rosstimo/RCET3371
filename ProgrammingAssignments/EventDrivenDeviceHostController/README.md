@@ -1,6 +1,6 @@
 # Event-Driven Device/Host Controller
 
-**Programming Assignments category value: 300 points out of 1000**
+**Programming Assignments category value: 200 points out of 1000**
 
 Sections: 10–11
 
