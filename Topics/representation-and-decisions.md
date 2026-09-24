@@ -156,6 +156,73 @@ Notice the lower nibble stayed `0101`.
 
 That preservation is the reason for the masks.
 
+### The same grab-modify-put-back operation in embedded C
+
+On the PIC side, the intended width should be explicit:
+
+```c
+#include <stdint.h>
+
+uint8_t state = 0xA5u;
+
+uint8_t count = (uint8_t)((state & 0xF0u) >> 4);  // grab
+count = (uint8_t)((count + 1u) & 0x0Fu);          // modify
+state = (uint8_t)((state & 0x0Fu) | (count << 4)); // put back
+```
+
+Expected result:
+
+```text
+before: 0xA5 = 1010 0101
+count:  0x0A
++1:     0x0B
+after:  0xB5 = 1011 0101
+```
+
+The algorithm is the same as C#. The important C difference is that `uint8_t` states the intended 8-bit storage width directly.
+
+### The same operation in PIC16F883 pic-as
+
+Use the same input and expected result. The code below uses common RAM so the example can stay focused on representation rather than banking.
+
+```assembly
+state_value     EQU 0x70
+count_value     EQU 0x71
+new_upper       EQU 0x72
+
+    movlw   0xA5
+    movwf   state_value
+
+    ; grab upper nibble: 0xA5 -> 0x0A
+    swapf   state_value,w
+    andlw   0x0F
+    movwf   count_value
+
+    ; modify within four bits: 0x0A -> 0x0B
+    incf    count_value,f
+    movlw   0x0F
+    andwf   count_value,f
+
+    ; prepare 0xB0
+    swapf   count_value,w
+    andlw   0xF0
+    movwf   new_upper
+
+    ; preserve lower nibble and put the new upper nibble back
+    movlw   0x0F
+    andwf   state_value,f
+    movf    new_upper,w
+    iorwf   state_value,f
+```
+
+Final `state_value`:
+
+```text
+0xB5 = 1011 0101
+```
+
+In assembly, the masks are not hidden inside a typed expression. You can see the byte being transformed one instruction at a time. Some instructions in this sequence also affect CPU `STATUS` flags; that is separate from preserving the lower-nibble application flags stored in `state_value`.
+
 ## 7. Try the same bounded operation in Python
 
 ```python
@@ -212,7 +279,39 @@ If an operation is supposed to behave like an 8-bit register, test boundary valu
 - 254;
 - 255.
 
-C#, C, Python, and assembly do not all expose overflow in exactly the same way. The course will compare those differences after the intended width is clear.
+C#, C, Python, and assembly do not all expose overflow in exactly the same way.
+
+Use the same boundary case in several environments:
+
+```text
+start = 255
+add 1
+```
+
+Python's ordinary integer grows to `256`.
+
+For an explicitly 8-bit unsigned C value:
+
+```c
+uint8_t value = 255u;
+value = (uint8_t)(value + 1u);
+```
+
+the stored result becomes `0`.
+
+On the PIC16F883:
+
+```assembly
+value           EQU 0x70
+
+    movlw   255
+    movwf   value
+    incf    value,f
+```
+
+the 8-bit file register also returns to `0x00`. The instruction's documented status-flag effects are part of the processor behavior and should be checked whenever those flags matter to surrounding code.
+
+The lesson is not "all languages overflow the same way." The lesson is to state the required width first, then verify how the chosen language or processor realizes that width.
 
 ## 10. Engineering display versus stored value
 
@@ -238,8 +337,10 @@ Formatting the display should not destroy the extra internal precision unless th
 4. Extract bits 6:4 from `1101 1010`.
 5. Increment the upper nibble of `1111 0011` modulo 16 while preserving the lower nibble.
 6. Reconstruct `0xBE` high and `0xEF` low into a 16-bit value.
-7. Why does Python sometimes need an explicit mask when imitating an 8-bit target?
-8. Why should formatting generally happen after calculation?
+7. Translate the upper-nibble grab-modify-put-back operation into embedded C and predict the final byte before running it.
+8. In the pic-as example, which instructions preserve the lower nibble by masking and recombining the byte?
+9. Why does Python sometimes need an explicit mask when imitating an 8-bit target?
+10. Why should formatting generally happen after calculation?
 
 ## 12. Answer reasoning
 
@@ -249,8 +350,10 @@ Formatting the display should not destroy the extra internal precision unless th
 4. `101` = 5.
 5. Upper nibble 15 increments to 0; result `0000 0011`.
 6. `0xBEEF`.
-7. Ordinary Python integers can grow beyond the intended hardware width.
-8. Early rounding discards information that later calculations may need.
+7. The embedded C version should produce `0xB5`; the same masks preserve the lower nibble while the upper field changes from `0xA` to `0xB`.
+8. `andwf state_value,f` with `0x0F` clears the old upper nibble while retaining the lower nibble; `iorwf state_value,f` combines the prepared upper nibble with those preserved lower bits.
+9. Ordinary Python integers can grow beyond the intended hardware width.
+10. Early rounding discards information that later calculations may need.
 
 ## 13. Ready to continue when
 
@@ -270,3 +373,8 @@ Explain and demonstrate:
 - C# integral types: https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/integral-numeric-types
 - C# bitwise operators: https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/bitwise-and-shift-operators
 - Python numeric types: https://docs.python.org/3/library/stdtypes.html#numeric-types-int-float-complex
+- Microchip Technology Inc., *PIC16F882/883/884/886/887 Data Sheet*, DS40001291, Section 15 "Instruction Set Summary" — https://www.microchip.com/en-us/product/PIC16F883
+  - Used for: PIC16F883 byte-oriented, bit-oriented, literal, and status-flag behavior.
+- Microchip Technology Inc., *MPLAB XC8 PIC Assembler User's Guide* — https://onlinedocs.microchip.com/oxy/GUID-4DC87671-9D8E-428A-ADFE-98D694F9F089/
+  - Used for: current `pic-as` assembler/tool syntax and build model.
+- [RCET C# / Python / Embedded C / PIC Assembly comparison](../References/csharp-python-c-picas-comparison.md)
