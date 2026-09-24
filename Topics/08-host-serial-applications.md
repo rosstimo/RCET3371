@@ -123,6 +123,32 @@ The fake can:
 
 ## 6. Worked examples
 
+### Bridge example: replace a familiar file source with a byte source
+
+RCET 2265 file code often had this shape:
+
+```text
+read line -> parse -> update program
+```
+
+A host serial application can be introduced with the same separation:
+
+```text
+read bytes -> buffer/frame -> parse -> update program
+```
+
+Keep the parser callable with fixed test bytes before connecting a real serial port.
+
+A useful progression is:
+
+1. feed the parser one hard-coded valid frame;
+2. feed the same frame from a captured binary/text fixture;
+3. prove malformed input is rejected;
+4. only then replace the fixture with `SerialPort` or pySerial.
+
+Changing the input source should not require rewriting the parser.
+
+
 ### Example 1: Python port listing
 
 pySerial supplies serial.tools.list_ports for discovery. Returned metadata varies by platform, so code should tolerate missing fields.
