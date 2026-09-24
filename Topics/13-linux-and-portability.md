@@ -156,6 +156,40 @@ Use language path APIs rather than manual separators when practical.
 
 ## 6. Worked examples
 
+### Bridge example: run the same known program somewhere else
+
+Take the C# or Python Hello World from Section 2. Do not rewrite it.
+
+On Linux, start with:
+
+```text
+pwd
+ls
+dotnet run
+```
+
+or:
+
+```text
+pwd
+ls
+python3 hello.py
+```
+
+If it runs, the program logic did not change.
+
+Now identify what changed around it:
+
+- path syntax;
+- executable discovery through `PATH`;
+- file permissions;
+- shell commands;
+- device filenames;
+- case sensitivity where relevant.
+
+Portability becomes easier to reason about when the program is already known-good on another system.
+
+
 ### Example 1: working-directory bug
 
 Program expects:
