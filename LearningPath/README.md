@@ -1,27 +1,34 @@
 # RCET 3371 Learning Path
 
-This is the ordered route through RCET 3371.
+This is the ordered student route through RCET 3371.
 
-Sections are **learning units, not calendar weeks**. In an instructor-led course, several sections may fit in one week or a section may take several weeks. A self-directed learner follows the same order at an appropriate pace.
+RCET 3371 begins from the programming level established in RCET 2265. You are expected to know basic C# syntax, variables, conditionals, loops, methods, ordinary classes, arrays/lists, files, debugging, and basic Windows Forms events. You are **not** expected to begin this course already knowing Python, embedded C, PIC assembly, interfaces, protocol architecture, concurrency, or larger software design.
 
-For each section:
+Sections are learning units, not calendar weeks.
 
-1. read the section route;
-2. complete the linked topic/guide material;
-3. run or trace the linked examples;
-4. complete Predict / Translate / Repair / Build practice;
-5. complete the indicated Programming Assignment work;
-6. use the practice quiz before the graded assessment;
-7. continue only when you can explain the section's retrieval targets without notes.
+## How to work through a section
+
+New material follows the same progression whenever possible:
+
+1. **Reconnect** to a familiar RCET 2265 idea.
+2. **Run or trace a complete example** before changing it.
+3. **Change one thing** and predict the result.
+4. **Name the new concept** after you have seen the behavior.
+5. **Compare** the same idea in another language or environment.
+6. **Practice with support**, then solve a similar problem independently.
+7. Complete the indicated Programming Assignment work.
+8. Use the practice quiz before the graded assessment.
+
+Do not skip directly to independent Build tasks if the worked examples are still unclear. The examples are part of the learning path, not optional decoration.
 
 ## Sections
 
-1. [Git and Project Organization](01-Git-and-Project-Organization.md)
-2. [Toolchains, Recovery, and Desktop Events](02-Toolchains-Recovery-and-Desktop-Events.md)
-3. [Representation and Decisions](03-Representation-and-Decisions.md)
-4. [Program Structure and Interfaces](04-Program-Structure-and-Interfaces.md)
-5. [Collections, Memory, Parsing, and Debugging](05-Collections-Memory-Parsing-and-Debugging.md)
-6. [Embedded C and Software State](06-Embedded-C-and-Software-State.md)
+1. [Git and Project Organization](01-Git-and-Project-Organization.md) - refresh the Git workflow already used in RCET 2265 and make repository state visible.
+2. [Toolchains and First Cross-Language Programs](02-Toolchains-Recovery-and-Desktop-Events.md) - install/verify every required tool and get a first small program running.
+3. [Representation and Decisions](03-Representation-and-Decisions.md) - begin in familiar C#, then compare representation in Python, C, and assembly.
+4. [From Methods and Classes to Program Structure](04-Program-Structure-and-Interfaces.md) - grow familiar methods/classes into multi-file programs and modules.
+5. [Collections, Parsing, and Debugging](05-Collections-Memory-Parsing-and-Debugging.md) - start with arrays/lists and files before introducing queues and bounded buffers.
+6. [Embedded C from Familiar Program Logic](06-Embedded-C-and-Software-State.md) - translate known algorithms into XC8 C before adding embedded-specific ideas.
 7. [Protocol Design](07-Protocol-Design.md)
 8. [Host Serial Applications](08-Host-Serial-Applications.md)
 9. [Persistence and Logging](09-Persistence-and-Logging.md)
@@ -39,5 +46,5 @@ All graded programming work lives under [Programming Assignments](../Programming
 
 The course uses two grade categories:
 
-- Programming Assignments — 50%
-- Quizzes and Assessments — 50%
+- Programming Assignments: 50%
+- Quizzes and Assessments: 50%
