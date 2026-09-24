@@ -1,15 +1,16 @@
 # RCET 3371 Resources
 
-Supporting files used by topics, examples, and Programming Assignments.
+Student-supplied data and assets used by durable course material.
 
-## Protocol vectors
+## Protocol and data
 
 - [Cross-language status/measurement vectors](protocol-vectors/status-measurement-vectors.csv)
+- [RCET Telemetry Protocol v1 vectors](protocol-vectors/rcet-telemetry-protocol-v1.txt)
+- [Captured telemetry byte stream](captured-streams/telemetry-protocol-capture.txt)
+- [Sample telemetry CSV](datasets/sample-telemetry.csv)
 
-## Captured streams
+## Controller
 
-- [Valid protocol stream](captured-streams/valid-stream.hex)
-- [Chunking stream](captured-streams/chunking-stream.hex)
-- [Malformed/recovery stream](captured-streams/malformed-stream.hex)
+- [Default controller configuration](controller/controller-config.json)
 
-Resources are supporting data/assets rather than the primary instruction. Read the owning Programming Assignment before using a vector or capture.
+Resources support Topics, Examples, and Programming Assignments. Primary instructions belong in those semantic collections rather than here.
