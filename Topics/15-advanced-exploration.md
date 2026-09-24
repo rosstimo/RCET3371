@@ -119,6 +119,28 @@ The goal is explanation, not premature optimization.
 
 ## 6. Worked examples
 
+### Bridge example: advanced means one justified extension
+
+Choose a program that already works. Add **one** advanced capability while preserving its existing behavior.
+
+Examples:
+
+- add one automated regression test to a parser;
+- make one blocking I/O operation asynchronous;
+- serialize one known object to JSON;
+- add CI that runs an existing build/test command.
+
+For the first experiment, do not combine async, networking, packaging, and CI.
+
+A strong exploration answers:
+
+1. What problem am I trying to solve?
+2. What existing behavior must remain unchanged?
+3. What is the smallest new feature that demonstrates the idea?
+4. How will I prove it worked?
+5. What complexity did the new technique add?
+
+
 ### Example 1: regression test
 
 A parser once accepted payload length 255 even though maximum is 32.
