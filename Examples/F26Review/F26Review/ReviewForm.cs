@@ -9,7 +9,12 @@ namespace F26Review
 
         void DrawLine()
         {
-            MessageBox.Show("ima draw line now!");
+            Graphics g = DrawPictureBox.CreateGraphics();
+            Pen thePen = new Pen(Color.Black);
+            g.DrawLine(thePen, 0, 0, 100, 100);
+            
+            thePen.Dispose();
+            g.Dispose();
         }
 
         // Event Handlers below here ****************************************** 
