@@ -145,6 +145,67 @@ Work one point by hand before writing a plotting loop. Verify the top/bottom coo
 
 The graph is a presentation of model data. The pixels are not the only copy of the measurement.
 
+### A minimal retained-state WinForms example
+
+Keep the samples as data owned by the form/model:
+
+```csharp
+private readonly List<double> samples = new()
+{
+    1.0,
+    2.5,
+    4.0
+};
+```
+
+Then derive pixels during `Paint`:
+
+```csharp
+private void plotPanel_Paint(object sender, PaintEventArgs e)
+{
+    if (samples.Count < 2)
+    {
+        return;
+    }
+
+    Rectangle area = plotPanel.ClientRectangle;
+
+    PointF ToPoint(int index, double value)
+    {
+        float x = samples.Count == 1
+            ? area.Left
+            : area.Left +
+              (float)index / (samples.Count - 1) * area.Width;
+
+        double normalized = value / 5.0;
+
+        float y = area.Bottom -
+                  (float)normalized * area.Height;
+
+        return new PointF(x, y);
+    }
+
+    for (int i = 1; i < samples.Count; i++)
+    {
+        PointF first = ToPoint(i - 1, samples[i - 1]);
+        PointF second = ToPoint(i, samples[i]);
+
+        e.Graphics.DrawLine(Pens.Black, first, second);
+    }
+}
+```
+
+When the control resizes, the same `samples` collection is transformed again using the new `ClientRectangle`. No previously drawn pixel is treated as the source of truth.
+
+When new data arrives:
+
+```csharp
+samples.Add(newValue);
+plotPanel.Invalidate();
+```
+
+`Invalidate()` requests another repaint. It does not replace the retained model.
+
 
 ### Example 1: resize-safe plot
 
