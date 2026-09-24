@@ -108,6 +108,21 @@ Example:
 
 ## 6. Worked examples
 
+### Bridge example: integrate three pieces that already work
+
+Do not begin integration with the complete device/host system.
+
+Use three known pieces:
+
+1. fixed captured bytes;
+2. a parser already proven against those bytes;
+3. a logger already proven with constructed records.
+
+Connect fixed bytes -> parser first and verify the parsed object. Then connect parser -> logger and verify the saved record. Only after the software chain works should a live transport replace the fixed capture.
+
+If the full system fails later, this staged build gives you known-good boundaries to test instead of one large unknown.
+
+
 ### Example 1: parser before hardware
 
 Protocol parser tests use fixed byte streams.
