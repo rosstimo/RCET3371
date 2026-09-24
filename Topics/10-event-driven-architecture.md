@@ -122,6 +122,39 @@ Introduce a clock/time boundary so tests can advance time deliberately:
 
 ## 6. Worked examples
 
+### Bridge example: from a button click to explicit state
+
+A familiar Windows Forms handler might be:
+
+```csharp
+private int count = 0;
+
+private void addButton_Click(object sender, EventArgs e)
+{
+    count++;
+    countLabel.Text = count.ToString();
+}
+```
+
+This already contains three useful ideas:
+
+- an event occurs;
+- persistent state changes;
+- the presentation is updated.
+
+The next step is not a large architecture. Add one second event, such as a timer tick, and write down which event is allowed to change which state.
+
+For example:
+
+```text
+Button Click -> request RUNNING
+Timer Tick   -> advance elapsed time
+Stop Click   -> request IDLE
+```
+
+Trace those transitions on paper before implementing a formal state machine.
+
+
 ### Example 1: timer reset ambiguity
 
 Requirement: "turn off five seconds after motion."
