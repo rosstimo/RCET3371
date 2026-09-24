@@ -1,211 +1,291 @@
-# RCET 3371 — Program Structure and Interfaces
+# RCET 3371 - From Methods and Classes to Program Structure
 
 *Self-learning guide*
 
 [Topics index](README.md) · [Learning Path Section 4](../LearningPath/04-Program-Structure-and-Interfaces.md)
 
-## Contents
+## 1. Start with what you already know
 
-1. Why this matters
-2. Outcomes
-3. Prerequisites
-4. Core model
-5. Structure across languages
-6. Worked examples
-7. Apply, verify, and troubleshoot
-8. Practice
-9. Answer key
-10. Explain without notes
-11. References
+RCET 2265 introduced methods, parameters, return values, scope, classes, properties, constructors, and multiple source files.
 
-## 1. Why this matters
+RCET 3371 does not replace those ideas. It asks you to use them more deliberately, then recognize their equivalents in other languages.
 
-Programs become difficult not because they contain many lines, but because responsibilities and contracts become unclear. Multi-language engineering makes this visible: syntax changes, but decomposition, state ownership, inputs, outputs, and invariants remain.
+The progression is:
+
+```text
+one familiar C# program
+        ↓
+small methods with clear jobs
+        ↓
+classes/files with clear jobs
+        ↓
+same small logic in Python and C
+        ↓
+modules/interfaces when they solve a real problem
+```
 
 ## 2. Outcomes
 
 You should be able to:
 
-- compare loops and control flow across C#, Python, C, and assembly;
-- define function/method/subroutine inputs, outputs, side effects, and state;
-- reason about scope and lifetime;
-- choose local state versus retained object/module/static state deliberately;
-- use classes/records/structures as data models;
-- use interfaces or module boundaries to decouple a caller from an implementation;
-- split a program into files based on responsibility;
-- explain CALL/RETURN and stack use conceptually.
+- describe a method by its inputs, output, and side effects;
+- distinguish local state from data that must survive after a method returns;
+- split a small C# program into files by responsibility;
+- translate a small, already-tested method into Python and C;
+- explain a Python module and a C header/source pair at a practical level;
+- trace call and return behavior;
+- recognize why an interface can be useful without being expected to design a large interface architecture immediately.
 
-## 3. Prerequisites
+## 3. Worked example: begin in one C# file
 
-Basic methods/functions, loops, classes, and conditionals from RCET 2265 plus Section 3 representation.
+Suppose the entire program starts like this:
 
-## 4. Core model
+```csharp
+double voltage = 2.4;
+double current = 0.015;
 
-Before syntax, write the contract:
+double power = voltage * current;
 
-**Name:** DecodeStatus  
-**Input:** one byte  
-**Output:** structured flags/count  
-**Side effects:** none  
-**Errors:** none; every byte is valid  
-**State retained between calls:** none
+Console.WriteLine($"Power = {power:F3} W");
+```
 
-That contract can be implemented in multiple languages.
+It works, but there is no reusable calculation.
 
-A good module boundary answers:
+### Step 1: extract a familiar method
 
-- what does this component own?
-- what does it accept?
-- what does it return or publish?
-- what state persists?
-- what is hidden?
-- how can it be tested independently?
+```csharp
+double voltage = 2.4;
+double current = 0.015;
 
-## 5. Structure across languages
+double power = CalculatePower(voltage, current);
 
-### Loops
+Console.WriteLine($"Power = {power:F3} W");
 
-Different languages provide different syntax, but the algorithm still has:
+static double CalculatePower(double voltage, double current)
+{
+    return voltage * current;
+}
+```
 
-- initialization;
-- continuation condition;
-- state update;
-- loop body;
-- termination/progress argument.
+Write the contract in plain language:
 
-### Functions and methods
+- inputs: voltage and current;
+- output: calculated power;
+- side effects: none;
+- retained state: none.
 
-Prefer explicit inputs/outputs over hidden global coupling.
+That is not advanced architecture. It is a precise description of a method you already know how to write.
 
-In C#:
+## 4. Add a simple class only when it helps
 
-    static int Clamp(int value, int min, int max) { ... }
+Now suppose each measurement belongs together.
 
-In Python:
+```csharp
+Measurement sample = new(2.4, 0.015);
 
-    def clamp(value, minimum, maximum):
-        ...
+Console.WriteLine($"Power = {sample.Power:F3} W");
 
-In C:
+class Measurement
+{
+    public double Voltage { get; }
+    public double Current { get; }
 
-    int16_t clamp_i16(int16_t value, int16_t min, int16_t max);
+    public double Power => Voltage * Current;
 
-Assembly typically uses a documented register/memory convention rather than a language-enforced signature.
+    public Measurement(double voltage, double current)
+    {
+        Voltage = voltage;
+        Current = current;
+    }
+}
+```
 
-### Scope and lifetime
+The class groups related data and behavior.
 
-**Scope** asks where a name is visible.  
-**Lifetime** asks how long the associated object/storage exists.
+A reasonable next step is to move `Measurement` to `Measurement.cs`. The behavior does not change just because the source is in a second file.
 
-A local variable can disappear after a call. Application state that must survive events needs a longer lifetime.
+## 5. Split by responsibility, not file length
 
-### Interfaces and boundaries
+Imagine a program that reads measurements from text and prints a report.
 
-An interface/abstract boundary is useful when the caller should depend on behavior rather than one device.
+A beginner version might put everything in `Program.cs`.
 
-For example:
+A clearer next version could be:
 
-    IDeviceTransport
-      Read()
-      Write()
-      IsConnected
+```text
+Program.cs       startup and overall flow
+Measurement.cs   data model
+Parser.cs        text -> Measurement
+Statistics.cs    calculations across measurements
+```
 
-A fake implementation can then be used for tests while a serial implementation talks to hardware.
+Each file has a reason to exist.
 
-### Multi-file design
+Do not create ten files just because "advanced programs use many files."
 
-Split because responsibilities differ, not merely because a file is long.
+## 6. Translate a known method to Python
 
-Example:
+C#:
 
-    Packet.cs          data model
-    PacketParser.cs    parse/validate
-    SerialTransport.cs transport
-    Program.cs         composition/startup
+```csharp
+static double CalculatePower(double voltage, double current)
+{
+    return voltage * current;
+}
+```
 
-## 6. Worked examples
+Python:
 
-### Example 1: hidden state defect
+```python
+def calculate_power(voltage, current):
+    return voltage * current
+```
 
-A method uses a static variable to count calls even though the specification says each call must be independent.
+Before discussing Python modules, prove the function behaves the same:
 
-The syntax may be valid, but the contract is violated because state persists unexpectedly.
+```python
+print(calculate_power(2.4, 0.015))
+```
 
-### Example 2: translation
+Expected result is approximately `0.036`.
 
-Algorithm:
+## 7. Translate the same method to C
 
-1. inspect lower four bits;
-2. count set bits;
-3. return count.
+```c
+double calculate_power(double voltage, double current)
+{
+    return voltage * current;
+}
+```
 
-C#, Python, C, and assembly can implement different loop syntax while preserving the same input/output contract and test vectors.
+Again, the algorithm and contract stayed nearly identical.
 
-### Example 3: interface benefit
+Now new C concepts can be introduced one at a time.
 
-A logger depends directly on SerialPort everywhere. Testing requires hardware.
+## 8. Header/source pair
 
-Refactor so the logger depends on a byte-stream/device interface. Then:
+After a one-file C program works, split it.
 
-- FakeTransport feeds fixed data in tests.
-- SerialTransport wraps the real port.
-- logger logic does not change.
+`power.h`:
 
-## 7. Apply, verify, and troubleshoot
+```c
+#ifndef POWER_H
+#define POWER_H
 
-When a program grows:
+double calculate_power(double voltage, double current);
 
-1. write responsibilities;
-2. write contracts;
-3. identify state owners;
-4. identify external dependencies;
-5. separate pure logic from I/O;
-6. create tests around boundaries;
-7. split files only after the responsibilities are clear.
+#endif
+```
 
-Debug hidden-state problems by asking:
+`power.c`:
 
-- who can modify this value?
-- how long does it live?
-- is it reset when expected?
-- can two callbacks touch it?
-- can a test construct a known initial state?
+```c
+#include "power.h"
 
-## 8. Practice
+double calculate_power(double voltage, double current)
+{
+    return voltage * current;
+}
+```
 
-1. What is the difference between scope and lifetime?
-2. A parser reads directly from a serial port and updates labels in the same method. Name at least three responsibilities mixed together.
-3. Why is a fake transport useful?
-4. When translating a loop to assembly, which conceptual elements must remain even though syntax changes?
-5. A helper function changes a global variable that is not mentioned in its name or documentation. What contract problem does this create?
-6. Propose a four-file split for a program that reads a CSV, parses measurements, computes statistics, and prints a report.
+The header tells callers what is available. The source contains the implementation.
 
-## 9. Answer key
+Do not start with the words "translation unit" and "external symbol." First build the two-file example. Then those terms have something concrete to describe.
 
-1. Scope controls name visibility; lifetime controls how long storage/object state exists.
-2. Transport/I/O, parsing/domain logic, and presentation. It may also mix connection lifecycle.
-3. It makes behavior deterministic and testable without the physical device.
-4. Initialization, continuation/termination condition, state update, body, and branch/control flow.
-5. A hidden side effect and hidden dependency make behavior harder to reason about and test.
-6. One valid split: Record model, CsvParser, Statistics, Program/Report. Other designs are valid if responsibilities and contracts are explicit.
+## 9. Scope and lifetime from a familiar example
 
-## 10. Explain without notes
+This variable is local:
 
-Explain:
+```csharp
+static int AddOne(int value)
+{
+    int result = value + 1;
+    return result;
+}
+```
 
-- contract before syntax;
-- inputs/outputs/side effects/state;
-- scope versus lifetime;
-- retained state;
-- interface as a dependency boundary;
-- responsibility-based file splitting;
-- why translation is not line-by-line copying.
+`result` is available only inside the method and is no longer needed after the method returns.
 
-## 11. References
+This form field must survive between events:
 
-- Microsoft Learn, C# methods — https://learn.microsoft.com/en-us/dotnet/csharp/methods
-- Microsoft Learn, interfaces — https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/types/interfaces
-- Python Software Foundation, defining functions — https://docs.python.org/3/tutorial/controlflow.html#defining-functions
-- Python Software Foundation, modules — https://docs.python.org/3/tutorial/modules.html
-- Python Software Foundation, classes — https://docs.python.org/3/tutorial/classes.html
-- Microchip, MPLAB XC8 compiler documentation — https://www.microchip.com/en-us/tools-resources/develop/mplab-xc-compilers/xc8
+```csharp
+private int count = 0;
+```
+
+**Scope** asks where the name can be used.
+
+**Lifetime** asks how long the data/storage remains relevant/alive.
+
+## 10. Interface as a later tool
+
+RCET 2265 intentionally did not require interfaces as an application-design tool. This course introduces them after ordinary classes and method boundaries make sense.
+
+Suppose code initially depends directly on one class:
+
+```csharp
+SerialDevice device = new();
+```
+
+Later, you may want the same program logic to work with:
+
+- the real serial device;
+- a simulated device used for tests.
+
+An interface can describe the small behavior both provide:
+
+```csharp
+interface IDevice
+{
+    string Read();
+}
+```
+
+At this stage, the important idea is simply:
+
+> The caller can depend on a small behavior contract instead of one concrete device.
+
+You are not expected to build a dependency-injection framework.
+
+## 11. Call and return near the processor
+
+A C#, Python, or C function call looks high-level. A processor still has to:
+
+1. remember where execution should return;
+2. transfer control to the called routine;
+3. operate on data;
+4. return to the caller.
+
+PIC assembly makes those steps more visible with `call` and `return`.
+
+Use tiny subroutines first. Stack-depth analysis comes when nested calls make it relevant.
+
+## 12. Practice
+
+1. For `CalculatePower`, identify input, output, side effect, and retained state.
+2. Move `Measurement` to its own C# file. What behavior should change?
+3. Translate `CalculatePower` to Python and C.
+4. Why should a header/source split usually follow a working one-file example for a beginner?
+5. Is a four-line file automatically evidence of good design? Why or why not?
+6. Give one reason an interface might become useful later.
+7. Explain scope versus lifetime using the Click-counter example.
+
+## 13. Answer reasoning
+
+1. Inputs: voltage/current. Output: power. Side effects: none. Retained state: none.
+2. None, assuming the class remains part of the same project/namespace setup.
+3. Syntax changes, but multiply two inputs and return the result remains the contract.
+4. It separates learning the algorithm from learning the build/module structure.
+5. No. Files should separate meaningful responsibilities, not satisfy a line-count rule.
+6. It can let the same caller work with a real and simulated implementation.
+7. A local handler variable is scoped to the method and recreated per call; a form field can remain available across events.
+
+## 14. Ready to continue when
+
+Explain without notes:
+
+- method contract;
+- local versus retained state;
+- why multiple files exist;
+- Python module/C header-source purpose at a practical level;
+- why interfaces are introduced only after ordinary class boundaries make sense;
+- why translation is about preserving behavior, not copying punctuation.
