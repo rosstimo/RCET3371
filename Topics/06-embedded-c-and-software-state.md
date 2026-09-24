@@ -1,237 +1,350 @@
-# RCET 3371 — Embedded C and Software State
+# RCET 3371 - Embedded C from Familiar Program Logic
 
 *Self-learning guide*
 
-[Topics index](README.md) · [Learning Path Section 6](../LearningPath/06-Embedded-C-and-Software-State.md)
+[Topics index](README.md) · [Learning Path Section 6](../LearningPath/06-Embedded-C-and-Software-State.md) · [XC8 setup](../Guides/Toolchains/xc8.md)
 
-## Contents
+## 1. Start from an algorithm you already understand
 
-1. Why this matters
-2. Outcomes
-3. Prerequisites
-4. Core model
-5. Embedded C modules and state
-6. Worked examples
-7. Apply, verify, and troubleshoot
-8. Practice
-9. Answer key
-10. Explain without notes
-11. References
+Do not learn C syntax and invent a new algorithm at the same time.
 
-## 1. Why this matters
+C#:
 
-Embedded software runs close to hardware and under tighter memory/timing constraints. C makes storage, linkage, and hardware-visible state more explicit than C#. Assembly makes processor behavior even more visible.
-
-The goal is not to memorize compiler syntax. The goal is to preserve clear contracts while understanding what the toolchain and processor must actually do.
-
-## 2. Outcomes
-
-You should be able to:
-
-- split embedded C into header/interface and source/implementation files;
-- explain declaration, definition, translation unit, external symbol, and link step;
-- use fixed-width integer types;
-- explain why hardware- or asynchronously-modified state may require volatile semantics;
-- separate application logic from device-driver access;
-- inspect generated assembly for a small C function;
-- build a software state machine;
-- distinguish blocking delays from nonblocking state/time logic;
-- compare a bounded C operation with pic-as implementation.
-
-## 3. Prerequisites
-
-Sections 3-5 and prior PIC exposure from the co-requisite embedded courses.
-
-## 4. Core model
-
-A practical module has:
-
-**Header**
-- public types;
-- constants;
-- function declarations;
-- the contract callers need.
-
-**Source**
-- private helpers/state;
-- function definitions;
-- implementation details.
-
-A translation unit is roughly one source file after preprocessing. Separate units become one program through the linker.
-
-## 5. Embedded C modules and state
-
-### Fixed-width types
-
-Use stdint types when exact width is part of the contract:
-
-    uint8_t
-    int16_t
-    uint32_t
-
-Do not assume plain int has the same width across every target.
-
-### Volatile
-
-Volatile is about observation of changes that the normal flow of the current code cannot fully predict, such as hardware registers or state changed by an interrupt.
-
-It is not:
-
-- a mutex;
-- an atomicity guarantee;
-- a replacement for synchronization;
-- a general "make it safe" keyword.
-
-### Driver boundary
-
-Keep hardware register details in a narrow component where practical.
-
-For example:
-
-    adc_read_raw()
-    uart_try_read_byte()
-    led_set(state)
-
-Application code can then reason in terms of behavior rather than scattered register writes.
-
-### State machines
-
-Represent system behavior as:
-
-- current state;
-- event/condition;
-- transition;
-- action;
-- next state.
-
-Example:
-
-    IDLE --start--> RUNNING
-    RUNNING --timeout--> IDLE
-    RUNNING --fault--> FAULT
-    FAULT --reset && safe--> IDLE
-
-### Blocking versus nonblocking
-
-Blocking:
-
-    delay 5 seconds
-    do next thing
-
-During the delay, the code cannot respond unless interrupts/other mechanisms handle the event.
-
-Nonblocking:
-
-    if state entered:
-        record start time
-    if elapsed >= target:
-        transition
-
-The loop remains free to process other work.
-
-### Generated assembly
-
-Compile a small C function and inspect assembly to ask:
-
-- where are arguments/results stored?
-- which instructions implement compare/branch?
-- how is a function call represented?
-- what compiler-generated setup appears?
-
-Do not assume one C statement maps to one instruction.
-
-## 6. Worked examples
-
-### Example 1: header/source split
-
-status.h:
-
-    #include <stdint.h>
-    uint8_t status_get_count(uint8_t state);
-
-status.c:
-
-    #include "status.h"
-    uint8_t status_get_count(uint8_t state)
+```csharp
+static int Clamp(int value, int min, int max)
+{
+    if (value < min)
     {
-        return (state >> 4) & 0x0F;
+        return min;
     }
 
-main.c can call the public function without knowing how it is implemented.
+    if (value > max)
+    {
+        return max;
+    }
 
-### Example 2: explicit state
+    return value;
+}
+```
 
-Instead of nested delays:
+Trace these cases:
 
-    GREEN
-    wait
-    YELLOW
-    wait
-    RED
+| value | min | max | result |
+| ---: | ---: | ---: | ---: |
+| 5 | 0 | 10 | 5 |
+| -2 | 0 | 10 | 0 |
+| 15 | 0 | 10 | 10 |
 
-store a state and transition when time/event conditions are met.
+Once that behavior is clear, translate it.
 
-The state model is testable even if the real hardware timer is replaced by a fake clock.
+## 2. The same function in ordinary C
 
-## 7. Apply, verify, and troubleshoot
+```c
+int clamp(int value, int min, int max)
+{
+    if (value < min)
+    {
+        return min;
+    }
 
-Linker error checklist:
+    if (value > max)
+    {
+        return max;
+    }
 
-- declaration matches definition;
-- source file is actually part of the build;
-- symbol spelling and type match;
-- only intended external symbols are exposed;
-- no duplicate definitions.
+    return value;
+}
+```
 
-Hardware-state checklist:
+The syntax is very close.
 
-- correct device/register;
-- correct width;
-- volatile where required;
-- read/modify/write behavior understood;
-- asynchronous concurrency risks considered separately.
+New questions can now be introduced one at a time:
 
-State-machine checklist:
+- what size is `int` on this target?
+- where does the function declaration belong?
+- how does another file call it?
+- what machine instructions does the compiler generate?
 
-- every state has defined exits;
-- unsafe transitions are impossible or rejected;
-- timeout start/reset semantics are explicit;
-- fault priority is explicit;
-- tests cover each transition.
+## 3. Use fixed-width types when width is part of the requirement
 
-## 8. Practice
+If the value is specifically one 8-bit unsigned byte:
 
-1. What belongs in a header that callers need but not private implementation details?
-2. What problem does the linker solve?
-3. Why is volatile not an atomicity guarantee?
-4. Convert a blocking "wait 2 s then turn off" behavior into state/time logic conceptually.
-5. Why inspect generated assembly?
-6. A function is declared in device.h but the linker cannot find it. Name three likely causes.
+```c
+#include <stdint.h>
 
-## 9. Answer key
+uint8_t increment(uint8_t value)
+{
+    return (uint8_t)(value + 1u);
+}
+```
 
-1. Public declarations, required types/constants, and the interface contract.
-2. It resolves symbols/references among compiled units and produces the final linked program/image.
-3. Volatile affects compiler assumptions about reads/writes; multiple-step operations may still be interrupted or interleaved.
-4. Record an entry/start time, continue processing, test elapsed time on each pass, then transition/off when elapsed reaches the target.
-5. To connect high-level constructs to target behavior, cost, calls, branches, memory, and compiler choices.
-6. Missing source from project, name/signature mismatch, implementation omitted, conditional compilation excluded it, or wrong linkage.
+Useful types include:
 
-## 10. Explain without notes
+```text
+uint8_t
+int8_t
+uint16_t
+int16_t
+uint32_t
+```
 
-Explain:
+Use an exact-width type when the width itself matters to a register, protocol, packed field, or required range.
 
-- header versus source;
-- translation unit versus link;
+Do not replace every integer in every program with a fixed-width type automatically.
+
+## 4. First one-file XC8 program
+
+```c
+#include <xc.h>
+#include <stdint.h>
+
+static uint8_t add(uint8_t first, uint8_t second)
+{
+    return (uint8_t)(first + second);
+}
+
+void main(void)
+{
+    volatile uint8_t answer = add(2u, 3u);
+
+    while (1)
+    {
+        (void)answer;
+    }
+}
+```
+
+Build this as one file first.
+
+Make sure the compiler/device/toolchain work before adding module structure.
+
+## 5. Then split a function into header and source
+
+After the one-file version works:
+
+`math_helpers.h`:
+
+```c
+#ifndef MATH_HELPERS_H
+#define MATH_HELPERS_H
+
+#include <stdint.h>
+
+uint8_t add_u8(uint8_t first, uint8_t second);
+
+#endif
+```
+
+`math_helpers.c`:
+
+```c
+#include "math_helpers.h"
+
+uint8_t add_u8(uint8_t first, uint8_t second)
+{
+    return (uint8_t)(first + second);
+}
+```
+
+`main.c`:
+
+```c
+#include <xc.h>
+#include <stdint.h>
+#include "math_helpers.h"
+
+void main(void)
+{
+    volatile uint8_t answer = add_u8(2u, 3u);
+
+    while (1)
+    {
+        (void)answer;
+    }
+}
+```
+
+Now vocabulary has a concrete example:
+
+- declaration: tells the compiler a function exists and its signature;
+- definition: supplies the function body;
+- header: commonly exposes declarations needed by callers;
+- source file: contains definitions/implementation;
+- linker: connects references among compiled pieces.
+
+## 6. Linker errors from a real example
+
+Suppose `main.c` calls `add_u8`, but `math_helpers.c` was never added to the project.
+
+The compiler can understand the declaration from the header.
+
+The final build can still fail because the linker cannot find the definition.
+
+That is a useful way to learn the linker: observe the failure, then fix the missing source/module.
+
+## 7. Hardware-facing code comes after ordinary C works
+
+A hardware register is not an ordinary local variable.
+
+Example idea:
+
+```c
+static void led_set(uint8_t on)
+{
+    if (on)
+    {
+        PORTC |= 0x01u;
+    }
+    else
+    {
+        PORTC &= (uint8_t)~0x01u;
+    }
+}
+```
+
+The application can call `led_set(1)` without scattering `PORTC` operations everywhere.
+
+This small wrapper is the beginning of a hardware/software boundary.
+
+Do not start with an elaborate driver framework.
+
+## 8. Volatile from an observable problem
+
+Suppose a value can change because hardware or an interrupt changes it while normal code is running.
+
+The compiler must not assume that a previously read value remains unchanged merely because the current normal code did not assign it.
+
+That is the situation where `volatile` matters.
+
+It does **not** mean:
+
+- atomic;
+- thread-safe;
+- interrupt-safe;
+- protected from race conditions;
+- automatically correct.
+
+At this stage, remember:
+
+> `volatile` affects how the compiler treats reads/writes. It is not a synchronization mechanism.
+
+## 9. Compare generated assembly after the C works
+
+Take a tiny C function:
+
+```c
+uint8_t low_nibble(uint8_t value)
+{
+    return value & 0x0Fu;
+}
+```
+
+Build it and inspect generated/disassembled output.
+
+Ask bounded questions:
+
+- where does the value arrive?
+- which operation performs the mask?
+- where does the result go?
+- how is return represented?
+
+Do not try to predict the entire compiler output from the C source.
+
+## 10. Hand-written pic-as comparison
+
+Conceptually, a bounded assembly routine may implement the same mask with PIC instructions.
+
+The learning goal is:
+
+```text
+same contract
+different abstraction level
+```
+
+not:
+
+```text
+one C line = one assembly line
+```
+
+## 11. State machines are previewed, not front-loaded
+
+A simple embedded program often evolves from:
+
+```text
+do action
+delay
+do next action
+delay
+```
+
+into explicit state and timing so the system can remain responsive.
+
+That full design pattern is developed in Section 10 after students have more event/protocol/integration context.
+
+For Section 6, recognize:
+
+- blocking code prevents the main flow from doing other work during the wait;
+- explicit state lets the program remember where it is between iterations.
+
+You do not need to master a full nonblocking architecture here.
+
+## 12. Troubleshooting sequence
+
+For a new C build problem:
+
+1. return to the smallest project that built;
+2. read the first compiler/linker error;
+3. identify which source/header it names;
+4. confirm declarations and definitions match;
+5. confirm every required source file is part of the project;
+6. build again before changing another issue.
+
+For a hardware-facing problem:
+
+1. prove the pure calculation separately if possible;
+2. verify the selected device;
+3. verify register/pin configuration;
+4. observe register/pin behavior independently;
+5. distinguish software/simulator evidence from physical measurement.
+
+## 13. Practice
+
+1. Translate the C# `Clamp` method into C.
+2. Why might `uint8_t` be preferable to `int` for an 8-bit packed field?
+3. What is the difference between a declaration and a definition?
+4. Why build a one-file C example before splitting it?
+5. What happens conceptually if the header declares a function but the source defining it is missing from the build?
+6. Why is `volatile` not a complete solution to interrupt/shared-state safety?
+7. What should you ask when inspecting compiler-generated assembly?
+8. Why postpone full state-machine design until later?
+
+## 14. Answer reasoning
+
+1. The condition/return structure is nearly identical; type/syntax details adapt to C.
+2. It states the required width explicitly.
+3. Declaration describes the callable symbol/signature; definition supplies implementation/storage.
+4. It isolates toolchain/language problems from module/linking problems.
+5. Compilation may succeed for the caller, but linking can fail because no matching definition exists.
+6. It changes compiler assumptions about access, not atomicity or coordination.
+7. Bounded questions about the implementation of one known operation, call, branch, or data movement.
+8. Students first need comfort with ordinary C and simple persistent state; later sections provide a real system need for event/state architecture.
+
+## 15. Ready to continue when
+
+Explain and demonstrate:
+
+- translate one familiar method from C# to C;
 - fixed-width type;
-- volatile;
-- driver boundary;
-- state machine;
-- blocking versus nonblocking;
-- why C and assembly comparison is bounded rather than line-by-line.
+- one-file build before multi-file split;
+- header declaration versus source definition;
+- linker purpose from a concrete example;
+- a small register-facing wrapper;
+- practical meaning and limits of `volatile`;
+- why generated assembly is inspected after the C behavior is understood.
 
-## 11. References
+## 16. References
 
-- Microchip, MPLAB XC8 Compiler — https://www.microchip.com/en-us/tools-resources/develop/mplab-xc-compilers/xc8
-- Microchip, XC8 PIC Assembler documentation — https://onlinedocs.microchip.com/oxy/GUID-4DC87671-9D8E-428A-ADFE-98D694F9F089/
-- C standard fixed-width integer header overview (compiler documentation should be used for target specifics) — https://en.cppreference.com/w/c/types/integer
+- MPLAB XC8 Compiler: https://www.microchip.com/en-us/tools-resources/develop/mplab-x-compilers/xc8
+- XC8 PIC Assembler documentation: https://onlinedocs.microchip.com/oxy/GUID-4DC87671-9D8E-428A-ADFE-98D694F9F089/
+- C fixed-width integer overview: https://en.cppreference.com/w/c/types/integer
