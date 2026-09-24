@@ -2,10 +2,14 @@
 
 Guides explain recurring workflows and tool use.
 
+## Start here for course setup
+
+- [Complete course toolchain setup](Toolchains/README.md): downloads, installation, verification, first project, Hello World/first build, and debugger check for every required environment.
+
 ## Git
 
 - [Git workflow](Git/README.md)
-- [Collaboration and recovery](Git/collaboration-and-recovery.md)
+- [Collaboration and recovery](Git/collaboration-and-recovery.md) - used primarily when collaborative Git is introduced later in the Learning Path.
 
 ## Toolchains
 
