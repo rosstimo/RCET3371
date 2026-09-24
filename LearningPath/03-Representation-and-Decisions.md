@@ -22,7 +22,8 @@ You should be able to:
 
 ## Learn
 
-- [Representation and decisions](../Topics/representation-and-decisions.md)
+- [Representation and decisions](../Topics/numeric-representation-width-range.md)
+- [Bitwise operations and packed fields](../Topics/bitwise-operations-packed-fields.md)
 - [Engineering notation quick reference](../References/engineering-notation.md)
 - [Cross-language comparison](../References/csharp-python-c-picas-comparison.md)
 - [Status Decoder example](../Examples/StatusDecoder/)

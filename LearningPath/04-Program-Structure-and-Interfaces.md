@@ -29,7 +29,8 @@ Interfaces are introduced here as a **supported pattern**, not assumed prior kno
 
 ## Learn
 
-- [Program structure and interfaces](../Topics/program-structure-and-interfaces.md)
+- [Program structure and interfaces](../Topics/function-contracts-scope-retained-state.md)
+- [Program decomposition, modules, and interfaces](../Topics/program-decomposition-modules-interfaces.md)
 - [Cross-language comparison](../References/csharp-python-c-picas-comparison.md)
 
 ## Example progression

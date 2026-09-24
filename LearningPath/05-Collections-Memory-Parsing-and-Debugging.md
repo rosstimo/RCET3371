@@ -17,7 +17,9 @@ You should be able to:
 
 ## Learn
 
-- [Collections, parsing, and debugging](../Topics/collections-parsing-and-debugging.md)
+- [Collections, parsing, and debugging](../Topics/collections-bounded-data.md)
+- [Parsing and validation](../Topics/parsing-validation.md)
+- [Deterministic debugging](../Topics/deterministic-debugging.md)
 - [File I/O example](../Examples/FileIOExample/)
 - [File Round Trip](../Examples/FileRoundTrip/)
 
