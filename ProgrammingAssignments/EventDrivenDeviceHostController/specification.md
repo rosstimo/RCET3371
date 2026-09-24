@@ -1,276 +1,66 @@
 # Event-Driven Device/Host Controller Specification
 
-This document is the authoritative behavior contract for the assignment.
+## Scenario
 
-## 1. System purpose
+Implement a small environmental controller.
 
-Control a simulated or live environmental device from a host application while preserving explicit state, timing, safety interlocks, failure behavior, logging, and testability.
+Inputs: enable/run request, temperature sample in °C, connection/device identity, reset-fault request, device fault indication, and controllable clock/time.
 
-## 2. Inputs
+Outputs: HEATER request, COOLER request, controller state, and log/telemetry events.
 
-The controller consumes:
+## Required states
 
-- connection/device-identity state;
-- enable/run request;
-- temperature sample in degrees Celsius;
-- protocol/device fault indication;
-- reset-fault request;
-- monotonic time from an injected clock.
+DISCONNECTED, IDLE, HEATING, COOLING, FAULT. Additional states require a documented reason.
 
-## 3. Outputs
-
-The controller produces:
-
-- HEATER request;
-- COOLER request;
-- controller state;
-- fault reason when applicable;
-- transition events suitable for logging/presentation.
-
-## 4. States
-
-Required states:
-
-- `DISCONNECTED`
-- `IDLE`
-- `HEATING`
-- `COOLING`
-- `FAULT`
-
-Additional substates require explicit justification and tests.
-
-## 5. Default configuration
+## Default configuration
 
 ```text
-target_c = 25.0
-deadband_c = 1.0
-minimum_output_hold_s = 5.0
-sample_stale_timeout_s = 3.0
-sensor_min_c = -40.0
-sensor_max_c = 125.0
+target = 25.0 °C
+deadband = ±1.0 °C
+minimum_output_hold = 5.0 s
+sample_stale_timeout = 3.0 s
+valid_sensor_range = -40.0 .. 125.0 °C
 ```
 
-Configuration must reject:
+Validate: deadband > 0; hold >= 0; stale timeout > 0; sensor minimum < maximum; target inside valid sensor range.
 
-- target outside 15.0 C through 30.0 C inclusive;
-- deadband <= 0;
-- hold < 0;
-- stale timeout <= 0;
-- sensor_min >= sensor_max;
-- target outside sensor range.
+## Connection and identity
 
-## 6. Connection behavior
+Without an identified device state is DISCONNECTED. Transport connection alone is insufficient. Disconnect forces outputs OFF and state DISCONNECTED.
 
-Without a successfully identified device:
+## Hysteresis
 
-- state = DISCONNECTED;
-- HEATER = OFF;
-- COOLER = OFF.
+- temperature <= target - deadband may request HEATING;
+- temperature >= target + deadband may request COOLING;
+- within deadband, do not switch directly from one output to the other;
+- return toward IDLE when target is crossed in the appropriate direction.
 
-After transport connection, protocol identity must succeed before normal control is available.
+The transition table must define exact equality behavior.
 
-Disconnect from any state:
+## Minimum output hold
 
-- immediately turns both outputs OFF;
-- transitions to DISCONNECTED;
-- records the transition reason.
+Once HEATER or COOLER turns ON, ordinary temperature control cannot turn it OFF for 5.0 s. Safety fault, disconnect, or disable overrides the hold.
 
-## 7. Enable behavior
+Use a controllable clock. Real `Sleep` delays are not valid verification.
 
-Connected + disabled:
+## Interlock and faults
 
-- state = IDLE;
-- both outputs OFF.
+HEATER and COOLER must never both be ON.
 
-Enabling permits normal temperature control.
+Immediately enter FAULT and force both outputs OFF when sample is outside valid range, no valid sample arrives for 3.0 s while enabled, or the device/protocol reports a fault.
 
-Disabling from IDLE/HEATING/COOLING:
+FAULT overrides hysteresis and minimum hold.
 
-- immediately turns both outputs OFF;
-- transitions to IDLE;
-- overrides minimum-output hold.
+## Fault recovery
 
-## 8. Hysteresis and normal transitions
+Reset may leave FAULT only when connection/identity are valid, latest sample is valid/not stale, device fault is clear, and outputs are OFF. Recovery returns to IDLE.
 
-Define:
+## Logging and presentation
 
-```text
-heat_on_threshold = target - deadband = 24.0 C
-cool_on_threshold = target + deadband = 26.0 C
-```
+Log timestamp, prior state, event/reason, next state, temperature when relevant, output requests, and fault reason.
 
-When enabled and not faulted:
+Show connection/identity, controller state, temperature, target/deadband, outputs, fault reason, and logging state. Controller behavior must work without the presentation layer.
 
-### From IDLE
+## Required deterministic tests
 
-Normal output entry is allowed only after at least **2.0 s** in IDLE following a normal exit from HEATING/COOLING or a new valid connection/reset entry.
-
-After the IDLE deadtime is satisfied:
-
-- temperature <= 24.0 C -> HEATING;
-- temperature >= 26.0 C -> COOLING;
-- otherwise remain IDLE.
-
-Boundary:
-
-- elapsed IDLE time < 2.0 s: remain IDLE for normal control;
-- elapsed IDLE time >= 2.0 s: threshold transitions may occur.
-
-The deadtime does not delay disconnect or FAULT behavior.
-
-### From HEATING
-
-After minimum hold is satisfied:
-
-- temperature >= target (25.0 C) -> IDLE;
-- otherwise remain HEATING.
-
-Do not transition directly HEATING -> COOLING from one sample. Return through IDLE.
-
-### From COOLING
-
-After minimum hold is satisfied:
-
-- temperature <= target (25.0 C) -> IDLE;
-- otherwise remain COOLING.
-
-Do not transition directly COOLING -> HEATING from one sample. Return through IDLE.
-
-## 9. Minimum-output hold
-
-When entering HEATING or COOLING:
-
-- record output start time;
-- normal temperature control may not turn that output off until elapsed time >= 5.0 s.
-
-Boundary:
-
-- elapsed < 5.0 s: hold active;
-- elapsed >= 5.0 s: normal exit rule may apply.
-
-These override hold immediately:
-
-- disable;
-- disconnect;
-- any FAULT transition.
-
-When a normal HEATING/COOLING exit enters IDLE, record the IDLE-entry time once. Repeated evaluation while remaining IDLE must not reset the 2.0 s deadtime timer.
-
-## 10. Interlock invariant
-
-At all observable times:
-
-```text
-NOT (HEATER == ON AND COOLER == ON)
-```
-
-Violation is a controller defect.
-
-## 11. Sample freshness
-
-While enabled in IDLE/HEATING/COOLING:
-
-- latest valid sample age < 3.0 s is fresh;
-- age >= 3.0 s triggers FAULT with reason `STALE_SAMPLE`.
-
-Timing begins from the timestamp of the latest accepted valid sample.
-
-## 12. Sensor validity
-
-A sample outside inclusive range:
-
-```text
--40.0 C <= temperature <= 125.0 C
-```
-
-triggers FAULT with reason `SENSOR_RANGE`.
-
-Do not clamp an invalid sample into range.
-
-## 13. Device fault
-
-A validated device/protocol fault indication triggers FAULT with reason `DEVICE_FAULT`.
-
-FAULT priority overrides normal temperature/timing behavior.
-
-## 14. FAULT behavior
-
-On entry:
-
-- HEATER = OFF;
-- COOLER = OFF;
-- fault reason retained;
-- transition logged.
-
-Normal enable/temperature events do not leave FAULT.
-
-## 15. Fault reset
-
-Reset succeeds only when all are true:
-
-- device remains connected and identified;
-- latest sample is valid;
-- latest sample is fresh;
-- device fault indication is clear;
-- both outputs are OFF.
-
-Successful reset:
-
-- clears fault reason;
-- transitions to IDLE.
-
-It does not transition directly to HEATING or COOLING in the same event. Normal control is evaluated on a later controller update/event.
-
-## 16. Clock contract
-
-Controller domain logic receives time through an abstraction such as:
-
-```text
-IClock.Now / elapsed API
-```
-
-Tests must control time without real `Thread.Sleep`/wall-clock waits.
-
-Use a monotonic elapsed-time concept for control intervals. Presentation may separately show wall-clock timestamps.
-
-## 17. Transition logging
-
-Each transition record includes:
-
-- timestamp;
-- prior state;
-- event/reason;
-- next state;
-- latest temperature when relevant;
-- HEATER request;
-- COOLER request;
-- fault reason when applicable.
-
-## 18. Presentation contract
-
-Presentation must expose:
-
-- connection/identity;
-- controller state;
-- current temperature;
-- target/deadband;
-- output requests;
-- fault reason;
-- logging state.
-
-Presentation must not own controller truth.
-
-## 19. Required test boundaries
-
-Test exact values:
-
-- temperature 24.0, just above 24.0;
-- temperature 26.0, just below 26.0;
-- return target 25.0;
-- elapsed active-mode time 4.999 s and 5.000 s;
-- elapsed IDLE deadtime 1.999 s and 2.000 s;
-- sample age 2.999 s and 3.000 s;
-- sensor -40.0, 125.0, and just outside each;
-- reset safe/unsafe combinations.
-
-The course reference solution and grader use this document as the authority.
+Test disconnected startup; identity success/failure; enable in deadband; threshold below/at/above; hysteresis; hold just before/at/after expiry; disable/fault during hold; stale timeout before/at/after; invalid sensor; device fault; blocked/successful reset; disconnect from every active state; and proof both outputs are never ON together.

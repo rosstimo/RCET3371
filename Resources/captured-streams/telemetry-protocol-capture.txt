@@ -1,0 +1,6 @@
+# Deterministic capture used for parser exercises.
+00 7E A5 81 08 52 43 45 54 33 33 37 31 DD
+A5 90 04 00 01 00 00 95
+A5 90 04 2C 02 40 00 FA
+A5 90 04 2C 03 80 00 00
+A5 90 04 4F 04 FF FF 20

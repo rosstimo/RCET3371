@@ -1,32 +1,7 @@
 # Event-Driven Device/Host Controller Milestones
 
-## Milestone 1 — Model and transition tests
-
-- enum/state model defined;
-- transition table documented;
-- controlled clock available;
-- fake device boundary available;
-- boundary tests written before full controller completion.
-
-## Milestone 2 — Normal heating/cooling timing
-
-- Idle/Heating/Cooling transitions pass;
-- 5 s minimum-run boundary passes;
-- 2 s deadtime boundary passes;
-- interlock proven.
-
-## Milestone 3 — Fault/recovery
-
-- disconnect priority;
-- sensor-fault priority;
-- reset conditions;
-- transition logging;
-- repeated-event behavior.
-
-## Milestone 4 — Integration and handoff
-
-- configuration validation;
-- presentation/CLI separated;
-- optional live adapter if hardware available;
-- architecture/evidence complete;
-- clean-clone build/test verified.
+1. **State contract:** state list, transition table, hysteresis boundaries, timing semantics, fault priority, interface map.
+2. **Deterministic core:** controllable clock, fake inputs, normal-state/threshold tests, interlock proof.
+3. **Fault/recovery:** stale timeout, invalid sensor, device fault, disconnect, reset guard, transition logging.
+4. **Configuration/presentation:** configuration validation and usable presentation with model/control independence.
+5. **Integration/verification:** protocol/device boundary, physical hardware status, clean-clone instructions, final verification matrix.

@@ -1,52 +1,42 @@
 # RCET 3371 — Advanced Programming
 
-RCET 3371 is an advanced comparative programming and software-systems course built on RCET 2265.
+RCET 3371 is an advanced comparative programming and software-systems course.
 
 ## Start here
 
 **[RCET 3371 Learning Path](LearningPath/README.md)**
 
-The Learning Path is the ordered route through the course for both instructor-led and independent study. Sections are learning units rather than calendar weeks.
+The Learning Path is the ordered route through the course. Sections are curriculum units, not calendar weeks.
 
 ## Course structure
 
 - [Course guide](Course/README.md)
 - [Learning Path](LearningPath/)
-- [Topics](Topics/) — independent concept learning
-- [Guides](Guides/) — workflows and toolchains
+- [Topics](Topics/) — self-learning concept material
+- [Guides](Guides/) — recurring workflows and tool use
 - [References](References/) — quick lookup
-- [Standards](Standards/) — required course practices
+- [Standards](Standards/) — course requirements
 - [Programming Assignments](ProgrammingAssignments/) — all graded programming/work-product instructions
-- [Examples](Examples/) — runnable/traceable examples
-- [Resources](Resources/) — supplied vectors, captures, data, and supporting files
+- [Examples](Examples/) — runnable and traceable examples
+- [Resources](Resources/) — supplied data, vectors, and assets
 
-## Languages and environments
-
-The course compares:
-
-- C# / .NET
-- Python
-- embedded C / XC8
-- PIC assembly / pic-as
-
-C# is the familiar high-level reference from RCET 2265. The other languages expose different runtime, system, and hardware tradeoffs.
-
-## Grading model
+## Grading categories
 
 - **Programming Assignments: 50%**
 - **Quizzes and Assessments: 50%**
 
-Projects are larger integrative Programming Assignments, not a separate grade category.
+Quizzes and assessments may be delivered in Canvas or on paper.
+
+## Languages and environments
+
+The course compares C#/.NET, Python, embedded C/XC8, and PIC assembly/pic-as.
+
+C# is the familiar high-level reference. Python provides a dynamic engineering-tool perspective. Embedded C connects software structure to hardware-facing systems. PIC assembly exposes processor-near behavior.
 
 ## How to use this repository
 
-Follow the Learning Path in order. Each section tells you:
+If you are learning independently, follow the Learning Path in order.
 
-- what you should be able to do;
-- what topic/guide material to learn;
-- which examples to run or inspect;
-- what Predict / Translate / Repair / Build practice applies;
-- which Programming Assignment work advances;
-- what assessment demonstrates readiness to continue.
+If you are working with an instructor, use the same section order while following the instructor's calendar and Canvas due dates.
 
-Detailed semester dates and due dates belong in the LMS/calendar, not in the durable course structure.
+Durable course material lives in the semantic directories above rather than in semester-named student directories.

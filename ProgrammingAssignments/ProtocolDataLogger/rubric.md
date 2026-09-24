@@ -1,18 +1,19 @@
 # Protocol Data Logger Rubric
 
-Total: **250 points**
+Total: **200 points**
 
 | Area | Points |
 | --- | ---: |
-| Protocol parser correctness/chunk independence | 45 |
-| Validation/resynchronization/error behavior | 25 |
-| Device API and architecture boundaries | 25 |
-| Fake/captured transport and tests | 25 |
-| Real C# serial adapter | 20 |
-| Logging/path/rotation behavior | 30 |
-| Replay/statistics/error handling | 25 |
-| Python identify/replay utilities | 20 |
-| Failure/recovery evidence | 15 |
-| Repository/documentation/reproducibility | 20 |
+| Protocol/parser correctness | 35 |
+| Deterministic parser tests | 25 |
+| Architecture and fake transport | 25 |
+| C# device/host behavior | 30 |
+| Logging, round trip, replay | 25 |
+| Python diagnostic/replay tool | 20 |
+| Disconnect/error/recovery behavior | 15 |
+| Serial adapter and integration evidence | 10 |
+| Verification evidence | 10 |
+| Documentation/repository quality | 5 |
+| **Total** | **200** |
 
-Hardware-independent paths must pass for full core-logic credit. Physical hardware verification is graded only where the scheduled course environment supplies compatible hardware.
+Physical hardware unavailability does not block the core assignment. The deterministic fake/simulation path remains required.

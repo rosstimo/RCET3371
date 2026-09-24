@@ -2,30 +2,21 @@
 
 All graded programming and software-system work in RCET 3371 lives here.
 
-The course uses one **Programming Assignments** grade category worth **50% of the course grade**. The assignments below total **1000 category points**.
+The course uses one **Programming Assignments** grade category worth 50% of the final course grade.
 
-The word *project* may describe a larger integrative assignment, but projects do not live in a separate top-level directory or grade category.
+## Point structure
 
-| Programming Assignment | Sections | Points |
-| --- | --- | ---: |
-| [Foundations Readiness](FoundationsReadiness/) | 1–2 | 100 |
-| [Cross-Language Engineering Model](CrossLanguageEngineeringModel/) | 3–6 | 250 |
-| [Protocol Data Logger](ProtocolDataLogger/) | 7–9 | 250 |
-| [Event-Driven Device/Host Controller](EventDrivenDeviceHostController/) | 10–11 | 200 |
-| [Integration and Verification Portfolio](IntegrationVerificationPortfolio/) | 12–16 | 200 |
-| **Total** |  | **1000** |
+The category contains 1000 internal points:
 
-## Common expectations
+| Programming Assignment | Points | Sections |
+| --- | ---: | --- |
+| [Foundations Readiness](FoundationsReadiness/) | 100 | 1–2 |
+| [Cross-Language Engineering Model](CrossLanguageEngineeringModel/) | 250 | 3–6 |
+| [Protocol Data Logger](ProtocolDataLogger/) | 200 | 7–9 |
+| [Event-Driven Device/Host Controller](EventDrivenDeviceHostController/) | 250 | 10–11 |
+| [Integration/Verification Portfolio](IntegrationVerificationPortfolio/) | 200 | 12–16 |
+| **Total** | **1000** | |
 
-Unless an assignment says otherwise:
+A *project* is simply a larger, multi-section Programming Assignment. Projects do not use a separate top-level directory or grade category.
 
-- use one student repository per major Programming Assignment;
-- preserve meaningful Git history;
-- follow the course coding/documentation/repository standards;
-- keep generated build/cache output out of Git;
-- provide reproducible build/run/test instructions;
-- use deterministic software tests before physical hardware;
-- distinguish simulated/fake verification from physical verification;
-- submit the repository URL through the current LMS.
-
-Each assignment directory owns its student specification, milestones when useful, required evidence, completion criteria, and rubric.
+Each assignment defines its specification, milestones when useful, required verification evidence, and rubric.

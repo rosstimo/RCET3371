@@ -1,17 +1,18 @@
 # Event-Driven Device/Host Controller Rubric
 
-Total: **200 points**
+Total: **250 points**
 
 | Area | Points |
 | --- | ---: |
-| Explicit state/transition model | 25 |
-| Controlled-time architecture | 25 |
-| Heating/cooling threshold behavior | 25 |
-| Minimum-run/deadtime boundary behavior | 25 |
-| Interlock and safe output commands | 20 |
-| Fault/disconnect priority and recovery | 30 |
-| Deterministic tests/fake device evidence | 20 |
-| Transition logging and diagnostics | 10 |
-| Architecture/documentation/reproducibility | 20 |
-
-A solution that depends on real-time sleeps for core timing tests cannot receive full controlled-time/testing credit.
+| Explicit state/transition design | 30 |
+| Hysteresis and normal control | 30 |
+| Controlled-time behavior | 30 |
+| Interlock and fault priority/recovery | 35 |
+| Architecture/testability | 30 |
+| Deterministic automated tests | 35 |
+| Configuration/logging/persistence | 20 |
+| Presentation/diagnostics | 10 |
+| Device/protocol integration evidence | 10 |
+| Verification/design explanation | 15 |
+| Documentation/repository quality | 5 |
+| **Total** | **250** |

@@ -1,30 +1,7 @@
 # Protocol Data Logger Milestones
 
-## Milestone 1 — Protocol parser
-
-- protocol constants defined;
-- authoritative frames parsed;
-- arbitrary chunk-boundary tests pass;
-- invalid length/checksum/noise tests pass.
-
-## Milestone 2 — Device API and fake transport
-
-- identity request/response works;
-- telemetry maps to structured model;
-- fake transport can deliver partial chunks, timeout, and disconnect;
-- no live hardware required.
-
-## Milestone 3 — Persistence and replay
-
-- CSV logging contract implemented;
-- 100-record rotation test passes;
-- replay summary matches known dataset;
-- malformed-row behavior documented/tested.
-
-## Milestone 4 — Python + live adapter + final evidence
-
-- Python identify/replay tools complete;
-- C# SerialPort adapter complete;
-- hardware verification performed when available;
-- clean-clone instructions verified;
-- failure/recovery evidence complete.
+1. **Protocol and parser:** contract, API, vectors, arbitrary chunking, malformed length/check tests.
+2. **Fake transport/device API:** identity, sample request/response, disconnect/reconnect, presentation-independent device API.
+3. **Logging/replay:** CSV contract, round trip, malformed row, shared domain/statistics path.
+4. **Python diagnostic tool:** supplied capture, valid/invalid reporting, sample summary.
+5. **Serial adapter/final evidence:** adapter implemented, physical verification when available or explicitly pending, clean-clone instructions, failure/recovery evidence.

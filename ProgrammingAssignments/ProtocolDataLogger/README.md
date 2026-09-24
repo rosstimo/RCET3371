@@ -1,131 +1,52 @@
-# Protocol Data Logger
+# Programming Assignment — Protocol Data Logger
 
-**Programming Assignments category value: 250 points out of 1000**
+[Programming Assignments index](../README.md)
 
-Sections: 7–9
+**Points: 200**  
+**Sections: 7–9**
 
 ## Objective
 
-Build a robust protocol/parser/logger system that works completely against deterministic simulated and captured data before physical serial hardware is introduced.
+Build a robust host-side protocol/parser/logger system that works completely against deterministic simulated/captured data before physical serial hardware is required.
 
-The authoritative wire/logging contract is [protocol-specification.md](protocol-specification.md). Do not create a second incompatible protocol inside your implementation.
+This assignment integrates protocol design, streaming parsing, host serial architecture, persistence, replay, and failure recovery.
 
-## Required repository structure
+## Documents
 
-Organize responsibilities clearly. One acceptable shape is:
+- [Specification](specification.md)
+- [Milestones](milestones.md)
+- [Rubric](rubric.md)
+
+## Required implementation
+
+Your repository must include:
 
 ```text
 README.md
-csharp/
-python/
+src/
 tests/
+python/
 evidence/
 ```
 
-Your exact source layout may differ when the same boundaries remain easy to identify.
+The C# implementation is the primary host. Python supplies a diagnostic/replay tool.
 
-## Required architecture
-
-The C# host must separate, at minimum:
-
-```text
-transport
-  ↓
-stream parser
-  ↓
-protocol/device API
-  ↓
-domain model
-  ↓
-logging/replay/presentation
-```
-
-The parser must not depend directly on `SerialPort`.
-
-## C# host requirements
-
-Implement:
-
-- streaming protocol parser;
-- deterministic parser tests over supplied captures;
-- fake/captured transport;
-- real `SerialPort` adapter;
-- identity request/response handling;
-- decoded telemetry model;
-- visible connection/error state;
-- CSV logger using the specification;
-- 100-record file rotation;
-- replay of produced logs;
-- malformed-row reporting;
-- summary statistics over replayed telemetry.
-
-## Python diagnostic/replay tool
-
-Implement a command-line Python tool that can:
-
-- identify valid/invalid frames from the supplied captures;
-- decode telemetry;
-- replay the supplied/produced CSV log format;
-- report record count, minimum/maximum temperature, arithmetic mean temperature, and status/fault observations;
-- exit nonzero with a clear diagnostic for unusable input.
-
-It must not simply invoke the C# executable.
+The parser and logging path must be fully testable without a serial port.
 
 ## Supplied resources
 
-Use the authoritative captures:
-
-- [valid stream](../../Resources/captured-streams/valid-stream.hex)
-- [chunking stream](../../Resources/captured-streams/chunking-stream.hex)
-- [malformed stream](../../Resources/captured-streams/malformed-stream.hex)
-
-The same logical frames must parse identically regardless of how input bytes are chunked.
-
-## Required verification
-
-At minimum verify:
-
-- identity request/response;
-- one complete frame in one chunk;
-- one frame one byte at a time;
-- multiple frames in one chunk;
-- noise before START;
-- invalid length;
-- bad checksum;
-- partial frame across chunks;
-- successful recovery after malformed input;
-- fake disconnect/reconnect behavior;
-- 100/101-record log rotation boundary;
-- log write/read round trip;
-- malformed log row handling.
-
-## Hardware rule
-
-All core functional credit must be achievable without physical hardware.
-
-The real serial adapter is still required, but hardware verification is recorded separately. If compatible hardware is not available in the scheduled course environment, the approved fake/captured integration path is the verification authority for core behavior.
-
-## Milestones
-
-Use [milestones.md](milestones.md) as progress/checkoff guidance. Milestones do not create separate grade categories.
-
-## Evaluation
-
-Use [rubric.md](rubric.md).
+- [Protocol vectors](../../Resources/protocol-vectors/rcet-telemetry-protocol-v1.txt)
+- [Captured stream](../../Resources/captured-streams/telemetry-protocol-capture.txt)
+- [Sample telemetry log](../../Resources/datasets/sample-telemetry.csv)
 
 ## Complete when
 
-A clean clone can:
+A grader can clone the repository and verify, without hardware:
 
-1. run all deterministic protocol tests;
-2. process supplied captures;
-3. exercise the C# device API through the fake transport;
-4. write and rotate logs;
-5. replay those logs;
-6. run the Python diagnostic/replay tool;
-7. build the real serial adapter;
-8. reproduce the documented evidence without private instructor material.
+1. protocol parser correctness under arbitrary chunking;
+2. fake transport identity/sample behavior;
+3. error/disconnect recovery;
+4. logging and replay round trip;
+5. Python diagnostic/replay output.
 
-## Submission
-
-Submit the repository URL and any LMS-requested demonstration evidence.
+The real serial adapter must also exist. Physical hardware verification is recorded separately when hardware is available.
