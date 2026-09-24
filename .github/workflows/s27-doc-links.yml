@@ -59,7 +59,7 @@ jobs:
               elif root.is_dir():
                   markdown.extend(root.rglob("*.md"))
 
-          pattern = re.compile(r'!?[[^]]*](([^)]+))')
+          pattern = re.compile(r'!?\[[^\]]*\]\(([^)]+)\)')
           failures = []
 
           for source in sorted(set(markdown)):
