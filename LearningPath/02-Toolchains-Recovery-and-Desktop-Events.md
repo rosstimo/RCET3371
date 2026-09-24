@@ -31,7 +31,7 @@ Then use the detailed guides as needed:
 - [Python](../Guides/Toolchains/python.md)
 - [MPLAB X / XC8](../Guides/Toolchains/xc8.md)
 - [PIC assembler / pic-as](../Guides/Toolchains/pic-as.md)
-- [Toolchains and first programs](../Topics/02-toolchains-recovery-and-desktop-events.md)
+- [Toolchains and first programs](../Topics/toolchains-and-first-cross-language-programs.md)
 
 Runnable/minimal source examples are under [Examples/OnRamp](../Examples/OnRamp/).
 

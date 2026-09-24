@@ -29,7 +29,7 @@ Interfaces are introduced here as a **supported pattern**, not assumed prior kno
 
 ## Learn
 
-- [Program structure and interfaces](../Topics/04-program-structure-and-interfaces.md)
+- [Program structure and interfaces](../Topics/program-structure-and-interfaces.md)
 - [Cross-language comparison](../References/csharp-python-c-picas-comparison.md)
 
 ## Example progression

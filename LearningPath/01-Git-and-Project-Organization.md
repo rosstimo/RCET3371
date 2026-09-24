@@ -29,7 +29,7 @@ Branch collaboration, pull requests, deliberate merge conflicts, and team integr
 
 ## Learn
 
-1. Work through [Git and project organization](../Topics/01-git-project-organization.md).
+1. Work through [Git and project organization](../Topics/git-project-organization.md).
 2. Use the [Git workflow guide](../Guides/Git/README.md) while you work.
 3. Keep the [Git quick reference](../References/git-quick-reference.md) open when needed.
 4. Review the [repository and submission standard](../Standards/repository-and-submission.md).

@@ -2,7 +2,7 @@
 
 *Self-learning guide*
 
-[Topics index](README.md) · [Learning Path Section 2](../LearningPath/02-Toolchains-Recovery-and-Desktop-Events.md) · [Complete setup guide](../Guides/Toolchains/README.md)
+[Topics index](README.md) · [Complete setup guide](../Guides/Toolchains/README.md)
 
 ## 1. Why this matters
 

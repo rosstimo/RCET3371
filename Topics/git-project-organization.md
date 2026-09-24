@@ -2,7 +2,7 @@
 
 *Self-learning guide*
 
-[Topics index](README.md) · [Learning Path Section 1](../LearningPath/01-Git-and-Project-Organization.md)
+[Topics index](README.md)
 
 ## 1. Start with the workflow you already used
 
@@ -14,7 +14,7 @@ A familiar cycle is:
 edit -> build/test -> git status -> git add -> git commit -> git push
 ```
 
-RCET 3371 begins by making that cycle easier to see and explain. Team branches, pull requests, and deliberate merge conflicts are taught later in Section 12.
+RCET 3371 begins by making that cycle easier to see and explain. Team branches, pull requests, and deliberate merge conflicts are taught later in [Collaborative Development](collaborative-development.md).
 
 ## 2. Outcomes
 
@@ -195,7 +195,7 @@ A README should at least tell another person:
 
 ## 8. What is deliberately postponed
 
-You may see these Git ideas in existing repositories, but they are not the Section 1 target:
+You may see these Git ideas in existing repositories, but they are not the target of this topic:
 
 - feature branches;
 - pull requests;

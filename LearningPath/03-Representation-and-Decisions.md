@@ -22,7 +22,7 @@ You should be able to:
 
 ## Learn
 
-- [Representation and decisions](../Topics/03-representation-and-decisions.md)
+- [Representation and decisions](../Topics/representation-and-decisions.md)
 - [Engineering notation quick reference](../References/engineering-notation.md)
 - [Cross-language comparison](../References/csharp-python-c-picas-comparison.md)
 - [Status Decoder example](../Examples/StatusDecoder/)

@@ -2,7 +2,7 @@
 
 *Self-learning guide*
 
-[Topics index](README.md) · [Learning Path Section 4](../LearningPath/04-Program-Structure-and-Interfaces.md)
+[Topics index](README.md)
 
 ## 1. Start with what you already know
 

@@ -2,7 +2,7 @@
 
 *Self-learning guide*
 
-[Topics index](README.md) · [Learning Path Section 3](../LearningPath/03-Representation-and-Decisions.md)
+[Topics index](README.md)
 
 ## 1. Start with a familiar C# integer
 
