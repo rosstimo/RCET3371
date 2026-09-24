@@ -120,6 +120,27 @@ This is why review and integration tests matter.
 
 ## 6. Worked examples
 
+### Bridge example: extend the individual Git cycle
+
+Your individual cycle from Section 1 was:
+
+```text
+edit -> test -> status -> add -> commit -> push
+```
+
+Collaboration adds a temporary branch and review boundary:
+
+```text
+update main -> branch -> edit/test/commit -> push branch -> PR -> review -> merge
+```
+
+Practice that full cycle first with two tiny text/document changes.
+
+Then create a deliberate conflict where two branches change the same line. Resolve it from the intended final requirement, not by blindly choosing "ours" or "theirs."
+
+The conflict exercise belongs here because ordinary repository state is already familiar.
+
+
 ### Example 1: focused PR
 
 Weak PR: "finish project" with 40 unrelated files.
