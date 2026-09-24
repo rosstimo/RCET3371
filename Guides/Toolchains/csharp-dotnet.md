@@ -1,97 +1,157 @@
 # C# / .NET Toolchain Guide
 
-[Guides index](../README.md)
+[Toolchain setup index](README.md)
+
+## Goal
+
+Starting from a Windows computer, install the course C# environment and get both a console program and a basic Windows Forms program running.
 
 ## Course baseline
 
-Reference environment for the S27 candidate:
-
+- Visual Studio Community 2026
 - .NET 10 LTS SDK
-- Visual Studio 2026 stable on Windows for full desktop/WinForms work
-- command-line .NET SDK for reproducible build/run/test
-- VS Code may be used for console/library work when appropriate
+- **.NET desktop development** workload
 
-A newer supported patch release is acceptable if course examples/tests pass unchanged.
+The .NET command-line SDK is also used so you can prove a project outside the IDE.
 
-## Verify installation
+## 1. Download Visual Studio Community
 
-Run:
+Official download:
 
-    dotnet --info
-    dotnet --version
+https://visualstudio.microsoft.com/vs/community/
 
-The course candidate is written for .NET 10.
+Choose **Visual Studio Community**.
 
-## Create and run a console project
+If your lab computer already has the correct Visual Studio 2026 installation, skip to verification rather than reinstalling.
 
-    mkdir Demo
-    cd Demo
-    dotnet new console
-    dotnet build
-    dotnet run
+## 2. Install the required workload
 
-## Add a test project
+Run the downloaded Visual Studio installer.
 
-From a solution/workspace root, one common pattern is:
+In the workload selection screen, select:
 
-    dotnet new xunit -n Demo.Tests
-    dotnet add Demo.Tests reference Demo
-    dotnet test
+- **.NET desktop development**
 
-The exact directory layout may differ by assignment.
+Keep the default recommended components for that workload unless the instructor provides a course `.vsconfig`.
 
-## Build versus run
+Complete the installation and launch Visual Studio.
 
-    dotnet build
+## 3. Verify the .NET SDK
 
-proves the project translates/restores/links far enough to produce build output.
+Open PowerShell, Command Prompt, or the Visual Studio terminal:
 
-    dotnet run
+```text
+dotnet --version
+dotnet --info
+```
 
-builds as needed and executes the selected project.
+The major version should be 10 for the S27 course baseline.
 
-A successful build does not prove runtime behavior.
+If `dotnet` is missing or reports the wrong major version, install the .NET 10 SDK from:
 
-## WinForms
+https://dotnet.microsoft.com/en-us/download/dotnet/10.0
 
-Use Visual Studio 2026 with the .NET desktop development workload for the course's Windows Forms examples.
+Then reopen the terminal and verify again.
 
-The course uses WinForms as a familiar event-driven desktop reference, not as the central learning goal.
+## 4. Create your first Console App in Visual Studio
 
-Key rule:
+1. Launch Visual Studio.
+2. Select **Create a new project**.
+3. Search for **Console App**.
+4. Choose the C# Console App template.
+5. Select **Next**.
+6. Project name: `Hello3371`.
+7. Choose a location you can find again.
+8. Select the .NET 10 framework when the template asks.
+9. Create the project.
 
-- retain domain/display state in program data;
-- handle events as state transitions/actions;
-- repaint from retained state.
+Replace the starter code with:
 
-## Debugging
+```csharp
+string course = "RCET 3371";
+int section = 2;
 
-Use breakpoints to inspect:
+Console.WriteLine($"Hello, {course}!");
+Console.WriteLine($"2 + 3 = {2 + 3}");
+Console.WriteLine($"Section = {section}");
+```
 
-- current line;
-- local variables;
-- object fields/properties;
-- call stack;
-- exceptions;
-- collection contents.
+Build with **Build > Build Solution**.
 
-When a bug depends on input, preserve the exact input as a regression fixture.
+Run without the debugger with **Ctrl+F5**.
 
-## Package/dependency discipline
+Expected output includes:
 
-Prefer project/package declarations over copying binaries manually.
+```text
+Hello, RCET 3371!
+2 + 3 = 5
+Section = 2
+```
 
-Commit:
+## 5. Use the debugger once
 
-- source;
-- project files;
-- lock/config files when the project policy requires them.
+1. Click the margin beside a `Console.WriteLine` line to set a breakpoint.
+2. Start debugging with **F5**.
+3. When execution stops, hover over `course` and `section`.
+4. Use **Step Over** once.
+5. Stop debugging.
 
-Do not commit normal bin/obj build trees.
+At this point you have proved editor + build + runtime + debugger at a practical level.
+
+## 6. Prove the same project from the command line
+
+Open a terminal in the directory containing the project file:
+
+```text
+dotnet restore
+dotnet build
+dotnet run
+```
+
+The IDE is convenient, but the command-line path gives a reproducible baseline.
+
+## 7. Create a first Windows Forms program
+
+1. Create another project.
+2. Search for **Windows Forms App**.
+3. Choose the C# template targeting modern .NET, not an old .NET Framework template.
+4. Name it `HelloForms3371`.
+5. Add a Button and Label in the designer.
+6. Double-click the Button to create its Click handler.
+7. In the handler, set the label text:
+
+```csharp
+private void helloButton_Click(object sender, EventArgs e)
+{
+    outputLabel.Text = "Hello from a button click!";
+}
+```
+
+Run the program and click the button.
+
+This is intentionally familiar RCET 2265 event-driven programming. Repaint architecture comes later.
+
+## 8. Troubleshooting
+
+### Console App template is missing
+
+Open **Visual Studio Installer > Modify** and confirm **.NET desktop development** is installed.
+
+### Wrong `dotnet` version
+
+Run `dotnet --list-sdks`. Confirm a 10.x SDK exists.
+
+### Project builds in Visual Studio but not terminal
+
+Make sure the terminal is in the project directory and run `dotnet --info`. Record the exact error before changing settings.
+
+### WinForms template is missing
+
+Modify the Visual Studio installation and confirm the .NET desktop workload is installed.
 
 ## References
 
-- .NET download/support: https://dotnet.microsoft.com/en-us/download
+- Visual Studio Community: https://visualstudio.microsoft.com/vs/community/
+- Visual Studio installation: https://learn.microsoft.com/visualstudio/install/
+- .NET 10 download: https://dotnet.microsoft.com/en-us/download/dotnet/10.0
 - .NET CLI: https://learn.microsoft.com/en-us/dotnet/core/tools/
-- .NET testing: https://learn.microsoft.com/en-us/dotnet/core/testing/
-- Visual Studio 2026 release history: https://learn.microsoft.com/en-us/visualstudio/releases/2026/release-history
