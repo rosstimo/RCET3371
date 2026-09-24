@@ -136,6 +136,26 @@ Checksums/CRCs can detect some corruption; they do not prove authenticity or sem
 
 ## 6. Worked examples
 
+### Bridge example: from one complete string to a framed message
+
+In RCET 2265 you might have processed a complete string such as:
+
+```text
+TEMP,21.5
+```
+
+A serial link may deliver data in pieces and may contain unrelated bytes. Start by wrapping a familiar payload:
+
+```text
+START | LENGTH | TYPE | PAYLOAD | CHECK
+ A5       4       10    01 02 03 04   ??
+```
+
+First parse one complete fixed frame. Then split that exact frame across two reads. Only after both cases work should you add malformed lengths, bad check values, resynchronization, and a streaming state machine.
+
+This keeps the new problem focused: the payload idea is familiar; framing is the new layer.
+
+
 ### Example 1: partial read
 
 Expected message:
