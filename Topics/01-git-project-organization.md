@@ -1,219 +1,260 @@
-# RCET 3371 — Git and Project Organization
+# RCET 3371 - Git and Project Organization
 
 *Self-learning guide*
 
 [Topics index](README.md) · [Learning Path Section 1](../LearningPath/01-Git-and-Project-Organization.md)
 
-## Contents
+## 1. Start with the workflow you already used
 
-1. Why this matters
-2. What you should be able to do
-3. Prerequisites
-4. Core model and vocabulary
-5. How Git state works
-6. Worked examples
-7. Apply, verify, and troubleshoot
-8. Practice
-9. Answer key
-10. Explain without notes
-11. References
+RCET 2265 already used Git as part of normal programming work.
 
-## 1. Why this matters
+A familiar cycle is:
 
-Version control is part of the engineering evidence for a software system. A useful repository lets another person answer three questions: what is true now, what changed, and why did it change.
+```text
+edit -> build/test -> git status -> git add -> git commit -> git push
+```
 
-Git is not a substitute for understanding the filesystem. Most recovery mistakes happen because someone runs a command before identifying whether the problem is in the working tree, staging area, commit history, branch relationship, or remote relationship.
+RCET 3371 begins by making that cycle easier to see and explain. Team branches, pull requests, and deliberate merge conflicts are taught later in Section 12.
 
-## 2. What you should be able to do
+## 2. Outcomes
 
 You should be able to:
 
-- explain working tree, index/staging area, commit, branch, and remote;
-- interpret Git status before modifying repository state;
-- stage only intended changes;
-- write commits that preserve useful engineering history;
-- inspect changes with diff, log, and show;
-- distinguish local history from remote synchronization;
-- recover from a common mistaken edit or commit without guessing;
-- organize a repository so another engineer can build and review it.
+- identify your repository and project files;
+- distinguish working files, staged content, and committed content;
+- use `git status` before changing repository state;
+- inspect an edit with `git diff`;
+- inspect the next proposed commit with `git diff --staged`;
+- create several meaningful commits while a program develops;
+- inspect recent history with `git log`;
+- explain commit versus push;
+- keep generated project output out of Git.
 
-## 3. Prerequisites
+## 3. A picture of the basic Git states
 
-You should be comfortable with files, directories, a terminal, and a small C# project.
+For this section, use this model:
 
-## 4. Core model and vocabulary
+```text
+edit file
+   ↓
+WORKING TREE
+   ↓ git add
+STAGING AREA
+   ↓ git commit
+LOCAL HISTORY
+   ↓ git push
+REMOTE / GITHUB
+```
 
-Think of Git as several related states:
+Each arrow is a separate action.
 
-**Working tree**  
-The files currently visible in your project directory.
+Editing does not stage.
 
-**Index / staging area**  
-The exact content selected for the next commit.
+Staging does not commit.
 
-**HEAD**  
-The commit currently checked out.
+Committing does not push.
 
-**Branch**  
-A movable name that normally points at the latest commit in one line of work.
+## 4. Worked example: watch one file move through the states
 
-**Remote**  
-A named relationship to another repository, commonly origin.
+Start with a committed C# program:
 
-A useful mental model is:
+```csharp
+Console.WriteLine("Hello");
+```
 
-    working files -> stage selected content -> commit snapshot -> synchronize commits
+Change it to:
 
-The arrows are deliberate actions. Editing a file does not stage it. Staging does not commit it. Committing does not push it.
+```csharp
+Console.WriteLine("Hello, RCET 3371");
+```
 
-## 5. How Git state works
+### Step A: inspect status
 
-### Status first
+```text
+git status
+```
+
+You should see `Program.cs` as modified but not staged.
+
+### Step B: inspect the edit
+
+```text
+git diff -- Program.cs
+```
+
+Read the diff. Confirm it contains only the change you intended.
+
+### Step C: stage it
+
+```text
+git add Program.cs
+```
 
 Run:
 
-    git status
+```text
+git status
+git diff --staged
+```
 
-before recovery or cleanup. Status distinguishes:
+Now the proposed commit contains that change.
 
-- untracked files;
-- tracked files modified in the working tree;
-- staged changes;
-- branch/upstream relationship.
+### Step D: commit it
 
-Do not memorize recovery commands without knowing which state they affect.
+```text
+git commit -m "Update greeting for RCET3371"
+```
 
-### Inspect before changing
+Then:
 
-Useful inspection commands:
+```text
+git status
+git log --oneline -5
+```
 
-    git diff
-    git diff --staged
-    git log --oneline --decorate --graph
-    git show <commit>
+The working tree should be clean, and the new commit should appear in local history.
 
-The first diff compares working content with the index. The staged diff compares the index with the current commit.
+### Step E: push
 
-### Stage intentionally
+```text
+git push
+```
 
-Avoid treating "add everything" as the only workflow. A strong commit contains one coherent change.
+Push synchronizes committed history with the configured remote. It is not part of the commit itself.
 
-Typical cycle:
+## 5. Worked example: staged and unstaged changes at the same time
 
-    git status
-    git diff
-    git add path/to/file
-    git diff --staged
-    git commit -m "Describe the engineering change"
-    git status
+This situation often looks strange the first time.
 
-### Remote synchronization
+1. Edit `Program.cs`.
+2. Run `git add Program.cs`.
+3. Edit `Program.cs` again.
+4. Run `git status`.
 
-Push publishes local commits to a configured remote branch. Pull normally fetches remote information and then integrates it.
+The same file can now appear as:
 
-A rejected push is evidence that local and remote histories differ. It is not a reason to force-push automatically.
+- staged changes ready for the next commit;
+- newer unstaged changes still only in the working tree.
 
-## 6. Worked examples
+Use:
 
-### Example 1: modified but not staged
+```text
+git diff
+git diff --staged
+```
 
-Suppose status reports Program.cs under "Changes not staged for commit."
+to inspect the two versions separately.
 
-That means:
+This is a useful reason to inspect what you are committing rather than using Git commands mechanically.
 
-- HEAD has the last committed Program.cs;
-- the index still matches HEAD;
-- the working tree contains a newer edit.
+## 6. Meaningful history
 
-Before staging, use:
+A useful history might look like:
 
-    git diff -- Program.cs
+```text
+Add measurement input
+Add average calculation
+Reject invalid measurement count
+Document build and run procedure
+```
 
-If the edit belongs in the next commit:
+A weak history might look like:
 
-    git add Program.cs
-    git diff --staged
+```text
+stuff
+update
+fix
+final
+final2
+```
 
-### Example 2: accidental staging
+The useful version helps another person reconstruct what changed.
 
-You staged DebugNotes.txt but do not want it in the next commit.
+## 7. Repository organization
 
-The correct problem is not "delete the file." The problem is "remove this path from the index while preserving the working file."
+A small programming repository should make the important material obvious.
 
-Use the Git-supported restore/reset operation appropriate to your installed Git version, then confirm with status. The course quick reference gives the current command form.
+Typical contents:
 
-### Example 3: useful history
+```text
+README.md
+.gitignore
+project/solution files
+source files
+required data/resources
+```
 
-Bad history:
+Generated output such as ordinary `bin/` and `obj/` directories should normally be ignored because the toolchain can recreate them.
 
-    update
-    stuff
-    more changes
-    fixed it
+A README should at least tell another person:
 
-Useful history:
+- what the program does;
+- what tools/version it expects;
+- how to build it;
+- how to run it.
 
-    Add packet status decoder
-    Reject packets shorter than four bytes
-    Separate display formatting from decoder
-    Add fixed vectors for overflow cases
+## 8. What is deliberately postponed
 
-The second history communicates design evolution.
+You may see these Git ideas in existing repositories, but they are not the Section 1 target:
 
-## 7. Apply, verify, and troubleshoot
+- feature branches;
+- pull requests;
+- merge conflicts;
+- rebasing;
+- collaborative review;
+- semantic conflicts between parallel changes.
 
-When the repository seems wrong:
+Those are easier to understand after ordinary single-developer repository state is comfortable.
 
-1. stop changing files;
-2. run status;
-3. inspect the relevant diff;
-4. inspect recent history;
-5. identify which state is wrong;
-6. choose the smallest action that changes only that state;
-7. run status again;
-8. build/test the project if code changed.
+## 9. Troubleshooting
 
-For repository organization, a reviewer should be able to identify:
+If Git looks wrong:
 
-- source code;
-- project/solution files;
-- tests or verification scripts;
-- documentation;
-- generated files that should be ignored.
+1. stop making unrelated changes;
+2. run `git status`;
+3. inspect `git diff`;
+4. inspect `git diff --staged`;
+5. inspect recent `git log`;
+6. describe what state you expected and what state you actually have.
 
-## 8. Practice
+Do not delete `.git`, reclone, reset, or force-push just because you are unsure. Preserve the evidence first.
 
-1. A file is modified in the working tree but not staged. Which comparison shows only that edit?
-2. A file is staged and then edited again. How can the staged content and the newer unstaged edit coexist?
-3. Why is a force push a poor first response to a rejected normal push?
-4. Design four meaningful commits for a small program that reads a sensor log, validates records, computes an average, and reports malformed rows.
-5. You accidentally staged a file. What state should you change if you want to keep the file but remove it from the next commit?
-6. Explain why "Git is my backup" is an incomplete engineering model.
+## 10. Practice
 
-## 9. Answer key
+1. You edit `Program.cs` but have not run `git add`. Where is the new content?
+2. What changes when you run `git add Program.cs`?
+3. Does `git commit` upload the commit to GitHub?
+4. Why run `git diff --staged` before committing?
+5. A file was staged and then edited again. Which two commands show the two sets of changes?
+6. Write three useful commit messages for adding input, calculation, and validation to a small program.
+7. Why should `bin/` and `obj/` usually be ignored?
 
-1. Compare the working tree to the index with git diff for that path.
-2. The index contains the version captured when add was last run; the working tree can then change independently.
-3. A rejected push often means the remote contains commits you do not yet have. Forcing can discard shared history. Inspect/fetch/integrate first.
-4. One valid sequence: add parser, add validation, add statistics, add malformed-row reporting/tests. The exact sequence may differ if each commit is coherent and buildable enough to review.
-5. Change the index/staging state, not the working file.
-6. Git preserves versions and history, but it does not automatically protect every uncommitted file, every unpushed commit, every ignored artifact, or the remote service itself. It is version control first.
+## 11. Answer reasoning
 
-## 10. Explain without notes
+1. In the working tree.
+2. The current file content is copied into the staging area as the proposed next commit content.
+3. No. Push is separate.
+4. It lets you review exactly what the next commit will contain.
+5. `git diff --staged` shows staged content; `git diff` shows newer unstaged edits.
+6. Examples: `Add measurement input`, `Calculate average measurement`, `Reject empty measurement list`.
+7. They are reproducible build output and add noise/machine-specific artifacts to source history.
 
-Before continuing, explain:
+## 12. Ready to continue when
 
-- working tree versus index versus commit;
-- what status tells you;
-- staged versus unstaged diff;
-- local commit versus push;
-- why recovery begins with inspection;
-- what makes a commit useful engineering evidence.
+Explain without notes:
 
-## 11. References
+- working tree;
+- staging area;
+- commit;
+- push;
+- `git status`;
+- `git diff` versus `git diff --staged`;
+- what makes a useful commit.
 
-- Git project, *git-status* — https://git-scm.com/docs/git-status
-- Git project, *git-diff* — https://git-scm.com/docs/git-diff
-- Git project, *git-log* — https://git-scm.com/docs/git-log
-- Git project, *git-restore* — https://git-scm.com/docs/git-restore
-- GitHub Docs, *About pull requests* — https://docs.github.com/en/pull-requests/get-started/about-pull-requests
+## 13. References
+
+- Git status: https://git-scm.com/docs/git-status
+- Git diff: https://git-scm.com/docs/git-diff
+- Git add: https://git-scm.com/docs/git-add
+- Git commit: https://git-scm.com/docs/git-commit
+- Git log: https://git-scm.com/docs/git-log
