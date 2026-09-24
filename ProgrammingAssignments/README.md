@@ -2,41 +2,30 @@
 
 All graded programming and software-system work in RCET 3371 lives here.
 
-The course uses one **Programming Assignments** grade category. The word *project* may still describe a larger integrative assignment, but projects do not live in a separate top-level directory or grade category.
+The course uses one **Programming Assignments** grade category worth **50% of the course grade**. The assignments below total **1000 category points**.
 
-## Required programming work
+The word *project* may describe a larger integrative assignment, but projects do not live in a separate top-level directory or grade category.
 
-1. **Foundations Readiness**
-   - Git/project workflow
-   - toolchain readiness
-   - build/run/debug baseline
-   - minimal desktop event/state behavior
+| Programming Assignment | Sections | Points |
+| --- | --- | ---: |
+| [Foundations Readiness](FoundationsReadiness/) | 1–2 | 100 |
+| [Cross-Language Engineering Model](CrossLanguageEngineeringModel/) | 3–6 | 250 |
+| [Protocol Data Logger](ProtocolDataLogger/) | 7–9 | 250 |
+| [Event-Driven Device/Host Controller](EventDrivenDeviceHostController/) | 10–11 | 200 |
+| [Integration and Verification Portfolio](IntegrationVerificationPortfolio/) | 12–16 | 200 |
+| **Total** |  | **1000** |
 
-2. **Cross-Language Engineering Model**
-   - C#
-   - Python
-   - embedded C/XC8
-   - bounded PIC assembly comparison
-   - shared specification and test vectors
+## Common expectations
 
-3. **Protocol Data Logger**
-   - protocol/parser design
-   - host serial software
-   - simulated/captured inputs
-   - persistence, logging, replay, and error handling
+Unless an assignment says otherwise:
 
-4. **Event-Driven Device/Host Controller**
-   - explicit state models
-   - timing
-   - interlocks and faults
-   - simulated-time tests
-   - host/device integration
+- use one student repository per major Programming Assignment;
+- preserve meaningful Git history;
+- follow the course coding/documentation/repository standards;
+- keep generated build/cache output out of Git;
+- provide reproducible build/run/test instructions;
+- use deterministic software tests before physical hardware;
+- distinguish simulated/fake verification from physical verification;
+- submit the repository URL through the current LMS.
 
-5. **Integration/Verification Portfolio**
-   - collaborative Git evidence
-   - Linux portability
-   - UI/visualization
-   - advanced extension
-   - final system verification and design review
-
-Each assignment directory will contain the student specification, milestone sequence when needed, required evidence, completion criteria, and evaluation rubric.
+Each assignment directory owns its student specification, milestones when useful, required evidence, completion criteria, and rubric.
