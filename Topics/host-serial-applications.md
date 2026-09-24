@@ -2,7 +2,7 @@
 
 *Self-learning guide*
 
-[Topics index](README.md) · [Learning Path Section 8](../LearningPath/08-Host-Serial-Applications.md)
+[Topics index](README.md)
 
 ## Contents
 
@@ -40,7 +40,7 @@ You should be able to:
 
 ## 3. Prerequisites
 
-Section 7 protocol design plus Sections 4-6 architecture/state concepts.
+Protocol-design concepts plus prior program-structure and software-state concepts.
 
 ## 4. Core model
 

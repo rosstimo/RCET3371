@@ -2,7 +2,7 @@
 
 *Self-learning guide*
 
-[Topics index](README.md) · [Learning Path Section 5](../LearningPath/05-Collections-Memory-Parsing-and-Debugging.md)
+[Topics index](README.md)
 
 ## 1. Start with arrays and lists you already know
 

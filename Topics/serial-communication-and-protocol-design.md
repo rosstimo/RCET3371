@@ -2,7 +2,7 @@
 
 *Self-learning guide*
 
-[Topics index](README.md) · [Learning Path Section 7](../LearningPath/07-Protocol-Design.md)
+[Topics index](README.md)
 
 ## Contents
 

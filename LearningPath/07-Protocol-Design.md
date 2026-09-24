@@ -14,7 +14,7 @@ You should be able to:
 
 ## Learn
 
-- [Protocol design](../Topics/07-protocol-design.md)
+- [Protocol design](../Topics/serial-communication-and-protocol-design.md)
 - [Serial protocol quick reference](../References/serial-protocol-reference.md)
 
 ## Practice

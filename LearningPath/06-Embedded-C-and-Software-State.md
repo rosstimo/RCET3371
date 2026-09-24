@@ -35,7 +35,7 @@ Nonblocking state machines are developed more fully in Section 10.
 
 ## Learn
 
-- [Embedded C and software state](../Topics/06-embedded-c-and-software-state.md)
+- [Embedded C and software state](../Topics/embedded-c-and-software-state.md)
 - [MPLAB X / XC8 setup](../Guides/Toolchains/xc8.md)
 - [pic-as setup](../Guides/Toolchains/pic-as.md)
 - [On-ramp embedded examples](../Examples/OnRamp/)

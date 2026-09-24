@@ -2,7 +2,7 @@
 
 *Self-learning guide*
 
-[Topics index](README.md) · [Learning Path Section 6](../LearningPath/06-Embedded-C-and-Software-State.md) · [XC8 setup](../Guides/Toolchains/xc8.md)
+[Topics index](README.md) · [XC8 setup](../Guides/Toolchains/xc8.md)
 
 ## 1. Start from an algorithm you already understand
 
@@ -280,9 +280,9 @@ delay
 
 into explicit state and timing so the system can remain responsive.
 
-That full design pattern is developed in Section 10 after students have more event/protocol/integration context.
+That full design pattern is developed in [Event-Driven Device/Host Architecture](event-driven-device-host-architecture.md) after the supporting event/protocol/integration ideas are in place.
 
-For Section 6, recognize:
+For this topic, recognize:
 
 - blocking code prevents the main flow from doing other work during the wait;
 - explicit state lets the program remember where it is between iterations.

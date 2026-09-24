@@ -17,7 +17,7 @@ You should be able to:
 
 ## Learn
 
-- [Collections, parsing, and debugging](../Topics/05-collections-memory-parsing-and-debugging.md)
+- [Collections, parsing, and debugging](../Topics/collections-parsing-and-debugging.md)
 - [File I/O example](../Examples/FileIOExample/)
 - [File Round Trip](../Examples/FileRoundTrip/)
 

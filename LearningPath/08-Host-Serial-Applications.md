@@ -14,7 +14,7 @@ You should be able to:
 
 ## Learn
 
-- [Host serial applications](../Topics/08-host-serial-applications.md)
+- [Host serial applications](../Topics/host-serial-applications.md)
 - [Serial protocol quick reference](../References/serial-protocol-reference.md)
 
 ## Examples
