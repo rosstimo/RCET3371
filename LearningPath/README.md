@@ -4,7 +4,7 @@ This is the ordered student route through RCET 3371.
 
 RCET 3371 begins from the programming level established in RCET 2265. You are expected to know basic C# syntax, variables, conditionals, loops, methods, ordinary classes, arrays/lists, files, debugging, and basic Windows Forms events. You are **not** expected to begin this course already knowing Python, embedded C, PIC assembly, interfaces, protocol architecture, concurrency, or larger software design.
 
-Sections are learning units, not calendar weeks.
+Sections are the current ordered course units, not calendar weeks. Topics are separate semantic concept documents and are not numbered or owned by a particular section. A section may use multiple topics, and the same topic may support more than one section. The recommended concept sequence is maintained in [Topics/README.md](../Topics/README.md).
 
 ## How to work through a section
 

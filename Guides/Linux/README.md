@@ -2,7 +2,7 @@
 
 [Guides index](../README.md)
 
-Task-oriented companion to [Linux Systems and Portability](../../Topics/13-linux-and-portability.md).
+Task-oriented companion to [Linux Systems and Portability](../../Topics/linux-systems-and-portability.md).
 
 ## Baseline commands
 
