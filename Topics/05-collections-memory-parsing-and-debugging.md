@@ -1,244 +1,342 @@
-# RCET 3371 — Collections, Memory, Parsing, and Debugging
+# RCET 3371 - Collections, Parsing, and Debugging
 
 *Self-learning guide*
 
 [Topics index](README.md) · [Learning Path Section 5](../LearningPath/05-Collections-Memory-Parsing-and-Debugging.md)
 
-## Contents
+## 1. Start with arrays and lists you already know
 
-1. Why this matters
-2. Outcomes
-3. Prerequisites
-4. Core model
-5. Collections, parsing, and debugging
-6. Worked examples
-7. Apply, verify, and troubleshoot
-8. Practice
-9. Answer key
-10. Explain without notes
-11. References
+RCET 2265 already used arrays/lists, loops, files, conversions, and debugging.
 
-## 1. Why this matters
+Start with a small set of measurements:
 
-Real systems rarely process one isolated value. They accumulate samples, messages, history, and state. The right collection model makes program behavior obvious; the wrong one hides invariants and creates edge-case failures.
+```csharp
+int[] samples = { 10, 20, 30, 40 };
 
-Parsing and debugging belong here because collections are often where malformed data, stale values, off-by-one errors, and misunderstood state become visible.
+int sum = 0;
 
-## 2. Outcomes
+foreach (int sample in samples)
+{
+    sum += sample;
+}
 
-You should be able to:
+double average = (double)sum / samples.Length;
 
-- choose among fixed arrays, dynamic lists, queues, and rolling/ring buffers;
-- define collection invariants;
-- parse structured text or byte data into useful program objects/state;
-- use deterministic fixtures;
-- compare data shifting with circular-buffer approaches;
-- inspect variables, call stack, memory, registers, and logs;
-- explain how addresses/references differ from the values stored there;
-- collect evidence before changing code.
+Console.WriteLine($"Average = {average}");
+```
 
-## 3. Prerequisites
+Before adding a new collection type, make sure you can trace this program by hand.
 
-Sections 3 and 4, including representation, functions, contracts, and responsibility boundaries.
+## 2. Why new collection types appear
 
-## 4. Core model
+A collection should make the required behavior easier to express.
 
-A collection is not just "many values." It has a behavioral contract.
+Use a familiar array/list while it fits.
+
+Introduce something else only when the requirement changes.
 
 Examples:
 
-**Queue invariant**
-- first item removed is the earliest item still present.
+- fixed number of samples -> array may fit;
+- changing number of samples -> list may fit;
+- first item in must be first item out -> queue may fit;
+- fixed-size continuously updated history -> bounded/ring structure may fit.
 
-**Fixed rolling window**
-- contains no more than N samples;
-- newest sample is always included;
-- after N samples, adding one sample removes exactly one oldest sample.
+The data structure is a tool for a behavior, not a vocabulary contest.
 
-**Unique-ID set**
-- no duplicate identifiers.
+## 3. Worked example: List instead of fixed array
 
-Write invariants before implementation.
+```csharp
+List<int> samples = new();
 
-## 5. Collections, parsing, and debugging
+samples.Add(10);
+samples.Add(20);
+samples.Add(30);
 
-### Arrays
+foreach (int sample in samples)
+{
+    Console.WriteLine(sample);
+}
+```
 
-Useful when:
+New idea:
 
-- size is fixed or bounded;
-- indexed access matters;
-- memory layout matters;
-- embedded constraints make dynamic allocation undesirable.
+The number of elements can grow while the program runs.
 
-### Lists
+Try:
 
-Useful when:
+1. add 40;
+2. remove 20;
+3. predict the contents before running.
 
-- size changes;
-- convenient insertion/removal/iteration is valuable;
-- exact contiguous hardware layout is not the primary concern.
+## 4. Worked example: read measurements from a file
 
-### Queues
+Suppose `samples.txt` contains:
 
-Use when the order of arrival is part of the behavior.
+```text
+10
+20
+30
+40
+```
 
-### Ring buffers
+A direct version:
 
-A ring buffer stores a fixed maximum amount without shifting every element on each insertion. Track:
+```csharp
+List<int> samples = new();
 
-- storage;
-- write/read index or head/tail;
-- count/full state.
+foreach (string line in File.ReadLines("samples.txt"))
+{
+    samples.Add(int.Parse(line));
+}
 
-The implementation may be more complex than a queue, so use it when bounded storage or predictable memory behavior matters.
+Console.WriteLine($"Count = {samples.Count}");
+```
 
-### Parsing
+This assumes every line is valid.
 
-A parser should turn external representation into validated internal data.
+That is a useful first version because it separates the new file step from later validation.
 
-A clean pipeline is:
+## 5. Add validation one step later
 
-    raw input -> framing/splitting -> conversion -> validation -> structured object
+Now use `TryParse`:
 
-Do not combine "read from device" and "parse record" unless the design deliberately requires it.
+```csharp
+List<int> samples = new();
 
-### Deterministic fixtures
+foreach (string line in File.ReadLines("samples.txt"))
+{
+    if (int.TryParse(line, out int sample))
+    {
+        samples.Add(sample);
+    }
+    else
+    {
+        Console.WriteLine($"Invalid sample: {line}");
+    }
+}
+```
 
-Before random/live input, create fixed samples with known results.
+Test it with:
 
-For a CSV parser:
+```text
+10
+20
+bad
+40
+```
 
-    timestamp,temp_c,status
-    2026-09-24T10:00:00,21.5,OK
-    2026-09-24T10:00:01,21.7,OK
+Expected valid list:
 
-Then add deliberate bad cases:
+```text
+10, 20, 40
+```
 
-    missing field
-    nonnumeric value
-    extra field
-    blank line
+The important debugging habit is to keep the exact failing input, in this case `bad`.
 
-### Debugging evidence
+## 6. Structured text: one small CSV record
 
-Useful evidence includes:
+Input:
 
-- exact input;
-- exact expected output;
-- current variables;
-- call stack;
-- collection contents;
-- register/memory state for embedded code;
-- logs showing time/order;
-- repeatable test case.
+```text
+21.5,OK
+```
 
-## 6. Worked examples
+First split it:
 
-### Example 1: rolling window
+```csharp
+string line = "21.5,OK";
+string[] fields = line.Split(',');
 
-Window size: 3.
+Console.WriteLine(fields[0]);
+Console.WriteLine(fields[1]);
+```
+
+Then convert the first field:
+
+```csharp
+if (double.TryParse(fields[0], out double temperature))
+{
+    string status = fields[1];
+
+    Console.WriteLine($"Temperature = {temperature}");
+    Console.WriteLine($"Status = {status}");
+}
+```
+
+Only after this works should you add:
+
+- missing-field checks;
+- extra-field checks;
+- range validation;
+- timestamp parsing;
+- larger files.
+
+## 7. Turn a parsed record into an object
+
+```csharp
+class Measurement
+{
+    public double Temperature { get; }
+    public string Status { get; }
+
+    public Measurement(double temperature, string status)
+    {
+        Temperature = temperature;
+        Status = status;
+    }
+}
+```
+
+Then:
+
+```csharp
+Measurement sample = new(temperature, status);
+```
+
+This connects directly to the ordinary classes from RCET 2265.
+
+## 8. Queue: introduce it from a requirement
+
+Requirement:
+
+> Process commands in the same order they arrive.
+
+That is first-in, first-out.
+
+```csharp
+Queue<string> commands = new();
+
+commands.Enqueue("START");
+commands.Enqueue("READ");
+commands.Enqueue("STOP");
+
+Console.WriteLine(commands.Dequeue()); // START
+Console.WriteLine(commands.Dequeue()); // READ
+```
+
+Trace the queue after every operation.
+
+Do not start by memorizing queue terminology. Start from the ordering requirement.
+
+## 9. Rolling window
+
+Requirement:
+
+> Keep only the newest three samples.
 
 Input sequence:
 
-    10, 20, 30, 40
+```text
+10, 20, 30, 40
+```
 
-States:
+Expected states:
 
-    [10]
-    [10, 20]
-    [10, 20, 30]
-    [20, 30, 40]
+```text
+[10]
+[10, 20]
+[10, 20, 30]
+[20, 30, 40]
+```
 
-Invariant: after the window fills, exactly the newest three remain.
+A simple list/queue implementation is fine while learning the behavior.
 
-### Example 2: queue versus shifting array
+A ring buffer is a more specialized bounded implementation that avoids shifting/copying data unnecessarily. You should understand **why** it exists before being asked to implement its indexing.
 
-If you manually shift 999 elements each time a new sample arrives in a 1000-sample window, insertion cost grows with the window size.
+## 10. Ring buffer as extension
 
-A queue/ring abstraction expresses the desired behavior more directly and may avoid repeated full shifts.
+A ring buffer typically tracks:
 
-### Example 3: parse first, then compute
+- fixed storage;
+- current write/read index;
+- count/full status.
 
-Weak design:
+Its advantage is predictable bounded storage and no need to shift all elements on every new sample.
 
-- read CSV line;
-- update GUI labels;
-- compute average;
-- print error;
-- append to global list;
-- all in one method.
+At this point, be able to trace a supplied ring-buffer example. Inventing a correct generic ring buffer from scratch is not the first learning target.
 
-Stronger design:
+## 11. Debugging with deterministic input
 
-    TryParseRecord(line) -> Measurement or failure
-    AddMeasurement(measurement)
-    ComputeStatistics(collection)
-    Present(model)
+Suppose the parser fails only with this line:
 
-Each step can be tested separately.
+```text
+22.4,FAULT,EXTRA
+```
 
-## 7. Apply, verify, and troubleshoot
+Do not immediately edit the parser.
 
-For collection defects:
+Capture:
 
-1. state the invariant;
-2. choose a small fixed input sequence;
-3. write expected state after every operation;
-4. compare actual state step by step;
-5. check empty/one/full/overflow cases.
+- exact input;
+- expected behavior;
+- actual behavior/error;
+- field count;
+- values before conversion;
+- stack trace or breakpoint state.
 
-For parser defects:
+Then reduce the problem.
 
-1. preserve the exact failing input;
-2. reduce it to the smallest failing sample;
-3. identify framing/splitting/conversion/validation stage;
-4. verify culture/units/base/encoding assumptions;
-5. add the failing case to regression tests.
+For example:
 
-For debugger use:
+```csharp
+string[] fields = line.Split(',');
+Console.WriteLine(fields.Length);
+```
 
-- break before the suspected state transition;
-- inspect state;
-- step the smallest meaningful unit;
-- compare expected versus actual;
-- avoid changing multiple unrelated variables during diagnosis.
+Now the failure is reproducible.
 
-## 8. Practice
+## 12. Debugger workflow
 
-1. A 4-sample rolling window currently holds [2, 4, 6, 8]. Add 10. What should remain?
-2. Why is a queue usually clearer than manually shifting an array for first-in/first-out behavior?
-3. Name four malformed-input cases for a comma-separated measurement record.
-4. What is an invariant?
-5. Why is "it worked once with random input" weak verification?
-6. A parser throws only on the 1001st record. What evidence would you capture before editing code?
-7. When might a fixed array be preferable to a dynamic list?
+A useful sequence:
 
-## 9. Answer key
+1. set a breakpoint immediately before the suspected operation;
+2. run with one known input;
+3. inspect collection contents;
+4. Step Over one operation;
+5. compare expected state with actual state;
+6. repeat with the smallest failing case.
 
-1. [4, 6, 8, 10].
-2. The data structure directly represents FIFO behavior and avoids hand-maintained shifting logic.
-3. Examples: missing field, extra field, invalid numeric text, empty required field, invalid timestamp, out-of-range value.
-4. A condition that must remain true for a data structure/system state to be valid.
-5. Random input may not repeat the same path and gives no guaranteed coverage or known expected result.
-6. Exact record/input, collection size/state near failure, exception/stack, memory/log evidence, and a reduced deterministic reproduction.
-7. Fixed size, predictable memory, hardware-oriented layout, embedded constraints, or simple indexed access.
+Do not change five things at once while debugging.
 
-## 10. Explain without notes
+## 13. Practice
 
-Explain:
+1. Trace the array-average example after each loop iteration.
+2. Change the list example to hold 10, 20, 30, 40, then remove 20.
+3. What should the file parser do with `bad`?
+4. Split `"21.5,OK"` by hand before running code.
+5. Why is a queue clearer than manually shifting an array for FIFO behavior?
+6. Trace a three-sample rolling window for inputs 5, 10, 15, 20, 25.
+7. What evidence should you preserve before fixing a malformed-record bug?
+8. Why is a ring buffer not the first collection students should learn here?
 
-- array/list/queue/ring-buffer tradeoffs;
-- collection invariants;
-- deterministic fixture;
-- parsing stages;
-- regression case;
-- why debugging starts with evidence;
-- value versus address/reference at a conceptual level.
+## 14. Answer reasoning
 
-## 11. References
+1. Track `sum` after each element: 10, 30, 60, 100.
+2. Final list: 10, 30, 40.
+3. Reject/report it while preserving valid values, according to the program contract.
+4. Two fields: `21.5` and `OK`.
+5. Queue operations directly express arrival/removal order.
+6. `[5]`, `[5,10]`, `[5,10,15]`, `[10,15,20]`, `[15,20,25]`.
+7. Exact failing input, expected result, actual result/error, and relevant program state.
+8. Its indexing is extra complexity. Students should first understand the bounded-window behavior it is meant to implement efficiently.
 
-- Microsoft Learn, collections — https://learn.microsoft.com/en-us/dotnet/standard/collections/
-- Python Software Foundation, data structures — https://docs.python.org/3/tutorial/datastructures.html
-- Python Software Foundation, input and output — https://docs.python.org/3/tutorial/inputoutput.html
-- Microsoft Learn, Visual Studio debugger documentation — https://learn.microsoft.com/en-us/visualstudio/debugger/
+## 15. Ready to continue when
+
+Explain and demonstrate:
+
+- array versus list;
+- simple file read;
+- split -> convert -> validate;
+- object from parsed data;
+- FIFO queue behavior;
+- rolling-window behavior;
+- why deterministic failing input helps debugging;
+- why ring buffers are introduced from a need rather than as isolated syntax.
+
+## 16. References
+
+- .NET collections: https://learn.microsoft.com/en-us/dotnet/standard/collections/
+- C# Queue: https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.queue-1
+- C# file APIs: https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/file-system/
+- Visual Studio debugger: https://learn.microsoft.com/en-us/visualstudio/debugger/
