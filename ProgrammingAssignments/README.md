@@ -8,8 +8,8 @@ Programming Assignments are **50% of the course grade**. Canvas category weighti
 | --- | --- | ---: | ---: |
 | [Foundations Readiness](FoundationsReadiness/) | 1–2 | 100 | 10% |
 | [Cross-Language Engineering Model](CrossLanguageEngineeringModel/) | 3–6 | 250 | 25% |
-| [Protocol Data Logger](ProtocolDataLogger/) | 7–9 | 250 | 25% |
-| [Event-Driven Device/Host Controller](EventDrivenDeviceHostController/) | 10–11 | 200 | 20% |
+| [Protocol Data Logger](ProtocolDataLogger/) | 7–9 | 200 | 20% |
+| [Event-Driven Device/Host Controller](EventDrivenDeviceHostController/) | 10–11 | 250 | 25% |
 | [Integration and Verification Portfolio](IntegrationVerificationPortfolio/) | 12–16 | 200 | 20% |
 | **Total** |  | **1000** | **100%** |
 

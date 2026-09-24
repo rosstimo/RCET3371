@@ -1,0 +1,109 @@
+name: Validate S27 Course Consistency
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "README.md"
+      - "Course/**"
+      - "LearningPath/**"
+      - "Topics/**"
+      - "Guides/**"
+      - "References/**"
+      - "Standards/**"
+      - "ProgrammingAssignments/**"
+      - "Examples/**"
+      - "Resources/**"
+      - ".github/workflows/s27-consistency.yml"
+  push:
+    paths:
+      - "README.md"
+      - "Course/**"
+      - "LearningPath/**"
+      - "Topics/**"
+      - "Guides/**"
+      - "References/**"
+      - "Standards/**"
+      - "ProgrammingAssignments/**"
+      - "Examples/**"
+      - "Resources/**"
+      - ".github/workflows/s27-consistency.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  consistency:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Check assignment points and unresolved placeholders
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          import sys
+
+          expected = {
+              "FoundationsReadiness": 100,
+              "CrossLanguageEngineeringModel": 250,
+              "ProtocolDataLogger": 200,
+              "EventDrivenDeviceHostController": 250,
+              "IntegrationVerificationPortfolio": 200,
+          }
+
+          failures = []
+          index = Path("ProgrammingAssignments/README.md").read_text(encoding="utf-8")
+
+          for name, points in expected.items():
+              readme = Path("ProgrammingAssignments") / name / "README.md"
+              rubric = Path("ProgrammingAssignments") / name / "rubric.md"
+              body = readme.read_text(encoding="utf-8")
+              rubric_body = rubric.read_text(encoding="utf-8")
+
+              point_patterns = [
+                  rf"Points:\s*{points}\b",
+                  rf"category value:\s*{points}\s+points\s+out\s+of\s+1000",
+              ]
+              if not any(re.search(p, body, flags=re.I) for p in point_patterns):
+                  failures.append(f"{readme}: expected {points} points")
+              if not re.search(rf"Total:\s*\*\*{points}\s+points\*\*", rubric_body, flags=re.I):
+                  failures.append(f"{rubric}: expected total {points} points")
+
+          expected_rows = {
+              "FoundationsReadiness": "| [Foundations Readiness](FoundationsReadiness/) | 1–2 | 100 | 10% |",
+              "CrossLanguageEngineeringModel": "| [Cross-Language Engineering Model](CrossLanguageEngineeringModel/) | 3–6 | 250 | 25% |",
+              "ProtocolDataLogger": "| [Protocol Data Logger](ProtocolDataLogger/) | 7–9 | 200 | 20% |",
+              "EventDrivenDeviceHostController": "| [Event-Driven Device/Host Controller](EventDrivenDeviceHostController/) | 10–11 | 250 | 25% |",
+              "IntegrationVerificationPortfolio": "| [Integration and Verification Portfolio](IntegrationVerificationPortfolio/) | 12–16 | 200 | 20% |",
+          }
+          for label, row in expected_rows.items():
+              if row not in index:
+                  failures.append(f"ProgrammingAssignments/README.md: missing expected row for {label}")
+
+          roots = [
+              Path("README.md"), Path("Course"), Path("LearningPath"), Path("Topics"),
+              Path("Guides"), Path("References"), Path("Standards"),
+              Path("ProgrammingAssignments"), Path("Examples"), Path("Resources"),
+          ]
+          markers = re.compile(r"\b(TBD|FIXME|PLACEHOLDER)\b|\[TODO\]|coming soon", re.I)
+          for root in roots:
+              paths = [root] if root.is_file() else list(root.rglob("*.md")) if root.exists() else []
+              for path in paths:
+                  for line_no, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
+                      if markers.search(line):
+                          failures.append(f"{path}:{line_no}: unresolved placeholder marker: {line.strip()}")
+
+          for path in Path("LearningPath").glob("*.md"):
+              text = path.read_text(encoding="utf-8")
+              if "RCET3371-planning" in text:
+                  failures.append(f"{path}: student route links or refers to private planning repository")
+
+          if failures:
+              print("\n".join(failures))
+              sys.exit(1)
+
+          print("Assignment points, public placeholders, and LearningPath privacy boundary are consistent.")
+          PY
