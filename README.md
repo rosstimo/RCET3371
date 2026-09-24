@@ -1,24 +1,32 @@
-# RCET3371
+# RCET 3371
 
-Student-facing course materials for RCET 3371.
+Advanced Programming Techniques and Software Systems
 
-## Fall 2026
+## Start here
 
-**[Start here: Fall 2026 course path](F26/README.md)**
+**[RCET 3371 Learning Path](LearningPath/README.md)**
 
-The Fall 2026 page identifies the current topic, what to read or practice next, assignments, examples, and upcoming material. Use it as the normal course entry point.
+The Learning Path is the ordered route through the course for both instructor-led and independent learning. Sections are learning units, not calendar weeks.
 
-## General course materials and reference
+## Course collections
 
-- [Assignments](00-Assignments/)
-- [Examples](Examples/)
-- [Git resources](git/)
+- [Course guide](Course/README.md)
+- [Learning Path](LearningPath/)
+- [Topics](Topics/) — self-learning concept guides
+- [Guides](Guides/) — workflows and toolchains
+- [References](References/) — quick lookup
+- [Standards](Standards/) — course requirements
+- [Programming Assignments](ProgrammingAssignments/) — all graded programming/work-product instructions
+- [Examples](Examples/) — runnable/traceable demonstrations
+- [Resources](Resources/) — vectors, captured streams, datasets, and support files
 
-## Student guides
+## Grade categories
 
-### Flowcharts
+- **Programming Assignments — 50%**
+- **Quizzes and Assessments — 50%**
 
-- [Flowchart guide](Guides/Flowcharts/RCET-Flowchart-Guide.md) - design workflow, notation, decisions and loops, level of detail, hierarchical charts, interrupts, lab-book documentation, and authoring with Mermaid, draw.io, or pencil and paper.
-- [Flowchart quick reference](Guides/Flowcharts/RCET-Flowchart-Quick-Reference.md) - compact notation, Mermaid, draw.io, and final-check reference.
+See the [Course guide](Course/README.md) and each Learning Path section for how practice, assignments, and assessment fit together.
 
-Start with the full guide when learning or reviewing the concepts. Use the quick reference while creating a chart.
+## Historical/current-transition material
+
+Older Fall 2026 and inherited material may remain temporarily in this repository while the Spring 2027 semantic migration is completed. The canonical Spring 2027 route is the Learning Path above. Historical semester snapshots are preserved by Git tags rather than permanent semester course copies.
