@@ -154,6 +154,98 @@ Stop Click   -> request IDLE
 
 Trace those transitions on paper before implementing a formal state machine.
 
+### The same transition model in C#
+
+```csharp
+enum ControllerState
+{
+    Idle,
+    Running,
+    Fault
+}
+
+enum ControllerEvent
+{
+    Start,
+    TargetReached,
+    FaultDetected,
+    ResetSafe
+}
+
+static ControllerState NextState(
+    ControllerState state,
+    ControllerEvent input)
+{
+    return (state, input) switch
+    {
+        (ControllerState.Idle, ControllerEvent.Start)
+            => ControllerState.Running,
+
+        (ControllerState.Running, ControllerEvent.TargetReached)
+            => ControllerState.Idle,
+
+        (_, ControllerEvent.FaultDetected)
+            => ControllerState.Fault,
+
+        (ControllerState.Fault, ControllerEvent.ResetSafe)
+            => ControllerState.Idle,
+
+        _ => state
+    };
+}
+```
+
+This version is intentionally pure: given current state and event, it returns next state. That makes transition tests easy.
+
+### The same transition model in embedded C
+
+```c
+typedef enum
+{
+    STATE_IDLE,
+    STATE_RUNNING,
+    STATE_FAULT
+} controller_state_t;
+
+typedef enum
+{
+    EVENT_START,
+    EVENT_TARGET_REACHED,
+    EVENT_FAULT_DETECTED,
+    EVENT_RESET_SAFE
+} controller_event_t;
+
+controller_state_t next_state(
+    controller_state_t state,
+    controller_event_t input)
+{
+    if (input == EVENT_FAULT_DETECTED)
+    {
+        return STATE_FAULT;
+    }
+
+    if ((state == STATE_IDLE) && (input == EVENT_START))
+    {
+        return STATE_RUNNING;
+    }
+
+    if ((state == STATE_RUNNING) &&
+        (input == EVENT_TARGET_REACHED))
+    {
+        return STATE_IDLE;
+    }
+
+    if ((state == STATE_FAULT) && (input == EVENT_RESET_SAFE))
+    {
+        return STATE_IDLE;
+    }
+
+    return state;
+}
+```
+
+The syntax and type system changed. The transition table did not. That is why the table/model should exist before either implementation.
+
 
 ### Example 1: timer reset ambiguity
 
@@ -243,6 +335,11 @@ Explain:
 - why callback soup hides system behavior.
 
 ## 11. References
+
+- Microsoft, C# enumeration types — https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/enum
+- Microchip Technology Inc., *MPLAB XC8 C Compiler User's Guide* — https://onlinedocs.microchip.com/
+  - Used for: embedded C implementation context.
+
 
 - Microsoft Learn, events overview — https://learn.microsoft.com/en-us/dotnet/standard/events/
 - Microsoft Learn, timers — https://learn.microsoft.com/en-us/dotnet/standard/threading/timers
