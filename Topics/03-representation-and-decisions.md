@@ -1,216 +1,272 @@
-# RCET 3371 — Representation and Decisions
+# RCET 3371 - Representation and Decisions
 
 *Self-learning guide*
 
 [Topics index](README.md) · [Learning Path Section 3](../LearningPath/03-Representation-and-Decisions.md)
 
-## Contents
+## 1. Start with a familiar C# integer
 
-1. Why this matters
-2. Outcomes
-3. Prerequisites
-4. Core model
-5. Representation and operations
-6. Worked examples
-7. Apply, verify, and troubleshoot
-8. Practice
-9. Answer key
-10. Explain without notes
-11. References
+RCET 2265 already used integer variables, arithmetic, comparisons, binary/hexadecimal values, and conversions.
 
-## 1. Why this matters
+Start here:
 
-A value and its representation are not the same thing. Hardware, files, protocols, and programming languages all impose representation rules. Many real failures come from using correct arithmetic on the wrong representation, or correct bits with the wrong meaning.
+```csharp
+int value = 42;
 
-## 2. Outcomes
+Console.WriteLine(value);
+Console.WriteLine(Convert.ToString(value, 2));
+Console.WriteLine(value.ToString("X"));
+```
 
-You should be able to:
+The same value can be displayed as decimal, binary, or hexadecimal.
 
-- determine range from bit width and signedness;
-- predict fixed-width overflow behavior when the language/context defines it;
-- use bitwise AND, OR, XOR, NOT, shifts, masks, and comparisons;
-- extract, modify, and reinsert a packed field without damaging unrelated bits;
-- reconstruct multi-byte values with an explicit byte order;
-- distinguish logical from bitwise operations;
-- separate full-resolution internal values from rounded display formatting;
-- use engineering prefixes and significant figures appropriately.
+That is the bridge into representation.
 
-## 3. Prerequisites
+## 2. Value, representation, and type
 
-Binary, hexadecimal, arithmetic, variables, and conditionals from RCET 2265/digital coursework.
+Keep these questions separate:
 
-## 4. Core model
-
-Always separate four questions:
-
-1. **Value:** what quantity or state does this mean?
+1. **Value:** what quantity/state do I mean?
 2. **Representation:** which bits/bytes encode it?
-3. **Type:** how does the language interpret those bits?
-4. **Operation:** what transformation is being performed?
+3. **Type:** how does this language interpret/store it?
+4. **Operation:** what am I doing to it?
 
-For an unsigned n-bit integer:
+For example:
 
-    minimum = 0
-    maximum = 2^n - 1
+```text
+value:          42
+8-bit binary:   0010 1010
+hex:            2A
+```
 
-For a common two's-complement signed n-bit integer:
+The quantity did not change when the display format changed.
 
-    minimum = -2^(n-1)
-    maximum = 2^(n-1) - 1
+## 3. Width and range
 
-## 5. Representation and operations
+An unsigned 8-bit value has 256 possible patterns:
 
-### Masks
+```text
+0000 0000 through 1111 1111
+0 through 255
+```
 
-A mask selects or modifies bit positions.
+For unsigned `n` bits:
 
-Read selected bits:
+```text
+minimum = 0
+maximum = 2^n - 1
+```
 
-    selected = value & mask
+A common two's-complement signed `n`-bit range is:
 
-Set selected bits:
+```text
+-2^(n-1) through 2^(n-1)-1
+```
 
-    value = value | mask
+Do several 4-bit and 8-bit examples by hand before treating the formulas as shortcuts.
 
-Clear selected bits:
-
-    value = value & ~mask
-
-Toggle selected bits:
-
-    value = value ^ mask
-
-### Grab, modify, put back
-
-For a packed field:
-
-1. mask the field;
-2. shift it to a convenient position;
-3. modify it;
-4. constrain it to the legal width;
-5. shift it back;
-6. clear the destination field;
-7. OR the new field into the original word.
-
-This preserves unrelated bits.
-
-### Multi-byte values
-
-If a 16-bit unsigned value is transmitted high byte first:
-
-    value = (high << 8) | low
-
-If low byte is first, the reconstruction order changes. Byte order is part of the protocol contract.
-
-### Overflow
-
-Fixed-width types have finite range. C# integral operations can use checked or unchecked contexts. Embedded C behavior depends on type/conversion rules and should be verified against the compiler/language rules. Python integers are not fixed-width in the same ordinary way, so translating fixed-width algorithms into Python often requires explicit masking when you want hardware-like behavior.
-
-### Display versus storage
-
-Keep a measured/calculated value at useful internal precision. Apply rounding and engineering formatting at the presentation boundary unless the specification explicitly requires quantization earlier.
-
-## 6. Worked examples
-
-### Example 1: packed state byte
+## 4. Bitwise operations begin with one bit
 
 Suppose:
 
-    state = 0b1010_0101
+```text
+value = 0010 1010
+mask  = 0000 0010
+```
 
-Upper nibble is a count. Lower nibble contains flags.
+AND the values:
 
-Extract count:
+```text
+0010 1010
+0000 0010
+---------
+0000 0010
+```
 
-    count = (state & 0xF0) >> 4
+Bit 1 is set.
 
-Count is 10.
+In C#:
 
-Increment modulo 16:
+```csharp
+byte value = 0b0010_1010;
+bool bit1IsSet = (value & 0b0000_0010) != 0;
+```
 
-    count = (count + 1) & 0x0F
+First understand that one-bit case.
 
-Repack while preserving flags:
+Then expand to fields.
 
-    state = (state & 0x0F) | (count << 4)
+## 5. Field example: extract a nibble
 
-### Example 2: 16-bit value
+Suppose:
 
-Bytes:
+```text
+state = 1010 0101
+```
 
-    high = 0x12
-    low  = 0x34
+The upper four bits contain a count.
 
-Big-endian reconstruction:
+### Step 1: mask
 
-    0x1234 = 4660 decimal
+```text
+state       1010 0101
+mask        1111 0000
+AND         1010 0000
+```
 
-### Example 3: engineering display
+### Step 2: shift right
 
-Internal value:
+```text
+1010 0000 >> 4 = 0000 1010
+```
 
-    0.000004732 V
+The count is decimal 10.
 
-A display might show:
+C#:
 
-    4.73 uV
+```csharp
+byte state = 0b1010_0101;
+int count = (state & 0xF0) >> 4;
 
-The program should not replace the internal value with 4.73e-6 merely because that is what was displayed.
+Console.WriteLine(count); // 10
+```
 
-## 7. Apply, verify, and troubleshoot
+## 6. Grab, modify, put back
 
-When bitwise code is wrong:
+Now increment the upper nibble while preserving the lower flags.
 
-1. write the value in binary/hex;
-2. mark the field positions;
-3. write the mask;
-4. trace each operation;
-5. verify unaffected bits;
-6. test boundary values: all zero, all one, minimum field, maximum field, rollover.
+```csharp
+byte state = 0b1010_0101;
 
-When numeric formatting is wrong:
+int count = (state & 0xF0) >> 4;  // grab
+count = (count + 1) & 0x0F;      // modify within 4 bits
+state = (byte)((state & 0x0F) | (count << 4)); // put back
+```
 
-- verify the raw value first;
-- verify units;
-- verify prefix threshold;
-- verify significant-figure rule;
-- only then inspect string formatting.
+Trace it:
 
-## 8. Practice
+```text
+before: 1010 0101
+count:  1010
++1:     1011
+after:  1011 0101
+```
 
-1. What is the unsigned range of 8 bits?
-2. Extract bits 6:4 from 0b1101_1010.
-3. Set bit 2 of 0b1000_0001 without changing other bits.
-4. Reconstruct big-endian bytes 0xBE and 0xEF.
-5. A 4-bit field currently contains 15. What should modulo-16 increment produce?
-6. Why may Python require an explicit mask when emulating an 8-bit hardware operation?
-7. A program rounds a sensor value before storing it. What information is lost?
+Notice the lower nibble stayed `0101`.
 
-## 9. Answer key
+That preservation is the reason for the masks.
 
-1. 0 through 255.
-2. Mask 0x70 and shift right four: 0b101 = 5.
-3. OR with 0x04: result 0b1000_0101.
-4. 0xBEEF.
-5. 0.
-6. Ordinary Python integers grow beyond fixed hardware widths; masking constrains the representation to the intended width.
-7. Any precision below the chosen rounding point is permanently discarded, which can distort later calculations or comparisons.
+## 7. Try the same bounded operation in Python
 
-## 10. Explain without notes
+```python
+state = 0b1010_0101
 
-Explain:
+count = (state & 0xF0) >> 4
+count = (count + 1) & 0x0F
+state = (state & 0x0F) | (count << 4)
 
-- value versus representation versus type;
-- signed/unsigned range;
-- mask/shift;
-- packed-field preservation;
-- byte order;
-- overflow;
-- internal precision versus display precision.
+print(f"{state:08b}")
+```
 
-## 11. References
+Expected:
 
-- Microsoft Learn, integral numeric types — https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/integral-numeric-types
-- Microsoft Learn, checked and unchecked — https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/checked-and-unchecked
-- Python Software Foundation, numeric types — https://docs.python.org/3/library/stdtypes.html#numeric-types-int-float-complex
-- Microchip, MPLAB XC8 compiler documentation — https://www.microchip.com/en-us/tools-resources/develop/mplab-xc-compilers/xc8
+```text
+10110101
+```
+
+The algorithm is nearly identical.
+
+Python integers are not normally limited to 8 bits, which is why explicit masks matter when you want hardware-like width behavior.
+
+## 8. Multi-byte value
+
+Suppose a protocol gives:
+
+```text
+high = 0x12
+low  = 0x34
+```
+
+and states that the high byte comes first.
+
+```csharp
+int value = (0x12 << 8) | 0x34;
+```
+
+Result:
+
+```text
+0x1234 = 4660
+```
+
+Do not memorize "shift the first byte." The protocol tells you which byte is high and which is low.
+
+## 9. Overflow
+
+Fixed-width types have finite ranges.
+
+If an operation is supposed to behave like an 8-bit register, test boundary values such as:
+
+- 0;
+- 1;
+- 254;
+- 255.
+
+C#, C, Python, and assembly do not all expose overflow in exactly the same way. The course will compare those differences after the intended width is clear.
+
+## 10. Engineering display versus stored value
+
+Suppose the internal value is:
+
+```text
+0.000004732 V
+```
+
+A display may show:
+
+```text
+4.73 uV
+```
+
+Formatting the display should not destroy the extra internal precision unless the specification explicitly requires quantization.
+
+## 11. Practice
+
+1. Write decimal 42 as 8-bit binary and hex.
+2. What is the unsigned range of 4 bits? Of 8 bits?
+3. Test bit 5 of `1010 0101`.
+4. Extract bits 6:4 from `1101 1010`.
+5. Increment the upper nibble of `1111 0011` modulo 16 while preserving the lower nibble.
+6. Reconstruct `0xBE` high and `0xEF` low into a 16-bit value.
+7. Why does Python sometimes need an explicit mask when imitating an 8-bit target?
+8. Why should formatting generally happen after calculation?
+
+## 12. Answer reasoning
+
+1. `0010 1010`, `0x2A`.
+2. 0-15 and 0-255.
+3. Mask with `0010 0000`; result is nonzero, so bit 5 is set.
+4. `101` = 5.
+5. Upper nibble 15 increments to 0; result `0000 0011`.
+6. `0xBEEF`.
+7. Ordinary Python integers can grow beyond the intended hardware width.
+8. Early rounding discards information that later calculations may need.
+
+## 13. Ready to continue when
+
+Explain and demonstrate:
+
+- value versus representation;
+- width and range;
+- one-bit mask;
+- multi-bit field extraction;
+- grab -> modify -> put back;
+- multi-byte reconstruction;
+- why unrelated bits must be preserved;
+- storage precision versus display formatting.
+
+## 14. References
+
+- C# integral types: https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/integral-numeric-types
+- C# bitwise operators: https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/bitwise-and-shift-operators
+- Python numeric types: https://docs.python.org/3/library/stdtypes.html#numeric-types-int-float-complex
