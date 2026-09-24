@@ -1,174 +1,130 @@
-# Programming Assignment — Protocol Data Logger
+# Protocol Data Logger
 
-[Programming Assignments index](../README.md)
+**Programming Assignments category value: 250 points out of 1000**
 
-**Points: 125**
+Sections: 7–9
 
 ## Objective
 
-Build a robust host-side protocol/parser/logger system that works completely against deterministic simulated/captured data before any physical serial device is required.
+Build a robust protocol/parser/logger system that works completely against deterministic simulated and captured data before physical serial hardware is introduced.
 
-Use the Telemetry Record v1 model from the Cross-Language Engineering Model assignment as the sample payload.
+The authoritative wire/logging contract is [protocol-specification.md](protocol-specification.md). Do not create a second incompatible protocol inside your implementation.
 
-## RCET Telemetry Protocol v1
+## Required repository structure
 
-Frame:
+Organize responsibilities clearly. One acceptable shape is:
 
-| Offset | Field | Meaning |
-| ---: | --- | --- |
-| 0 | START | 0xA5 |
-| 1 | TYPE | message type |
-| 2 | LEN | payload length 0..16 |
-| 3.. | PAYLOAD | LEN bytes |
-| last | CHECK | XOR of TYPE, LEN, and every payload byte |
+```text
+README.md
+csharp/
+python/
+tests/
+evidence/
+```
 
-START is not included in CHECK.
+Your exact source layout may differ when the same boundaries remain easy to identify.
 
-### Message types
+## Required architecture
 
-| Type | Name | Payload |
-| ---: | --- | --- |
-| 0x01 | ID_REQUEST | empty |
-| 0x81 | ID_RESPONSE | ASCII RCET3371 |
-| 0x10 | SAMPLE_REQUEST | empty |
-| 0x90 | SAMPLE_RESPONSE | one Telemetry Record v1 (4 bytes) |
-| 0xE0 | ERROR | one error code byte |
+The C# host must separate, at minimum:
 
-### Parser requirements
+```text
+transport
+  ↓
+stream parser
+  ↓
+protocol/device API
+  ↓
+domain model
+  ↓
+logging/replay/presentation
+```
 
-The streaming parser must:
+The parser must not depend directly on `SerialPort`.
 
-- accept any read chunking;
-- ignore bytes before START;
-- reject LEN > 16;
-- wait for partial frames without declaring success;
-- validate CHECK;
-- produce zero, one, or multiple messages from a supplied chunk;
-- recover and continue after malformed input according to your documented resynchronization rule.
+## C# host requirements
 
-Do not assume one serial read equals one frame.
+Implement:
 
-## Host architecture
-
-Required boundaries:
-
-    transport
-        ↓
-    stream parser
-        ↓
-    protocol/device API
-        ↓
-    domain model
-        ↓
-    logger/replay/presentation
-
-The parser must not require SerialPort.
-
-## Required host implementations
-
-### C# primary host
-
-Required:
-
-- parser;
-- fake transport;
-- serial transport adapter;
-- device identity handshake;
-- sample request/response;
+- streaming protocol parser;
+- deterministic parser tests over supplied captures;
+- fake/captured transport;
+- real `SerialPort` adapter;
+- identity request/response handling;
+- decoded telemetry model;
 - visible connection/error state;
-- logger;
-- replay command/mode.
+- CSV logger using the specification;
+- 100-record file rotation;
+- replay of produced logs;
+- malformed-row reporting;
+- summary statistics over replayed telemetry.
 
-### Python diagnostic/replay tool
+## Python diagnostic/replay tool
 
-Required:
+Implement a command-line Python tool that can:
 
-- parse captured protocol stream or log;
-- report valid/invalid frames;
-- decode Telemetry Record samples;
-- summarize sample count/min/max/average voltage.
+- identify valid/invalid frames from the supplied captures;
+- decode telemetry;
+- replay the supplied/produced CSV log format;
+- report record count, minimum/maximum temperature, arithmetic mean temperature, and status/fault observations;
+- exit nonzero with a clear diagnostic for unusable input.
 
-The Python tool may be command-line based.
-
-## Logging contract
-
-CSV header:
-
-    timestamp_utc,sequence,fault,remote,enabled,data_ready,raw,volts,source
-
-Requirements:
-
-- UTC timestamp in explicit ISO 8601-compatible representation;
-- one decoded valid sample per row;
-- enough numeric precision for replay;
-- source identifies fake/captured/live/replay as appropriate.
-
-## Replay
-
-Replay must load a produced log and run records through the same domain/statistics logic used for live samples.
-
-It must not require a connected device.
+It must not simply invoke the C# executable.
 
 ## Supplied resources
 
-Use:
+Use the authoritative captures:
 
-- [protocol vectors](../../Resources/protocol-vectors/rcet-telemetry-protocol-v1.txt)
-- [captured stream](../../Resources/captured-streams/telemetry-protocol-capture.txt)
-- [sample telemetry log](../../Resources/datasets/sample-telemetry.csv)
+- [valid stream](../../Resources/captured-streams/valid-stream.hex)
+- [chunking stream](../../Resources/captured-streams/chunking-stream.hex)
+- [malformed stream](../../Resources/captured-streams/malformed-stream.hex)
 
-## Required tests
+The same logical frames must parse identically regardless of how input bytes are chunked.
 
-At minimum:
+## Required verification
 
-- one frame in one chunk;
+At minimum verify:
+
+- identity request/response;
+- one complete frame in one chunk;
 - one frame one byte at a time;
-- two frames in one chunk;
+- multiple frames in one chunk;
 - noise before START;
-- invalid LEN;
-- invalid CHECK;
+- invalid length;
+- bad checksum;
 - partial frame across chunks;
-- valid frame after malformed frame;
-- fake disconnect/reconnect;
-- identity success/failure;
+- successful recovery after malformed input;
+- fake disconnect/reconnect behavior;
+- 100/101-record log rotation boundary;
 - log write/read round trip;
-- malformed log row.
+- malformed log row handling.
+
+## Hardware rule
+
+All core functional credit must be achievable without physical hardware.
+
+The real serial adapter is still required, but hardware verification is recorded separately. If compatible hardware is not available in the scheduled course environment, the approved fake/captured integration path is the verification authority for core behavior.
 
 ## Milestones
 
-1. protocol specification + parser tests;
-2. fake transport + device API;
-3. logging/replay without hardware;
-4. C# serial adapter + live integration when available;
-5. Python diagnostic/replay tool;
-6. final failure/recovery evidence.
-
-## Complete when
-
-- all deterministic tests pass without hardware;
-- C# host can identify and request samples through the fake transport;
-- parser behavior is independent of chunk size;
-- logger and replay agree on decoded records;
-- Python tool correctly processes supplied capture/log;
-- real serial adapter exists and can be verified when hardware is available;
-- failures are visible and documented.
+Use [milestones.md](milestones.md) as progress/checkoff guidance. Milestones do not create separate grade categories.
 
 ## Evaluation
 
-| Area | Points |
-| --- | ---: |
-| protocol/parser correctness | 25 |
-| deterministic parser tests | 15 |
-| architecture and fake transport | 15 |
-| C# device/host behavior | 20 |
-| logging + round-trip + replay | 15 |
-| Python diagnostic/replay tool | 10 |
-| disconnect/error/recovery behavior | 10 |
-| live serial adapter/evidence or approved simulation evidence | 10 |
-| documentation/repository quality | 5 |
-| **Total** | **125** |
+Use [rubric.md](rubric.md).
 
-If physical hardware is unavailable, the instructor may award the 10 live-integration points from the supplied approved simulator/fake integration gate without changing the core assignment.
+## Complete when
+
+A clean clone can:
+
+1. run all deterministic protocol tests;
+2. process supplied captures;
+3. exercise the C# device API through the fake transport;
+4. write and rotate logs;
+5. replay those logs;
+6. run the Python diagnostic/replay tool;
+7. build the real serial adapter;
+8. reproduce the documented evidence without private instructor material.
 
 ## Submission
 
