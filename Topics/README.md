@@ -23,6 +23,8 @@ For each topic:
 
 Advanced examples may show where the course is going. They are not evidence that you were expected to know the concept before it was introduced.
 
+A Topic should be comprehensive for the concept it owns. When the concept behaves differently in a course language or environment, the Topic should include enough concrete coverage to learn that difference. This does **not** mean every Topic must show C#, Python, embedded C, and pic-as. Include an environment because it changes the reasoning, not merely for symmetry.
+
 ## Recommended topic sequence
 
 1. [Git and Project Organization](git-project-organization.md)
