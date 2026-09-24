@@ -252,12 +252,49 @@ Do not try to predict the entire compiler output from the C source.
 
 ## 10. Hand-written pic-as comparison
 
-Conceptually, a bounded assembly routine may implement the same mask with PIC instructions.
+Use exactly the same contract as the C function:
+
+```text
+input:  one 8-bit value
+output: low nibble only
+rule:   result = input AND 0x0F
+```
+
+A small PIC16F883 routine can make that operation explicit:
+
+```assembly
+input_value     EQU 0x70
+result_value    EQU 0x71
+
+;-----------------------------------------------------
+; LowNibble
+; Input:  input_value
+; Output: result_value
+; Uses:   WREG
+;-----------------------------------------------------
+LowNibble:
+    movf    input_value,w
+    andlw   0x0F
+    movwf   result_value
+    return
+```
+
+Test vectors:
+
+| input | expected |
+| ---: | ---: |
+| `0xA5` | `0x05` |
+| `0xFF` | `0x0F` |
+| `0x30` | `0x00` |
+| `0x07` | `0x07` |
+
+Run the same vectors against the C function and the assembly routine.
 
 The learning goal is:
 
 ```text
 same contract
+same test vectors
 different abstraction level
 ```
 
@@ -266,6 +303,8 @@ not:
 ```text
 one C line = one assembly line
 ```
+
+The compiler is free to choose a different instruction sequence as long as the observable contract is equivalent.
 
 ## 11. State machines are previewed, not front-loaded
 
