@@ -6,15 +6,17 @@ Sections: 3–6
 
 ## Objective
 
-Implement one small engineering data contract across C#, Python, embedded C/XC8, and a bounded PIC assembly routine.
+Build one small engineering data model gradually across C#, Python, embedded C/XC8, and one bounded PIC assembly routine.
 
-The goal is not to make four unrelated programs. The goal is to preserve the **same behavior and test vectors** while observing how representation, typing, modules, toolchains, and processor-level implementation differ.
+The final project preserves the **same behavior and authoritative test vectors** across languages, but you are **not** expected to design the complete cross-language solution at the beginning of Section 3.
 
-Read [specification.md](specification.md) before coding.
+Work through the [section-aligned milestones](milestones.md) in order. Each milestone adds only the ideas introduced by that point in the Learning Path.
 
-## Required implementations
+Read [specification.md](specification.md) for the final required behavior. Use it as the destination, not as a signal that every part must be implemented immediately.
 
-Your repository must contain:
+## Final repository shape
+
+By the end of Section 6, your repository must contain:
 
 ```text
 README.md
@@ -26,6 +28,10 @@ xc8/
 pic-as/
 evidence/
 ```
+
+It is normal for some of these directories to be added later as the course reaches the corresponding language/toolchain work.
+
+## Final required implementations
 
 ### C#
 
@@ -69,6 +75,8 @@ In `evidence/comparison.md`, explain:
 - how module/function boundaries differ;
 - what generated assembly reveals about at least one small XC8 C function;
 - one case where line-by-line translation would be misleading.
+
+These explanations should grow as the corresponding concepts are taught. Do not write them all from guesses at the start of the assignment.
 
 ## Milestones
 
