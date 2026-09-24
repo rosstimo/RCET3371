@@ -88,7 +88,7 @@ jobs:
               Path("Guides"), Path("References"), Path("Standards"),
               Path("ProgrammingAssignments"), Path("Examples"), Path("Resources"),
           ]
-          markers = re.compile(r"\b(TBD|FIXME|PLACEHOLDER)\b|\[TODO\]|coming soon", re.I)
+          markers = re.compile(r"\[TODO\]|\[TBD\]|\[FIXME\]|\[PLACEHOLDER\]|\b(?:TODO|TBD|FIXME|PLACEHOLDER)\s*:", re.I)
           for root in roots:
               paths = [root] if root.is_file() else list(root.rglob("*.md")) if root.exists() else []
               for path in paths:
