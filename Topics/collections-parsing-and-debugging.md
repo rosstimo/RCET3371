@@ -219,6 +219,22 @@ Trace the queue after every operation.
 
 Do not start by memorizing queue terminology. Start from the ordering requirement.
 
+The same FIFO requirement in Python can use `collections.deque`:
+
+```python
+from collections import deque
+
+commands = deque()
+commands.append("START")
+commands.append("READ")
+commands.append("STOP")
+
+print(commands.popleft())  # START
+print(commands.popleft())  # READ
+```
+
+The behavior contract stayed the same. The library type and method names changed.
+
 ## 9. Rolling window
 
 Requirement:
@@ -255,6 +271,36 @@ A ring buffer typically tracks:
 Its advantage is predictable bounded storage and no need to shift all elements on every new sample.
 
 At this point, be able to trace a supplied ring-buffer example. Inventing a correct generic ring buffer from scratch is not the first learning target.
+
+### Embedded C makes capacity explicit
+
+A desktop `List<T>` can grow. An embedded target often benefits from fixed storage whose maximum size is known.
+
+```c
+#include <stdint.h>
+
+#define SAMPLE_CAPACITY 4u
+
+static uint8_t samples[SAMPLE_CAPACITY];
+static uint8_t sample_count = 0u;
+
+void add_sample(uint8_t value)
+{
+    if (sample_count < SAMPLE_CAPACITY)
+    {
+        samples[sample_count] = value;
+        sample_count++;
+    }
+}
+```
+
+The important difference is not syntax. The storage policy is visible:
+
+- capacity is four;
+- there is no automatic growth;
+- the code must define what happens when the buffer is full.
+
+That same bounded-storage reasoning carries into PIC assembly, where RAM locations and indexes are even more explicit.
 
 ## 11. Debugging with deterministic input
 
@@ -299,6 +345,28 @@ A useful sequence:
 
 Do not change five things at once while debugging.
 
+Use the same debugging question across environments:
+
+> What was the exact input, what state did I expect at this point, and what state do I actually have?
+
+### C# / Visual Studio
+
+Set a breakpoint before the operation, then inspect Locals/Watch and step over the line.
+
+### Python / VS Code
+
+Run the same fixed input under the Python debugger. Inspect the list, dictionary, or object immediately before and after the operation.
+
+### XC8 C / MPLAB X
+
+Prefer the simulator or a known hardware input while learning the code path. Watch the relevant C variables and, when useful, inspect generated assembly/disassembly after the C behavior is understood.
+
+### pic-as / MPLAB X
+
+Use the same test value repeatedly. Step instructions and inspect WREG, relevant file registers, and STATUS when the instruction is documented to affect flags.
+
+A debugger does not replace a test case. The deterministic input tells you what should happen; the debugger helps locate where actual state first diverges from that expectation.
+
 ## 13. Practice
 
 1. Trace the array-average example after each loop iteration.
@@ -340,3 +408,7 @@ Explain and demonstrate:
 - C# Queue: https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.queue-1
 - C# file APIs: https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/file-system/
 - Visual Studio debugger: https://learn.microsoft.com/en-us/visualstudio/debugger/
+- Python `collections.deque`: https://docs.python.org/3/library/collections.html#collections.deque
+- VS Code Python debugging: https://code.visualstudio.com/docs/python/debugging
+- Microchip MPLAB X IDE documentation: https://onlinedocs.microchip.com/
+  - Used for: debugger/simulator observation of XC8 C and pic-as target state.
