@@ -1,101 +1,132 @@
 # MPLAB X / XC8 Toolchain Guide
 
-[Guides index](../README.md)
+[Toolchain setup index](README.md)
+
+## Goal
+
+Install MPLAB X and XC8, create a PIC16F883 C project, and reach a successful first build before adding hardware behavior.
 
 ## Course baseline
 
-Reference environment for the S27 candidate:
-
 - PIC16F883
 - MPLAB X IDE 6.35
-- MPLAB XC8 compiler 4.00 or compatible supported patch
-- PICkit 3 where physical programming/debugging is required
-- simulator/fake path for software learning when hardware is unavailable
+- MPLAB XC8 compiler 4.00
+- simulator for the first software-only check
+- PICkit 3 or course-supported equivalent when physical programming/debugging is required later
 
-Microchip may recommend newer tooling by the time the course runs. Do not silently change the toolchain mid-course: verify the course examples and record the adopted version.
+MPLAB X and XC8 are separate installers.
 
-## Install
+## 1. Download and install MPLAB X
 
-Use Microchip's official MPLAB X and XC8 downloads.
+Official page:
 
-After installation verify:
+https://www.microchip.com/en-us/tools-resources/develop/mplab-x-ide
 
-- MPLAB X launches;
-- XC8 appears as an installed toolchain;
-- PIC16F883 can be selected;
-- a minimal project builds;
-- simulator is available;
-- physical PICkit/target detection is verified separately.
+Download the installer for your operating system.
 
-## Minimal C project expectations
+Run it and use the normal/default components unless class instructions specify otherwise.
 
-A course project should make these visible:
+Launch MPLAB X after installation.
 
-- selected device;
-- configuration bits;
-- oscillator assumptions;
-- headers;
-- source files;
-- build configuration;
-- warnings/errors.
+## 2. Download and install XC8
 
-Treat warnings as defects unless a specific warning is documented and justified.
+Official page:
 
-## Header/source module
+https://www.microchip.com/en-us/tools-resources/develop/mplab-x-compilers/xc8
 
-Header:
+Download **MPLAB XC8** for your operating system and run the installer.
 
-    #ifndef STATUS_H
-    #define STATUS_H
+For the course baseline, XC8 4.00 is the adopted major release.
 
-    #include <stdint.h>
+After installation, restart MPLAB X so it can discover the compiler.
 
-    uint8_t status_get_count(uint8_t state);
+## 3. Verify the compiler in MPLAB X
 
-    #endif
+In MPLAB X, open the build-tools/compiler settings and confirm an XC8 4.x installation is listed.
 
-Source:
+If multiple compiler versions are installed, select the course-supported XC8 version when creating the project.
 
-    #include "status.h"
+## 4. Create the first PIC16F883 C project
 
-    uint8_t status_get_count(uint8_t state)
+1. **File > New Project**.
+2. Choose a **Standalone Project** for a Microchip embedded target.
+3. Device: **PIC16F883**.
+4. Hardware tool: choose the **Simulator** for this first build.
+5. Compiler/toolchain: choose **XC8**.
+6. Project name: `HelloXC8`.
+7. Finish.
+
+The exact wizard grouping can vary slightly by MPLAB X release. The required facts are the device, tool, compiler, and project name.
+
+## 5. Add the first source file
+
+Create `main.c`:
+
+```c
+#include <xc.h>
+#include <stdint.h>
+
+void main(void)
+{
+    volatile uint8_t answer = 2u + 3u;
+
+    while (1)
     {
-        return (state >> 4) & 0x0Fu;
+        (void)answer;
     }
+}
+```
 
-## Generated assembly
+This intentionally resembles the arithmetic from the C# and Python first programs. There is no console output yet.
 
-For bounded comparisons, generate/list assembly output and inspect how:
+## 6. Build
 
-- function calls;
-- branches;
-- masks/shifts;
-- local values
+Use **Build Main Project**.
 
-map onto target operations.
+The first checkpoint is a successful build for PIC16F883.
 
-Do not infer execution cost from C source alone.
+Record the final build result and the selected XC8 version.
 
-## Hardware verification
+If the project does not build, do not add hardware code until this minimal project builds.
 
-Separate:
+## 7. Attach the new vocabulary after it builds
 
-**software verification**
-- compile;
-- simulator;
-- pure-function tests;
-- known vectors.
+- MPLAB X: IDE/project/debug orchestration
+- XC8: C compiler toolchain for the PIC target
+- PIC16F883 selection: tells the toolchain which processor/device rules apply
+- Simulator: software target used for early debugging without physical hardware
+- PICkit/target: later physical program/debug path
 
-**physical verification**
-- programmer connection;
-- target voltage/device;
-- pins/peripheral;
-- measured behavior.
+## 8. Add physical hardware later
 
-Document which has actually been performed.
+When an assignment actually requires hardware:
+
+1. connect the PICkit and target;
+2. select the physical hardware tool;
+3. verify target/device identification;
+4. program/debug;
+5. measure visible behavior independently.
+
+Do not describe simulator success as physical verification.
+
+## Troubleshooting
+
+### XC8 is not listed
+
+Restart MPLAB X after installing XC8. Confirm XC8 itself was installed, not only MPLAB X.
+
+### PIC16F883 cannot be selected
+
+Check installed device-family support and the MPLAB X installation. Record the exact dialog/error.
+
+### Build fails immediately
+
+Return to a brand-new minimal project and confirm the selected device, toolchain, and source file before adding more code.
 
 ## References
 
 - MPLAB X IDE: https://www.microchip.com/en-us/tools-resources/develop/mplab-x-ide
+- MPLAB X installation walkthrough: https://developerhelp.microchip.com/xwiki/bin/view/software-tools/ides/x/install-guide/
 - MPLAB XC8: https://www.microchip.com/en-us/tools-resources/develop/mplab-x-compilers/xc8
+- XC8 installation: https://developerhelp.microchip.com/xwiki/bin/view/software-tools/compilers/xc8/install/
 - PIC16F883: https://www.microchip.com/en-us/product/PIC16F883
