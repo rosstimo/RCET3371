@@ -25,20 +25,20 @@ Do not skip directly to independent Build tasks if the worked examples are still
 
 1. [Git and Project Organization](01-Git-and-Project-Organization.md) - refresh the Git workflow already used in RCET 2265 and make repository state visible.
 2. [Toolchains and First Cross-Language Programs](02-Toolchains-Recovery-and-Desktop-Events.md) - install/verify every required tool and get a first small program running.
-3. [Representation and Decisions](03-Representation-and-Decisions.md) - begin in familiar C#, then compare representation in Python, C, and assembly.
-4. [From Methods and Classes to Program Structure](04-Program-Structure-and-Interfaces.md) - grow familiar methods/classes into multi-file programs and modules.
-5. [Collections, Parsing, and Debugging](05-Collections-Memory-Parsing-and-Debugging.md) - start with arrays/lists and files before introducing queues and bounded buffers.
-6. [Embedded C from Familiar Program Logic](06-Embedded-C-and-Software-State.md) - translate known algorithms into XC8 C before adding embedded-specific ideas.
+3. [Representation and Bit Fields](03-Representation-and-Decisions.md) - separate value/width from bitwise and packed-field operations, then compare the same behavior across environments.
+4. [Contracts and Program Structure](04-Program-Structure-and-Interfaces.md) - make function/state contracts explicit, then grow familiar methods/classes into modules and interfaces.
+5. [Collections, Parsing, and Debugging](05-Collections-Memory-Parsing-and-Debugging.md) - treat collection behavior, parsing/validation, and deterministic debugging as distinct but coordinated skills.
+6. [Embedded C and C/Assembly Correspondence](06-Embedded-C-and-Software-State.md) - translate known algorithms into XC8 C, cross the hardware boundary deliberately, then compare bounded C behavior with pic-as.
 7. [Protocol Design](07-Protocol-Design.md)
 8. [Host Serial Applications](08-Host-Serial-Applications.md)
-9. [Persistence and Logging](09-Persistence-and-Logging.md)
-10. [Event-Driven Architecture](10-Event-Driven-Architecture.md)
+9. [Persistence, Logging, and Replay](09-Persistence-and-Logging.md)
+10. [State, Timing, and Fault Behavior](10-Event-Driven-Architecture.md)
 11. [System Integration](11-System-Integration.md)
 12. [Collaborative Development](12-Collaborative-Development.md)
 13. [Linux and Portability](13-Linux-and-Portability.md)
-14. [UI and Visualization](14-UI-and-Visualization.md)
-15. [Advanced Exploration](15-Advanced-Exploration.md)
-16. [Integration and Verification](16-Integration-and-Verification.md)
+14. [UI Architecture and Visualization](14-UI-and-Visualization.md)
+15. [Optional Advanced Exploration](15-Advanced-Exploration.md)
+16. [Verification and Design Review](16-Integration-and-Verification.md)
 
 ## Graded work
 
