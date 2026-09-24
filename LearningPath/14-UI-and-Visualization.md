@@ -14,7 +14,7 @@ You should be able to:
 
 ## Learn
 
-- [UI and visualization](../Topics/14-ui-and-visualization.md)
+- [UI and visualization](../Topics/ui-and-visualization.md)
 
 ## Practice
 

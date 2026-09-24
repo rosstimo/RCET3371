@@ -13,7 +13,7 @@ You should be able to:
 
 ## Learn
 
-- [Integration, verification, and design review](../Topics/16-integration-verification-and-design-review.md)
+- [Integration, verification, and design review](../Topics/integration-verification-and-design-review.md)
 - [Verification evidence standard](../Standards/verification-evidence.md)
 
 ## Practice

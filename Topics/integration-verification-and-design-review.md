@@ -2,7 +2,7 @@
 
 *Self-learning guide*
 
-[Topics index](README.md) · [Learning Path Section 16](../LearningPath/16-Integration-and-Verification.md)
+[Topics index](README.md)
 
 ## Contents
 

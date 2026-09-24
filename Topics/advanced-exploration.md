@@ -2,7 +2,7 @@
 
 *Self-learning guide*
 
-[Topics index](README.md) · [Learning Path Section 15](../LearningPath/15-Advanced-Exploration.md)
+[Topics index](README.md)
 
 ## Contents
 

@@ -16,7 +16,7 @@ You are not expected to master every option. Complete the approved option specif
 
 ## Learn
 
-- [Advanced exploration](../Topics/15-advanced-exploration.md)
+- [Advanced exploration](../Topics/advanced-exploration.md)
 
 ## Practice
 

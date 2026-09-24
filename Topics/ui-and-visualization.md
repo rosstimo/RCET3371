@@ -2,7 +2,7 @@
 
 *Self-learning guide*
 
-[Topics index](README.md) · [Learning Path Section 14](../LearningPath/14-UI-and-Visualization.md)
+[Topics index](README.md)
 
 ## Contents
 

@@ -2,7 +2,7 @@
 
 *Self-learning guide*
 
-[Topics index](README.md) · [Learning Path Section 13](../LearningPath/13-Linux-and-Portability.md)
+[Topics index](README.md)
 
 ## Contents
 
@@ -158,7 +158,7 @@ Use language path APIs rather than manual separators when practical.
 
 ### Bridge example: run the same known program somewhere else
 
-Take the C# or Python Hello World from Section 2. Do not rewrite it.
+Take the C# or Python Hello World from [Toolchains and First Cross-Language Programs](toolchains-and-first-cross-language-programs.md). Do not rewrite it.
 
 On Linux, start with:
 
