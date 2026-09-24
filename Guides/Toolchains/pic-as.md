@@ -1,74 +1,122 @@
 # PIC Assembly / pic-as Toolchain Guide
 
-[Guides index](../README.md)
+[Toolchain setup index](README.md)
 
-## Purpose
+## Goal
 
-RCET 3371 uses PIC assembly to expose processor-near behavior and to compare implementations, not to turn the course into a second dedicated assembly course.
+Use the MPLAB X + XC8 installation from the previous guide to create and build the smallest useful PIC16F883 assembly project.
 
-## Course baseline
+## Important: no separate assembler download
 
-- PIC16F883
-- MPLAB X 6.35
-- XC8 PIC Assembler / pic-as from the installed XC8 toolchain
+The course uses the PIC assembler driver supplied with the installed XC8 toolchain. If MPLAB X 6.35 and XC8 4.00 are already installed, do not search for a second unrelated assembler package.
 
-The command-line driver is named pic-as.
+## 1. Verify the prerequisite toolchain
 
-## What students should recognize
+Complete [MPLAB X / XC8 setup](xc8.md) first.
 
-- source file;
-- selected processor/device;
-- configuration;
-- program sections (PSECTs);
-- labels;
-- instructions;
-- symbols;
-- assembly step;
-- link step;
-- map/listing/disassembly output.
+You should already have:
 
-## Build model
+- MPLAB X working;
+- XC8 4.x visible;
+- PIC16F883 selectable;
+- one successful XC8 C build.
 
-Conceptually:
+## 2. Create a PIC16F883 project
 
-    .S source
-       ↓ pic-as
-    object/intermediate
-       ↓ linker
-    device image / debug information
+Create another Standalone Project:
 
-MPLAB X invokes the assembler/toolchain for normal course work. The command-line model exists so you understand what the IDE is orchestrating.
+- Device: PIC16F883
+- Tool: Simulator for the first build
+- Toolchain: installed XC8 / PIC assembler support
+- Project name: `HelloPicAs`
 
-## C/assembly comparison
+## 3. Add an assembly source file
 
-Use small functions with a stable contract.
+Create `main.S`.
 
-Example contract:
+Use this minimal course-style skeleton:
 
-- input: one 8-bit state value;
-- output: upper nibble as 0..15;
-- no persistent state;
-- unrelated state bits unchanged by caller.
+```asm
+RADIX dec
+PROCESSOR 16F883
 
-Compare:
+#include <xc.inc>
 
-- C mask/shift;
-- generated assembly;
-- hand-written bounded assembly.
+PSECT resetVect,class=CODE,delta=2
+ResetVector:
+    goto Main
 
-Do not require line-for-line equivalence.
+PSECT code,class=CODE,delta=2
+Main:
+    movlw   2
+    addlw   3
+    goto    Main
 
-## Map/listing inspection
+END
+```
 
-Use generated outputs to answer bounded questions:
+The program deliberately mirrors the earlier `2 + 3` examples. The result is placed in the working register before execution loops.
 
-- where did this symbol land?
-- which instructions implement the mask?
-- what call/return sequence appears?
-- how large is the function?
+If your project uses the course linker placement options/templates, follow the current course project template. The first goal here is toolchain recognition and a successful build, not peripheral setup.
+
+## 4. Build
+
+Use **Build Main Project**.
+
+Record:
+
+- device;
+- MPLAB X version;
+- XC8/pic-as version;
+- build result.
+
+## 5. Attach the new vocabulary after it builds
+
+Identify:
+
+- `PROCESSOR`: selected target family/device context;
+- `#include <xc.inc>`: device/toolchain symbol support;
+- `PSECT`: a program section handled by assembler/linker;
+- label: a named code location;
+- instruction: one processor operation;
+- reset vector: where execution begins after reset;
+- `goto Main`: explicit control flow.
+
+Do not try to learn the entire instruction set from this first program.
+
+## 6. Compare with C#
+
+C#:
+
+```csharp
+int answer = 2 + 3;
+```
+
+Assembly:
+
+```asm
+movlw 2
+addlw 3
+```
+
+The comparison is about the same computation appearing at different abstraction levels. It is not a claim that every C# statement maps directly to one or two assembly instructions.
+
+## Troubleshooting
+
+### Assembly source is ignored
+
+Confirm the file is part of the project and uses the expected source extension/toolchain.
+
+### Unknown symbol/directive
+
+Confirm the selected device and current XC8 PIC Assembler syntax. Do not copy MPASM-era examples blindly into pic-as.
+
+### Link/section error
+
+Compare the project with the current course template and linker placement rules. Record the exact linker message.
 
 ## References
 
-- XC8 PIC Assembler documentation: https://onlinedocs.microchip.com/oxy/GUID-4DC87671-9D8E-428A-ADFE-98D694F9F089/
 - MPLAB XC8: https://www.microchip.com/en-us/tools-resources/develop/mplab-x-compilers/xc8
-- PIC16F883 product/data sheet page: https://www.microchip.com/en-us/product/PIC16F883
+- XC8 PIC Assembler documentation: https://onlinedocs.microchip.com/oxy/GUID-4DC87671-9D8E-428A-ADFE-98D694F9F089/
+- PIC16F883: https://www.microchip.com/en-us/product/PIC16F883
