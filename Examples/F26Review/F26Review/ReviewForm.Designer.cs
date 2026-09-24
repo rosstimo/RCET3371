@@ -29,11 +29,13 @@
         private void InitializeComponent()
         {
             ExitButton = new Button();
+            DrawPictureBox = new PictureBox();
+            ((System.ComponentModel.ISupportInitialize)DrawPictureBox).BeginInit();
             SuspendLayout();
             // 
             // ExitButton
             // 
-            ExitButton.Location = new Point(713, 375);
+            ExitButton.Location = new Point(264, 375);
             ExitButton.Name = "ExitButton";
             ExitButton.Size = new Size(75, 63);
             ExitButton.TabIndex = 0;
@@ -41,19 +43,30 @@
             ExitButton.UseVisualStyleBackColor = true;
             ExitButton.Click += ExitButton_Click;
             // 
+            // DrawPictureBox
+            // 
+            DrawPictureBox.Location = new Point(12, 32);
+            DrawPictureBox.Name = "DrawPictureBox";
+            DrawPictureBox.Size = new Size(327, 324);
+            DrawPictureBox.TabIndex = 1;
+            DrawPictureBox.TabStop = false;
+            // 
             // ReviewForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(357, 455);
+            Controls.Add(DrawPictureBox);
             Controls.Add(ExitButton);
             Name = "ReviewForm";
             Text = "Form1";
+            ((System.ComponentModel.ISupportInitialize)DrawPictureBox).EndInit();
             ResumeLayout(false);
         }
 
         #endregion
 
         private Button ExitButton;
+        private PictureBox DrawPictureBox;
     }
 }
