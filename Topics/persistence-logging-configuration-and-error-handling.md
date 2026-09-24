@@ -161,23 +161,123 @@ Record:
 
 The header names units and timestamp convention, reducing ambiguity during replay.
 
-### Example 2: round trip
+### Example 2: round trip in C#
 
-Create:
+Keep the format deliberately small so the file contract stays visible:
 
-    Measurement(time=T, temp=22.75, status=OK)
+```csharp
+using System.Globalization;
 
-Serialize, then deserialize. Assert that meaningful fields equal the original values.
+record Measurement(
+    DateTimeOffset Time,
+    double TempC,
+    string Status);
 
-If floating-point formatting is lossy, define the acceptable tolerance or use sufficient precision.
+static string Serialize(Measurement value)
+{
+    return string.Join(
+        ",",
+        value.Time.ToString("O"),
+        value.TempC.ToString("R", CultureInfo.InvariantCulture),
+        value.Status);
+}
 
-### Example 3: malformed record
+static Measurement Deserialize(string line)
+{
+    string[] fields = line.Split(',');
+
+    return new Measurement(
+        DateTimeOffset.Parse(fields[0], CultureInfo.InvariantCulture),
+        double.Parse(fields[1], CultureInfo.InvariantCulture),
+        fields[2]);
+}
+
+Measurement original = new(
+    DateTimeOffset.Parse("2026-09-24T16:30:00Z"),
+    22.75,
+    "OK");
+
+string text = Serialize(original);
+Measurement restored = Deserialize(text);
+
+Console.WriteLine(text);
+Console.WriteLine(restored == original);
+```
+
+The important test is not merely "a file was written." It is:
+
+```text
+domain value -> serialized representation -> domain value
+```
+
+and the reconstructed meaningful state agrees with the original.
+
+### Example 3: the same round trip in Python
+
+```python
+from dataclasses import dataclass
+from datetime import datetime
+
+@dataclass(frozen=True)
+class Measurement:
+    time: datetime
+    temp_c: float
+    status: str
+
+def serialize(value: Measurement) -> str:
+    return f"{value.time.isoformat()},{value.temp_c!r},{value.status}"
+
+def deserialize(line: str) -> Measurement:
+    timestamp, temp_c, status = line.split(",")
+    return Measurement(
+        datetime.fromisoformat(timestamp),
+        float(temp_c),
+        status,
+    )
+
+original = Measurement(
+    datetime.fromisoformat("2026-09-24T16:30:00+00:00"),
+    22.75,
+    "OK",
+)
+
+text = serialize(original)
+restored = deserialize(text)
+
+print(text)
+print(restored == original)
+```
+
+The language changed. The persistence contract did not: field order, timestamp meaning, numeric representation, status vocabulary, and failure policy still need to be defined.
+
+If floating-point formatting is intentionally lossy, define the acceptable tolerance rather than pretending exact equality is always the requirement.
+
+### Example 4: malformed record
 
 Input:
 
     2026-09-24T16:30:00Z,not-a-number,OK
 
 A robust parser returns or records a structured failure rather than allowing an unexplained conversion exception to escape from a distant UI event.
+
+### Example 5: configuration is input too
+
+Suppose the host application needs:
+
+```text
+port_name = COM4
+baud_rate = 115200
+log_directory = logs
+```
+
+Validate the configuration before starting the serial/logging system:
+
+- port name must be present;
+- baud rate must be one of the values the device contract supports;
+- log directory must be usable or deliberately creatable;
+- unknown modes should not silently become a different mode.
+
+Configuration errors should fail close to configuration loading, with a message that names the invalid field. They should not appear later as an unrelated serial or file error.
 
 ## 7. Apply, verify, and troubleshoot
 
@@ -230,6 +330,15 @@ Explain:
 - when exception handling adds value.
 
 ## 11. References
+
+- Microsoft, .NET file-system guidance — https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/file-system/
+- Microsoft, `DateTimeOffset` — https://learn.microsoft.com/en-us/dotnet/api/system.datetimeoffset
+  - Used for: explicit timestamp/offset representation in persisted records.
+- Python, `datetime` — https://docs.python.org/3/library/datetime.html
+  - Used for: Python timestamp serialization/deserialization.
+- Python, `pathlib` — https://docs.python.org/3/library/pathlib.html
+  - Used for: explicit path handling in Python.
+
 
 - Microsoft Learn, file and stream I/O — https://learn.microsoft.com/en-us/dotnet/standard/io/
 - Microsoft Learn, C# exceptions — https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/exceptions/
