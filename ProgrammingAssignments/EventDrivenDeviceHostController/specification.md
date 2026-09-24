@@ -52,6 +52,7 @@ sensor_max_c = 125.0
 
 Configuration must reject:
 
+- target outside 15.0 C through 30.0 C inclusive;
 - deadband <= 0;
 - hold < 0;
 - stale timeout <= 0;
@@ -102,9 +103,20 @@ When enabled and not faulted:
 
 ### From IDLE
 
+Normal output entry is allowed only after at least **2.0 s** in IDLE following a normal exit from HEATING/COOLING or a new valid connection/reset entry.
+
+After the IDLE deadtime is satisfied:
+
 - temperature <= 24.0 C -> HEATING;
 - temperature >= 26.0 C -> COOLING;
 - otherwise remain IDLE.
+
+Boundary:
+
+- elapsed IDLE time < 2.0 s: remain IDLE for normal control;
+- elapsed IDLE time >= 2.0 s: threshold transitions may occur.
+
+The deadtime does not delay disconnect or FAULT behavior.
 
 ### From HEATING
 
@@ -141,6 +153,8 @@ These override hold immediately:
 - disable;
 - disconnect;
 - any FAULT transition.
+
+When a normal HEATING/COOLING exit enters IDLE, record the IDLE-entry time once. Repeated evaluation while remaining IDLE must not reset the 2.0 s deadtime timer.
 
 ## 10. Interlock invariant
 
@@ -253,7 +267,8 @@ Test exact values:
 - temperature 24.0, just above 24.0;
 - temperature 26.0, just below 26.0;
 - return target 25.0;
-- elapsed 4.999 s and 5.000 s;
+- elapsed active-mode time 4.999 s and 5.000 s;
+- elapsed IDLE deadtime 1.999 s and 2.000 s;
 - sample age 2.999 s and 3.000 s;
 - sensor -40.0, 125.0, and just outside each;
 - reset safe/unsafe combinations.
