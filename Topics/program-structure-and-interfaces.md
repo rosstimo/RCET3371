@@ -259,6 +259,45 @@ PIC assembly makes those steps more visible with `call` and `return`.
 
 Use tiny subroutines first. Stack-depth analysis comes when nested calls make it relevant.
 
+A small PIC16F883 subroutine can make the same contract visible:
+
+```assembly
+input_value     EQU 0x70
+result_value    EQU 0x71
+
+MainLoop:
+    movlw   5
+    movwf   input_value
+
+    call    AddOne
+
+    ; result_value is now 6
+    goto    MainLoop
+
+;-----------------------------------------------------
+; AddOne
+; Input:  input_value
+; Output: result_value
+; Uses:   WREG
+; Stack depth added: 1
+;-----------------------------------------------------
+AddOne:
+    movf    input_value,w
+    addlw   1
+    movwf   result_value
+    return
+```
+
+The syntax is different from a C# method, but the reasoning is still a contract:
+
+- input: `input_value`;
+- output: `result_value`;
+- side effects: writes `result_value`, changes WREG and documented status flags;
+- retained state: the RAM values remain after the routine returns;
+- control flow: `call` saves the return path and `return` resumes the caller.
+
+That is the bridge from high-level method reasoning to processor-visible subroutine behavior.
+
 ## 12. Practice
 
 1. For `CalculatePower`, identify input, output, side effect, and retained state.
@@ -289,3 +328,15 @@ Explain without notes:
 - Python module/C header-source purpose at a practical level;
 - why interfaces are introduced only after ordinary class boundaries make sense;
 - why translation is about preserving behavior, not copying punctuation.
+
+
+## 15. References
+
+- Microsoft, C# methods — https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/methods
+- Microsoft, C# interfaces — https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/types/interfaces
+- Python documentation, Modules — https://docs.python.org/3/tutorial/modules.html
+- Microchip Technology Inc., *MPLAB XC8 C Compiler User's Guide* — https://onlinedocs.microchip.com/
+  - Used for: C translation-unit, declaration/definition, and XC8 build concepts.
+- Microchip Technology Inc., *PIC16F882/883/884/886/887 Data Sheet*, Section 15 "Instruction Set Summary" — https://www.microchip.com/en-us/product/PIC16F883
+  - Used for: PIC16F883 `CALL`, `RETURN`, and instruction behavior.
+- [RCET C# / Python / Embedded C / PIC Assembly comparison](../References/csharp-python-c-picas-comparison.md)
