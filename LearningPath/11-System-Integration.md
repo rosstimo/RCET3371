@@ -14,7 +14,7 @@ You should be able to:
 
 ## Learn
 
-- [System integration and design readiness](../Topics/11-system-integration-and-design-readiness.md)
+- [System integration and design readiness](../Topics/system-integration-and-design-readiness.md)
 
 ## Practice
 

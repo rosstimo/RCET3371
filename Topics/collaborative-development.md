@@ -2,7 +2,7 @@
 
 *Self-learning guide*
 
-[Topics index](README.md) · [Learning Path Section 12](../LearningPath/12-Collaborative-Development.md)
+[Topics index](README.md)
 
 ## Contents
 
@@ -40,7 +40,7 @@ You should be able to:
 
 ## 3. Prerequisites
 
-Section 1 Git state/recovery plus experience with the course projects.
+Git state/recovery concepts from [Git and Project Organization](git-project-organization.md), plus experience with the course projects.
 
 ## 4. Core model
 
@@ -122,7 +122,7 @@ This is why review and integration tests matter.
 
 ### Bridge example: extend the individual Git cycle
 
-Your individual cycle from Section 1 was:
+Your individual cycle from [Git and Project Organization](git-project-organization.md) was:
 
 ```text
 edit -> test -> status -> add -> commit -> push

@@ -2,7 +2,7 @@
 
 *Self-learning guide*
 
-[Topics index](README.md) · [Learning Path Section 9](../LearningPath/09-Persistence-and-Logging.md)
+[Topics index](README.md)
 
 ## Contents
 

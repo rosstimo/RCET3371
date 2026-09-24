@@ -2,7 +2,7 @@
 
 *Self-learning guide*
 
-[Topics index](README.md) · [Learning Path Section 11](../LearningPath/11-System-Integration.md)
+[Topics index](README.md)
 
 ## Contents
 

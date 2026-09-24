@@ -14,7 +14,7 @@ You should be able to:
 
 ## Learn
 
-- [Persistence, logging, and configuration](../Topics/09-persistence-logging-and-configuration.md)
+- [Persistence, logging, and configuration](../Topics/persistence-logging-configuration-and-error-handling.md)
 
 ## Practice
 

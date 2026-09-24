@@ -13,7 +13,7 @@ You should be able to:
 
 ## Learn
 
-- [Collaborative development](../Topics/12-collaborative-development.md)
+- [Collaborative development](../Topics/collaborative-development.md)
 - [Git collaboration and recovery](../Guides/Git/collaboration-and-recovery.md)
 
 ## Practice

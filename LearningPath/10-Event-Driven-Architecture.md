@@ -14,7 +14,7 @@ You should be able to:
 
 ## Learn
 
-- [Event-driven architecture](../Topics/10-event-driven-architecture.md)
+- [Event-driven architecture](../Topics/event-driven-device-host-architecture.md)
 - [State and timing quick reference](../References/state-and-timing-reference.md)
 
 ## Practice

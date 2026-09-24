@@ -2,7 +2,7 @@
 
 *Self-learning guide*
 
-[Topics index](README.md) · [Learning Path Section 10](../LearningPath/10-Event-Driven-Architecture.md)
+[Topics index](README.md)
 
 ## Contents
 
