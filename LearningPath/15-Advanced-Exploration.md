@@ -16,7 +16,13 @@ You are not expected to master every option. Complete the approved option specif
 
 ## Learn
 
-- [Advanced exploration](../Topics/advanced-exploration.md)
+Choose one bounded optional path that fits the engineering problem:
+
+- [Automated testing and regression](../Topics/automated-testing-regression.md)
+- [Asynchronous and concurrent programming](../Topics/asynchronous-concurrent-programming.md)
+- [Networking, HTTP, and JSON](../Topics/networking-http-json.md)
+- [Packaging and continuous integration](../Topics/packaging-continuous-integration.md)
+- [Memory, compiler, and disassembly analysis](../Topics/memory-compiler-disassembly-analysis.md)
 
 ## Practice
 
