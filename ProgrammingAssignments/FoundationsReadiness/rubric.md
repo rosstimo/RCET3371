@@ -4,17 +4,19 @@ Total: **100 points**
 
 | Area | Points | Full-credit evidence |
 | --- | ---: | --- |
-| Repository structure and .gitignore | 10 | Clear layout; generated output excluded; clean-clone usable |
-| Git history | 15 | Meaningful development commits; no manufactured single final history |
-| C# baseline | 15 | .NET 10 build/run, argument behavior, version output, nonzero missing-arg exit |
-| Python baseline | 15 | Python 3.14 behavior, version output, documented venv, nonzero missing-arg exit |
-| Desktop retained-state model | 20 | State outside Paint/click locals; repaint/resize reconstructs correctly |
-| Conflict/recovery exercise | 15 | Real conflict, correct integrated result, command/history evidence, explanation |
-| README/reproducibility | 10 | Clean instructions, requirements, verification, limitations |
+| Repository structure and .gitignore | 10 | Clear layout; generated output excluded; clean clone understandable |
+| Git development history | 15 | Multiple meaningful commits plus status/diff/staged-diff/history evidence |
+| C# familiar baseline | 15 | .NET 10 program builds/runs; measurements, helper method, and result are correct |
+| Python translation | 15 | Same behavior as C#; Python 3.14 interpreter and venv documented |
+| Windows Forms event review | 15 | Button event updates retained counter and label correctly |
+| XC8 first build | 10 | PIC16F883 C source and successful-build evidence with tool version |
+| pic-as first build | 10 | PIC16F883 assembly source and successful-build evidence with tool version |
+| README and setup evidence | 10 | Another student/grader can reproduce the environment checkpoints |
 
 ## Major deductions
 
-- Cannot build/run from submitted repository: affected component receives no functional points.
+- A component cannot be built/run or has no credible successful-build evidence: affected component receives no functional points.
 - Generated build/cache directories committed without justification: up to 10-point deduction.
-- Missing meaningful Git history: Git-history section receives zero.
-- Drawing exists only as transient pixels and disappears on repaint: retained-state section receives at most 5/20.
+- One manufactured final commit instead of development history: Git-history section receives little or no credit.
+- Python interpreter/environment is ambiguous: Python section cannot receive full credit.
+- Embedded project claims physical verification when only a build/simulator was performed: setup-evidence section loses credit.
