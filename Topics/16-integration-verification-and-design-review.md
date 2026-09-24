@@ -139,6 +139,35 @@ Explain:
 
 ## 6. Worked examples
 
+### Bridge example: turn "it works" into reproducible evidence
+
+Start with a vague claim:
+
+```text
+The parser handles a valid telemetry frame.
+```
+
+Replace it with evidence:
+
+```text
+Input:       known valid frame A
+Expected:    type=0x10, payload=01 02
+Procedure:   run the named parser test
+Result:      pass
+Environment: .NET 10.x
+```
+
+The same pattern works for other claims:
+
+- build: command + expected successful artifact;
+- malformed input: exact input + expected rejection;
+- timing: expected interval + independent measurement;
+- hardware: connection/setup + measured result;
+- UI: action + expected visible/state result.
+
+Verification is the habit of making a claim repeatable by someone other than the original programmer.
+
+
 ### Example 1: clean-clone test
 
 Another person:
