@@ -1,211 +1,351 @@
-# RCET 3371 — Toolchains, Recovery, and Desktop Events
+# RCET 3371 - Toolchains and First Cross-Language Programs
 
 *Self-learning guide*
 
-[Topics index](README.md) · [Learning Path Section 2](../LearningPath/02-Toolchains-Recovery-and-Desktop-Events.md)
-
-## Contents
-
-1. Why this matters
-2. Outcomes
-3. Prerequisites
-4. Core model
-5. How the toolchains and event model work
-6. Worked examples
-7. Apply, verify, and troubleshoot
-8. Practice
-9. Answer key
-10. Explain without notes
-11. References
+[Topics index](README.md) · [Learning Path Section 2](../LearningPath/02-Toolchains-Recovery-and-Desktop-Events.md) · [Complete setup guide](../Guides/Toolchains/README.md)
 
 ## 1. Why this matters
 
-A programmer who only knows which button to press in one IDE cannot diagnose where a failure occurs. RCET 3371 treats the toolchain as part of the system.
+You already know how a small C# program behaves. RCET 3371 adds several languages and development environments, but you should not have to learn a new algorithm, a new language, and a new toolchain at the same instant.
 
-The same principle applies to event-driven programs. An event handler is a reaction to an event, not a safe place to hide the entire application model.
+In this section, the program stays tiny while the environment changes.
 
-## 2. Outcomes
+The first goal is practical:
+
+> Can you create the project, build or run it, and see the expected result?
+
+Only after that works do we attach names such as compiler, interpreter, runtime, target, and debugger.
+
+## 2. What carries over from RCET 2265
+
+You already know these ideas:
+
+- variables hold values;
+- expressions produce results;
+- methods can take inputs and return outputs;
+- a program follows control flow;
+- a Windows Forms Button can raise a Click event;
+- the debugger can stop execution so you can inspect variables.
+
+Those ideas do not disappear in Python, C, or assembly. Their syntax and implementation change.
+
+## 3. Outcomes
 
 You should be able to:
 
-- distinguish editor, IDE, compiler, interpreter, linker, runtime, debugger, programmer, and target;
-- build/run a C# console application from the command line;
-- run/debug Python with an explicitly selected interpreter;
-- explain what MPLAB X, XC8, pic-as, PICkit, and the PIC target each do;
-- use branches and pull requests without confusing repository state;
-- explain retained application state versus transient event data;
-- explain why drawing must be reproducible during repaint.
+- install or verify the four course programming environments;
+- create and run a small C# console program;
+- create and run the equivalent Python program;
+- create and build a minimal PIC16F883 XC8 project;
+- create and build a minimal PIC16F883 pic-as project;
+- use a breakpoint in C# and Python;
+- distinguish build, run, and debug;
+- identify the basic role of Visual Studio/.NET, Python/VS Code, MPLAB X, XC8, pic-as, the simulator, and the PIC target;
+- create a simple Windows Forms Button event without needing custom-paint architecture.
 
-## 3. Prerequisites
+## 4. Set up first
 
-Complete Section 1 and be able to inspect Git state confidently.
+Use the [Course Toolchain Setup Guide](../Guides/Toolchains/README.md).
 
-## 4. Core model
+Do not continue past a toolchain until its first checkpoint works.
 
-A useful software toolchain pipeline is:
+A useful setup record looks like:
 
-    source -> translator -> intermediate/object form -> linker/build -> executable/image -> runtime/target
+| Environment | Check | Result |
+| --- | --- | --- |
+| C# | `dotnet --version` | 10.x |
+| C# | Console App build/run | pass |
+| Python | `python --version` or `py -3.14 --version` | 3.14.x |
+| Python | `hello.py` | pass |
+| XC8 | PIC16F883 Build Main Project | BUILD SUCCESSFUL |
+| pic-as | PIC16F883 Build Main Project | BUILD SUCCESSFUL |
 
-Not every language uses every stage in the same visible way.
+## 5. Worked example: one idea, four environments
 
-### C#/.NET
+We will use the same operation:
 
-Source is compiled by the .NET build toolchain into managed assemblies. The .NET runtime loads and executes them.
+```text
+2 + 3 = 5
+```
 
-### Python
+### Example A: C# familiar baseline
 
-Source is executed by the selected Python interpreter. Python may create internal bytecode/cache artifacts, but the engineering question remains: which interpreter/environment is executing the program?
+```csharp
+int first = 2;
+int second = 3;
+int answer = Add(first, second);
 
-### XC8
+Console.WriteLine($"{first} + {second} = {answer}");
 
-C source is compiled for a specific 8-bit PIC target, assembled/linked into target code, then programmed or simulated.
+static int Add(int first, int second)
+{
+    return first + second;
+}
+```
 
-### pic-as
+Before running it, identify:
 
-Assembly source is processed by Microchip's PIC assembler driver and linked for the selected target device.
+- two input variables;
+- one returned value;
+- one method call;
+- one output statement.
 
-## 5. How the toolchains and event model work
+Expected output:
 
-### Build versus run versus debug
+```text
+2 + 3 = 5
+```
 
-**Build** answers: can the toolchain translate/link the project?
+Try changing `second` to 8. Predict the output before running again.
 
-**Run** answers: what happens when the built/interpreted program executes?
+### Example B: Python translation
 
-**Debug** adds controlled observation: breakpoints, stepping, call stack, variables, registers, or memory.
+```python
+def add(first, second):
+    return first + second
 
-Do not treat a successful build as proof of correct runtime behavior.
+first = 2
+second = 3
+answer = add(first, second)
 
-### Environment identity
+print(f"{first} + {second} = {answer}")
+```
 
-When diagnosing toolchain problems, record:
+The syntax changed, but the algorithm did not.
 
-- operating system;
-- runtime/compiler/interpreter version;
-- project target/framework/device;
-- working directory;
-- selected debugger/programmer;
-- exact command or IDE action.
+| C# | Python |
+| --- | --- |
+| `static int Add(...)` | `def add(...):` |
+| braces | indentation |
+| `Console.WriteLine` | `print` |
+| `int first = 2` | `first = 2` |
 
-### Event-driven baseline
+Do not infer that Python has no types. At this point, simply notice that Python does not require the same variable declaration syntax.
 
-A UI or event-driven system has at least:
+### Example C: XC8 C first build
 
-- persistent application/domain state;
-- events;
-- handlers that translate events into state changes;
-- rendering/presentation that derives visible output from current state.
+```c
+#include <xc.h>
+#include <stdint.h>
 
-Avoid making the pixels on the screen the only copy of state.
+static uint8_t add(uint8_t first, uint8_t second)
+{
+    return (uint8_t)(first + second);
+}
 
-### Repaint behavior
+void main(void)
+{
+    volatile uint8_t answer = add(2u, 3u);
 
-Windows Forms raises Paint when a control needs to redraw. A robust display uses retained data and renders from that data whenever Paint occurs.
+    while (1)
+    {
+        (void)answer;
+    }
+}
+```
 
-If a click handler draws directly once and does not store the underlying object/state, resizing or covering/uncovering the window can expose the design error.
+There is no `Console.WriteLine`. A bare PIC16F883 does not automatically have a console.
 
-## 6. Worked examples
+For now, success means:
 
-### Example 1: C# command-line baseline
+1. PIC16F883 is the selected target;
+2. XC8 recognizes and compiles the source;
+3. the linker produces the device image;
+4. the build finishes successfully.
 
-In an empty directory:
+Later sections make the result observable with the simulator, registers, pins, peripherals, and test equipment.
 
-    dotnet new console
-    dotnet build
-    dotnet run
+### Example D: pic-as first build
 
-If build succeeds but run fails because a file is missing, that is a runtime/resource/path problem, not a compiler problem.
+```asm
+RADIX dec
+PROCESSOR 16F883
 
-### Example 2: Python interpreter identity
+#include <xc.inc>
 
-These two commands may not resolve to the same interpreter on every system:
+PSECT resetVect,class=CODE,delta=2
+ResetVector:
+    goto Main
 
-    python script.py
-    python3 script.py
+PSECT code,class=CODE,delta=2
+Main:
+    movlw   2
+    addlw   3
+    goto    Main
 
-Verify the interpreter deliberately, especially when using packages or virtual environments.
+END
+```
 
-### Example 3: retained state
+For this first example, focus on only three instructions/ideas:
 
-Weak design:
+- `movlw 2`: put the literal value 2 in the working register;
+- `addlw 3`: add literal 3 to the working register;
+- `goto Main`: repeat.
 
-- mouse click occurs;
-- handler gets a graphics surface;
-- handler draws one point;
-- point data is discarded.
+Do not try to memorize the PIC instruction set yet.
 
-Stronger design:
+## 6. What the tool names mean
 
-- mouse click occurs;
-- handler converts click into domain coordinates;
-- point is appended to retained state;
-- control is invalidated;
-- Paint renders all retained points.
+Attach this vocabulary to the examples you just ran.
 
-## 7. Apply, verify, and troubleshoot
+### IDE or editor
 
-Toolchain checklist:
+Where you edit and organize the project.
 
-1. identify the source language;
-2. identify the expected translator/runtime;
-3. verify the version/target;
-4. build or syntax-check;
-5. run the smallest known-good program;
-6. debug with observation;
-7. only then integrate larger dependencies.
+Examples:
 
-Git recovery checklist:
+- Visual Studio;
+- VS Code;
+- MPLAB X.
 
-1. status;
-2. diff;
-3. history;
-4. branch/upstream;
-5. smallest corrective action;
-6. status/build/test again.
+### Compiler
 
-Event-driven checklist:
+Translates source code toward executable machine/target code.
 
-1. identify persistent state;
-2. identify events;
-3. identify state transitions;
-4. identify rendering;
-5. prove redraw without losing information.
+Examples:
 
-## 8. Practice
+- .NET C# compiler/build toolchain;
+- XC8 for PIC C.
 
-1. A program compiles but fails to find a CSV file. Which stage should you investigate first?
-2. A Python package imports in one terminal but not another. What identity should you verify?
-3. What is the difference between a compiler and a linker?
-4. Why is an MPLAB X project not the same thing as XC8?
-5. A form draws correctly immediately after a button click but loses the drawing after resize. What design information is probably missing?
-6. Why should merge-conflict resolution finish with a build/test rather than only a clean Git status?
+### Interpreter
 
-## 9. Answer key
+Executes a language through an interpreter/runtime environment.
 
-1. Runtime working-directory/path/resource behavior.
-2. The Python interpreter/environment actually running the command.
-3. A compiler translates source units; a linker resolves/combines compiled units and symbols into a final program/image.
-4. MPLAB X is the development environment; XC8 is the compiler toolchain. The project configures how those tools target a device.
-5. The underlying domain/display state was not retained and repaint cannot reconstruct it.
-6. Git can be syntactically clean while the chosen conflict resolution is behaviorally wrong.
+For this course, the practical Python question is:
 
-## 10. Explain without notes
+> Which Python executable is running this file?
 
-Explain:
+### Assembler
 
-- compile, link, run, debug;
-- interpreter versus runtime;
-- IDE versus toolchain;
+Translates assembly source into target machine-code/object information.
+
+The course uses pic-as from the XC8 installation.
+
+### Linker
+
+Combines compiled/assembled pieces and resolves symbols into the final program/image.
+
+You will see linker behavior more clearly when projects contain multiple C or assembly modules.
+
+### Runtime
+
+The environment executing a program.
+
+A .NET console application uses the .NET runtime. Python uses the selected Python runtime/interpreter.
+
+### Target
+
+The system the program is built to run on.
+
+For the embedded work, the target is the PIC16F883.
+
+### Programmer/debugger
+
+Hardware such as the PICkit communicates with a physical microcontroller for programming/debugging. A successful software build does not prove the physical target works.
+
+## 7. Build versus run versus debug
+
+These are different checkpoints.
+
+**Build**
+
+> Can the source/project be translated successfully?
+
+**Run**
+
+> What happens when the program actually executes?
+
+**Debug**
+
+> Can I deliberately stop and inspect execution?
+
+Example:
+
+A C# program may build perfectly and then fail at runtime because it tries to open a file that does not exist.
+
+That is not a compiler error.
+
+## 8. Familiar Windows Forms event
+
+Start with ordinary RCET 2265 event handling.
+
+Form field:
+
+```csharp
+private int count = 0;
+```
+
+Button handler:
+
+```csharp
+private void countButton_Click(object sender, EventArgs e)
+{
+    count++;
+    countLabel.Text = count.ToString();
+}
+```
+
+Trace three clicks:
+
+| Event | count before | count after | label |
+| --- | ---: | ---: | --- |
+| click 1 | 0 | 1 | 1 |
+| click 2 | 1 | 2 | 2 |
+| click 3 | 2 | 3 | 3 |
+
+That is enough event-driven architecture for this section.
+
+Custom Paint events, redraw behavior, larger application state models, and concurrency arrive later.
+
+## 9. Troubleshooting sequence
+
+When a new environment fails:
+
+1. preserve the exact error;
+2. verify the installed tool/version;
+3. create the smallest new project;
+4. build or run the unmodified/minimal example;
+5. verify the selected framework/interpreter/device/toolchain;
+6. change one thing at a time.
+
+Do not begin by reinstalling every tool.
+
+## 10. Practice
+
+1. In the C# and Python examples, which parts of the algorithm stayed the same?
+2. Why does the XC8 example not print `5` to a terminal?
+3. What does a successful XC8 build prove? What does it **not** prove?
+4. Which tool should you check when VS Code is running the wrong Python installation?
+5. What is the difference between build and run?
+6. Why is the PIC16F883 device selection part of the build?
+7. In the WinForms counter, why must `count` live outside the Click handler if it must remember prior clicks?
+
+## 11. Answer reasoning
+
+1. Inputs, addition, function/method call, returned result, and stored answer are conceptually the same.
+2. A bare microcontroller does not provide the host console used by desktop applications.
+3. It proves the selected software toolchain can translate/link that project for the selected target. It does not prove the physical PIC, wiring, programmer, or real peripheral behavior.
+4. Verify/select the Python interpreter used by VS Code.
+5. Build produces/validates executable program output from source; run executes the program.
+6. The compiler/assembler/linker must generate code and memory placement appropriate to the actual processor.
+7. A local variable created inside the handler would be recreated on each call. The form field survives between Click events.
+
+## 12. Ready to continue when
+
+Without notes, explain:
+
+- one concept that stayed the same across C# and Python;
+- compiler versus interpreter at a practical level;
+- build versus run versus debug;
+- IDE versus compiler/toolchain;
 - target versus programmer;
-- persistent state versus event data;
-- repaint from state;
-- why repository recovery and software verification are separate checks.
+- what successful first-build evidence means.
 
-## 11. References
+## 13. References
 
-- Microsoft Learn, .NET console application tutorials — https://learn.microsoft.com/en-us/dotnet/core/tutorials/
-- Microsoft Learn, Windows Forms events — https://learn.microsoft.com/en-us/dotnet/desktop/winforms/forms/events
-- Microsoft Learn, Windows Forms custom painting — https://learn.microsoft.com/en-us/dotnet/desktop/winforms/controls/custom-painting-drawing
-- Python Software Foundation, Python tutorial — https://docs.python.org/3/tutorial/
-- Microchip, MPLAB XC8 Compiler — https://www.microchip.com/en-us/tools-resources/develop/mplab-xc-compilers/xc8
-- GitHub Docs, merge conflicts — https://docs.github.com/en/pull-requests/reference/merge-conflicts
+- [Complete course setup](../Guides/Toolchains/README.md)
+- [C#/.NET setup](../Guides/Toolchains/csharp-dotnet.md)
+- [Python setup](../Guides/Toolchains/python.md)
+- [XC8 setup](../Guides/Toolchains/xc8.md)
+- [pic-as setup](../Guides/Toolchains/pic-as.md)
+- [On-Ramp examples](../Examples/OnRamp/)
