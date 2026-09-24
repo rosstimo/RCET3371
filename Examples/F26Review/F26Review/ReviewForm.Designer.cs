@@ -35,7 +35,8 @@
             // 
             // ExitButton
             // 
-            ExitButton.Location = new Point(264, 375);
+            ExitButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            ExitButton.Location = new Point(829, 460);
             ExitButton.Name = "ExitButton";
             ExitButton.Size = new Size(75, 63);
             ExitButton.TabIndex = 0;
@@ -45,9 +46,10 @@
             // 
             // DrawPictureBox
             // 
+            DrawPictureBox.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             DrawPictureBox.Location = new Point(12, 32);
             DrawPictureBox.Name = "DrawPictureBox";
-            DrawPictureBox.Size = new Size(327, 324);
+            DrawPictureBox.Size = new Size(892, 422);
             DrawPictureBox.TabIndex = 1;
             DrawPictureBox.TabStop = false;
             DrawPictureBox.Click += DrawPictureBox_Click;
@@ -56,7 +58,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(357, 455);
+            ClientSize = new Size(916, 535);
             Controls.Add(DrawPictureBox);
             Controls.Add(ExitButton);
             Name = "ReviewForm";
