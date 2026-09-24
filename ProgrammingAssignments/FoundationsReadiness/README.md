@@ -2,13 +2,13 @@
 
 **Programming Assignments category value: 100 points out of 1000**
 
-Sections: 1–2
+Sections: 1-2
 
 ## Objective
 
-Demonstrate that your development environment, Git workflow, C#/.NET toolchain, Python toolchain, and minimal event-driven desktop model are ready for later RCET 3371 work.
+Prove that your course tools work and that you can carry familiar RCET 2265 programming ideas into the new RCET 3371 environments.
 
-This assignment is deliberately small in algorithmic difficulty. The evidence must show that the tools and workflow are real, reproducible, and understood.
+This is an **on-ramp assignment**. It is not intended to test advanced architecture, merge-conflict recovery, protocol design, or custom GUI drawing.
 
 ## Deliverables
 
@@ -19,109 +19,132 @@ README.md
 .gitignore
 csharp/
 python/
-desktop/
+winforms/
+embedded-c/
+assembly/
 evidence/
 ```
 
-### Part 1 — Git repository and history
+Your README must tell a classmate how to reproduce each first program/build.
 
-Create the repository from the beginning of the assignment.
+## Part 1 - Repository and ordinary Git workflow
 
-Your history must include meaningful separate commits for:
+Create the repository at the beginning of the assignment.
 
-1. repository/project setup;
-2. C# baseline;
-3. Python baseline;
-4. desktop retained-state example;
-5. recovery/conflict exercise and documentation;
-6. final verification cleanup.
+Use the normal development cycle from RCET 2265:
 
-Do not manufacture all commits after the work is finished.
+```text
+edit -> build/run -> git status -> inspect -> add -> commit -> push
+```
 
-### Part 2 — C# baseline
+Your history must contain multiple meaningful commits created while the work develops.
 
-Under `csharp/`, create a .NET 10 console project.
+Required evidence:
 
-The program must:
+- one screenshot or text capture of `git status` with a modified file;
+- one `git diff` example;
+- one `git diff --staged` example;
+- final `git log --oneline`.
 
-- accept one command-line argument;
-- print the argument;
-- print the running .NET version;
-- return a nonzero exit code with a clear message when the argument is missing.
+Branches and merge conflicts are taught later in the course and are not required here.
+
+## Part 2 - C# familiar baseline
+
+Under `csharp/`, create a .NET 10 console program that:
+
+1. stores at least three integer measurements;
+2. computes their sum and average;
+3. uses at least one helper method;
+4. prints the individual values and result;
+5. can be built and run from the command line.
 
 Document:
 
-```bash
+```text
 dotnet restore
 dotnet build
-dotnet run -- <value>
+dotnet run
 ```
 
-### Part 3 — Python baseline
+This part should feel like RCET 2265.
 
-Under `python/`, create a Python 3.14 script.
+## Part 3 - Python translation
 
-The program must:
+Under `python/`, recreate the same small measurement program in Python 3.14.
 
-- accept one command-line argument;
-- print the argument;
-- print `sys.version`;
-- return a nonzero exit code with a clear message when the argument is missing.
+Keep the behavior intentionally similar to the C# version.
 
-Include instructions to create a local virtual environment even though this part needs only the standard library.
+Your README must identify:
 
-### Part 4 — Desktop retained-state example
+- which C# ideas transferred directly;
+- which syntax changed;
+- how you ran the script;
+- which Python interpreter was used.
 
-Under `desktop/`, create a minimal .NET 10 WinForms application.
+Create a local virtual environment and document how to activate it, even if the program uses only the standard library.
 
-Required behavior:
+## Part 4 - Simple Windows Forms event review
 
-- one control adds a point/marker to retained application state;
-- the Paint event redraws **all** retained points/markers;
-- resize, cover/uncover, and minimize/restore do not erase the logical drawing;
-- presentation code is separate from the collection that owns the retained points.
+Under `winforms/`, create a .NET 10 Windows Forms application with:
 
-The appearance is not graded beyond usability.
+- one Button;
+- one Label;
+- one integer counter stored as form/class state;
+- each button click increments the counter and updates the Label.
 
-### Part 5 — Recovery/conflict exercise
+This reviews ordinary event-driven programming. Custom Paint/repaint architecture is not required in Foundations Readiness.
 
-Create two short-lived branches from the same base commit.
+## Part 5 - PIC16F883 first builds
 
-Both branches must modify the same line in `evidence/conflict.txt` differently.
+### Embedded C
 
-Merge one branch, then merge the other and resolve the resulting conflict deliberately.
+Under `embedded-c/`, include the source from a minimal PIC16F883 XC8 project that successfully builds.
 
-In `evidence/git-recovery.md`, include:
+The program must contain:
 
-- the commands used;
-- what the conflict represented;
-- the intended integrated result;
-- the final `git log --oneline --graph --decorate --all` excerpt;
-- one paragraph explaining why blindly selecting "ours" or "theirs" would be weak engineering.
+- `#include <xc.h>`;
+- at least one fixed-width integer value;
+- a stable `while (1)` loop.
 
-Delete merged branches after the evidence is recorded unless your hosting workflow preserves them automatically.
+### Assembly
 
-## README requirements
+Under `assembly/`, include the source from a minimal PIC16F883 pic-as project that successfully builds.
 
-Your repository README must include:
+It must have:
 
-- required tool versions;
-- build/run commands for all three programs;
-- what each program demonstrates;
-- known OS limitation for WinForms;
-- verification steps;
-- repository layout.
+- processor/device selection;
+- reset path;
+- at least one simple arithmetic or move operation;
+- a stable loop.
+
+Physical hardware behavior is not required for this assignment.
+
+## Part 6 - Setup evidence
+
+Under `evidence/`, create `toolchains.md`.
+
+For each environment record:
+
+- OS;
+- tool/version;
+- project or command used;
+- expected result;
+- actual result;
+- any setup problem and its fix.
+
+The record should be detailed enough that another student can determine whether their setup reached the same checkpoint.
 
 ## Complete when
 
-A grader can clone the repository into a clean directory and:
+A grader can clone the repository and determine that:
 
-1. build/run C# from documented commands;
-2. run Python from documented commands;
-3. build/run the WinForms project on Windows;
-4. verify retained drawing survives repaint;
-5. inspect meaningful Git history;
-6. understand the conflict and its resolution.
+1. Git history reflects real development;
+2. the C# program builds/runs;
+3. the Python program runs with documented interpreter/venv;
+4. the WinForms counter works on Windows;
+5. the XC8 PIC16F883 source reached a successful build;
+6. the pic-as PIC16F883 source reached a successful build;
+7. setup evidence is reproducible and understandable.
 
 ## Evaluation
 
