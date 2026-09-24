@@ -2,7 +2,7 @@
 
 Concept-centered self-learning material.
 
-Topics are **semantic curriculum documents**, not weeks or Learning Path sections. Topic filenames are intentionally not numbered. A topic can support more than one section, and a section can draw from more than one topic.
+Topics are **semantic curriculum documents**, not weeks or Learning Path sections. Topic filenames are intentionally not numbered. Topic boundaries follow conceptual coherence, not section size. One complex Topic may occupy an entire section, while another section may intentionally combine several smaller Topics. A Topic can support more than one section, and a section can draw from more than one Topic.
 
 The sequence below is the current recommended learning progression. Its numbers describe **order in this index only**. They are not topic identifiers, and inserting, splitting, combining, or reordering topics does not require renaming the topic files.
 
