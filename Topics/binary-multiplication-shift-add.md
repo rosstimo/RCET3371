@@ -73,7 +73,7 @@ For an n-bit unsigned multiply:
 X        = multiplicand, n bits, unchanged
 A        = accumulator / high half of product, n bits
 Q        = multiplier initially, low half of product finally, n bits
-C        = one-bit carry extension during A + M
+C        = one-bit carry extension during A + X
 count    = n cycles
 ~~~
 
@@ -288,12 +288,12 @@ For hand work:
 For MPLAB X simulator work:
 
 1. set a breakpoint at Multiply8;
-2. add multiplicand, product_high, product_low, loop_count, and STATUS to Watch;
+2. add x_register, a_register, q_register, loop_count, and STATUS to Watch;
 3. step the conditional add;
 4. watch C after ADDWF;
-5. step RRF product_high;
+5. step RRF a_register;
 6. watch A0 move through C;
-7. step RRF product_low;
+7. step RRF q_register;
 8. verify one complete cycle against the hand table;
 9. run to return and compare A:Q with the expected product.
 
@@ -331,7 +331,7 @@ Common defects:
 3. The current least-significant bit Q0.
 4. A+X can produce an n+1-bit intermediate value; C preserves that extra bit through the shift.
 5. Final A:Q is 0000 1110 = 14.
-6. Start X=0111, Q=0011. Cycle 1 adds M then shifts; cycle 2 again sees Q0=1, adds M, then shifts.
+6. Start X=0111, Q=0011. Cycle 1 adds M then shifts; cycle 2 again sees Q0=1, adds X, then shifts.
 7. 0x0100.
 8. A stale carry can be shifted into the high product bit and corrupt the result.
 9. One cycle processes one multiplier bit; an 8-bit multiplier has eight bits regardless of its numeric value.
@@ -349,7 +349,7 @@ Explain X/A/Q/C, Q0 testing, conditional addition, the combined C:A:Q shift, fix
 <a id="references"></a>
 ## 11. References
 
-- Microchip Technology Inc., *PIC16F882/883/884/886/887 Data Sheet*, DS41291F, Section 15 — https://ww1.microchip.com/downloads/en/DeviceDoc/41291F.pdf
+- RCET Binary Math teaching method, machine-multiplication sequence and four-bit 5 × 3 worked example.\n  - Used for: X/A/Q register roles, Q0 test, conditional X-to-A add, C:A:Q right shift, and fixed iteration count.\n- Microchip Technology Inc., *PIC16F882/883/884/886/887 Data Sheet*, DS41291F, Section 15 — https://ww1.microchip.com/downloads/en/DeviceDoc/41291F.pdf
   - Used for: ADDWF, RRF, BTFSS, DECFSZ, and STATUS.C behavior.
 - Microchip Technology Inc., *MPLAB XC8 PIC Assembler User's Guide* — https://onlinedocs.microchip.com/oxy/GUID-4DC87671-9D8E-428A-ADFE-98D694F9F089/
   - Used for: pic-as source/tool syntax.
