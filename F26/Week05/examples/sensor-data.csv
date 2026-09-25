@@ -1,9 +1,0 @@
-timestamp,channel,value,status
-2026-09-21T09:00:00,temperature,21.5,0x48
-2026-09-21T09:00:01,temperature,21.7,0x48
-2026-09-21T09:00:02,pressure,101.2,0xC1
-2026-09-21T09:00:03,pressure,101.3,193
-2026-09-21T09:00:04,temperature,not-a-number,0x48
-2026-09-21T09:00:05,,22.0,0x48
-2026-09-21T09:00:06,temperature,22.1,0x1FF
-2026-09-21T09:00:07,pressure,101.1,0x81

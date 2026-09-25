@@ -1,0 +1,51 @@
+name: Build S27 Examples
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "Examples/StatusDecoder/**"
+      - "Examples/ProtocolParser/**"
+      - "Examples/StateMachine/**"
+      - "Examples/FileRoundTrip/**"
+      - "Examples/BinaryArithmetic/**"
+      - ".github/workflows/s27-examples.yml"
+  push:
+    paths:
+      - "Examples/StatusDecoder/**"
+      - "Examples/ProtocolParser/**"
+      - "Examples/StateMachine/**"
+      - "Examples/FileRoundTrip/**"
+      - "Examples/BinaryArithmetic/**"
+      - ".github/workflows/s27-examples.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: "10.0.x"
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.14"
+      - name: Build and run C# examples
+        shell: bash
+        run: |
+          set -euo pipefail
+          for project in             Examples/StatusDecoder/StatusDecoder.csproj             Examples/ProtocolParser/ProtocolParser.csproj             Examples/StateMachine/StateMachine.csproj
+          do
+            dotnet build "$project" --configuration Release --nologo --warnaserror
+            dotnet run --project "$project" --configuration Release --no-build
+          done
+      - name: Run Python examples
+        shell: bash
+        run: |
+          set -euo pipefail
+          python Examples/StatusDecoder/status_decoder.py
+          python Examples/FileRoundTrip/round_trip.py
+          python Examples/BinaryArithmetic/verify_algorithms.py
