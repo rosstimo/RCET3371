@@ -34,8 +34,10 @@ You should be able to:
 - form a two's-complement negative value;
 - explain how an adder performs subtraction using B inversion plus carry-in;
 - distinguish carry/borrow from signed overflow;
-- trace the four-bit C:A:Q shift-and-add multiplication algorithm;
+- trace the four-bit X:A:Q shift-and-add multiplication algorithm;
 - step the same multiplication algorithm using 8-bit registers in PIC16F883 pic-as;
+- trace the four-bit X:A:Q machine-division algorithm including C1/C2/C3 and restore/success behavior;
+- step the same division method using 8-bit X/A/Q registers in PIC16F883 pic-as;
 - use masks to inspect or change selected bits;
 - perform grab -> modify -> put-back without changing unrelated bits;
 - reconstruct a multi-byte value from bytes when byte order is given;
@@ -48,10 +50,12 @@ You should be able to:
 - [Programming arithmetic operators](../Topics/programming-arithmetic-operators.md)
 - [Binary addition, adders, and two's-complement subtraction](../Topics/binary-addition-adders-twos-complement.md)
 - [Shift-and-add binary multiplication](../Topics/binary-multiplication-shift-add.md)
+- [Register-based binary division](../Topics/binary-division-register-algorithm.md)
 - [Bitwise operations and packed fields](../Topics/bitwise-operations-packed-fields.md)
 - [Engineering notation quick reference](../References/engineering-notation.md)
 - [Cross-language comparison](../References/csharp-python-c-picas-comparison.md)
 - [8-bit PIC multiplication example](../Examples/BinaryArithmetic/Multiply8/)
+- [8-bit PIC division example](../Examples/BinaryArithmetic/Divide8/)
 - [Status Decoder example](../Examples/StatusDecoder/)
 
 ## Example progression
@@ -62,11 +66,13 @@ You should be able to:
 4. Trace a one-bit half-adder/full-adder case.
 5. Work four-bit subtraction as A + two's-complement(B).
 6. Explain the XOR-controlled adder/subtractor circuit.
-7. Trace 3 × 5 using the four-bit C:A:Q multiplication table.
-8. Step the 8-bit PIC16F883 Multiply8 routine in the simulator.
-9. Mask one bit.
-10. Mask a small field.
-11. Change that field while preserving the rest of the byte.
+7. Trace 5 × 3 using the four-bit X:A:Q multiplication table.
+8. Trace 15 ÷ 5 using the four-bit X:A:Q division table.
+9. Step the 8-bit PIC16F883 Multiply8 routine in the simulator.
+10. Step the 8-bit PIC16F883 Divide8 routine in the simulator.
+11. Mask one bit.
+12. Mask a small field.
+13. Change that field while preserving the rest of the byte.
 
 Do not memorize an arithmetic or mask recipe before tracing at least one complete fixed-width example by hand.
 
@@ -78,7 +84,7 @@ Do not memorize an arithmetic or mask recipe before tracing at least one complet
 
 **Digital:** Trace one addition and one two's-complement subtraction through a four-bit adder.
 
-**Algorithm:** Trace one four-bit multiplication with C:A:Q before stepping the 8-bit PIC version.
+**Algorithms:** Trace one four-bit multiplication and one four-bit division with X:A:Q before stepping the 8-bit PIC versions.
 
 **Follow:** Trace the complete packed-byte example in the bitwise Topic.
 
@@ -90,6 +96,6 @@ Start [Cross-Language Engineering Model](../ProgrammingAssignments/CrossLanguage
 
 ## Assessment
 
-Section 3 practice and graded assessment should cover C# operator recall, cross-language arithmetic differences, fixed-width representation, binary addition/two's-complement subtraction, the multiplication register algorithm, and bit-field reasoning.
+Section 3 practice and graded assessment should cover C# operator recall, cross-language arithmetic differences, fixed-width representation, binary addition/two's-complement subtraction, the multiplication and division register algorithms, and bit-field reasoning.
 
 Next: [Section 4 - From Methods and Classes to Program Structure](04-Program-Structure-and-Interfaces.md)

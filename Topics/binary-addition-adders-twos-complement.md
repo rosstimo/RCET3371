@@ -283,48 +283,97 @@ The processor instruction and the digital-adder model describe the same arithmet
 <a id="worked-examples"></a>
 ## 6. Worked examples
 
-### Example 1: four-bit 5 + 6
+### Example 1: four-bit 5 + 3
 
 ~~~text
    0101
- + 0110
+ + 0011
  ------
-   1011
+   1000
 ~~~
 
-As unsigned values, 5 + 6 = 11 and fits in four bits.
+The four-bit result is 8 and no carry leaves the primary register.
 
-As signed four-bit values, both inputs are positive but 1011 has sign bit 1. +11 cannot fit in the -8..+7 signed range, so signed overflow occurred.
-
-### Example 2: four-bit 2 - 5
+### Example 2: four-bit register overflow, 12 + 6
 
 ~~~text
-A = 0010
+   1100
+ + 0110
+ ------
+ 1 0010
+~~~
+
+A four-bit primary register retains `0010` while the carry bit records the fifth result bit.
+
+As an unsigned mathematical result:
+
+~~~text
+12 + 6 = 18 = 1 0010
+~~~
+
+This is a width result, not automatically a signed-overflow interpretation.
+
+### Example 3: 5 - 3 using the adder
+
+~~~text
+A = 0101
+B = 0011
+
+two's complement of B:
+0011 -> 1100 -> 1101
+
+   0101
+ + 1101
+ ------
+ 1 0010
+~~~
+
+Drop the fixed-width carry:
+
+~~~text
+0010 = 2
+~~~
+
+### Example 4: 3 - 5 produces a negative result
+
+~~~text
+A = 0011
 B = 0101
 
 two's complement of B:
 0101 -> 1010 -> 1011
 
-   0010
+   0011
  + 1011
  ------
-   1101
+   1110
 ~~~
 
-1101 is -3 in four-bit two's complement.
+There is no carry out. Interpreted as four-bit two's complement:
 
-### Example 3: hardware control signal
+~~~text
+1110 = -2
+~~~
 
-For A = 0110 and B = 0011:
+To recover the magnitude by hand, take the two's complement of `1110`:
 
-- ADD mode: SUB=0, B passes unchanged, Cin0=0 -> 1001
-- SUB mode: SUB=1, B becomes 1100 and Cin0=1 -> 0011 after the fixed-width carry is discarded
+~~~text
+1110 -> 0001 -> 0010
+~~~
+
+Magnitude = 2, so the result is -2.
+
+### Example 5: one hardware adder for add and subtract
+
+For A = `0101` and B = `0011`:
+
+- ADD mode: `SUB=0`, B passes unchanged, `Cin0=0` -> `1000`
+- SUB mode: `SUB=1`, B becomes `1100`, `Cin0=1` -> `0010` after the fixed-width carry is discarded
 
 Only the B path and initial carry changed. The same four full adders can do both jobs.
 
 [Back to top](#top) · [Topics index](README.md)
 
-<a id="apply-verify-troubleshoot"></a>
 ## 7. Apply, verify, and troubleshoot
 
 When hand arithmetic and code disagree:

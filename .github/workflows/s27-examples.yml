@@ -8,6 +8,7 @@ on:
       - "Examples/ProtocolParser/**"
       - "Examples/StateMachine/**"
       - "Examples/FileRoundTrip/**"
+      - "Examples/BinaryArithmetic/**"
       - ".github/workflows/s27-examples.yml"
   push:
     paths:
@@ -15,6 +16,7 @@ on:
       - "Examples/ProtocolParser/**"
       - "Examples/StateMachine/**"
       - "Examples/FileRoundTrip/**"
+      - "Examples/BinaryArithmetic/**"
       - ".github/workflows/s27-examples.yml"
 
 permissions:
@@ -46,3 +48,4 @@ jobs:
           set -euo pipefail
           python Examples/StatusDecoder/status_decoder.py
           python Examples/FileRoundTrip/round_trip.py
+          python Examples/BinaryArithmetic/verify_algorithms.py

@@ -6,16 +6,22 @@
 ; Linker Options: -Wl,-presetVect=0000h,-pcode=0008h
 ;==============================================================================
 ;
-; Unsigned multiplication using the C:A:Q register algorithm.
+; Unsigned multiplication using the C:X:A:Q teaching model.
+;
+; Conceptual registers:
+;   X = multiplicand
+;   A = accumulator / product high byte
+;   Q = multiplier / product low byte
+;   C = carry extension during the combined shift
 ;
 ; Input:
-;   multiplicand = M, 8-bit multiplicand
-;   product_low  = Q, 8-bit multiplier
+;   x_register = 8-bit multiplicand
+;   q_register = 8-bit multiplier
 ;
 ; Output:
-;   product_high:product_low = 16-bit product
+;   a_register:q_register = 16-bit product
 ;
-; The example setup loads 13 * 11. Expected result: 0x008F.
+; Default simulator test: 5 * 3 = 15 = 0x000F.
 ;==============================================================================
 
 RADIX dec
@@ -23,9 +29,6 @@ PROCESSOR 16F883
 
 #include <xc.inc>
 
-;------------------------------------------------------------------------------
-; Device Configuration
-;------------------------------------------------------------------------------
 CONFIG "FOSC = XT"
 CONFIG "WDTE = OFF"
 CONFIG "PWRTE = OFF"
@@ -39,43 +42,34 @@ CONFIG "LVP = OFF"
 CONFIG "BOR4V = BOR40V"
 CONFIG "WRT = OFF"
 
-;------------------------------------------------------------------------------
-; Shared RAM
-;------------------------------------------------------------------------------
 PSECT udata_shr
 
-multiplicand:
+x_register:
     DS 1
 
-product_high:
+a_register:
     DS 1
 
-product_low:
+q_register:
     DS 1
 
 loop_count:
     DS 1
 
-;------------------------------------------------------------------------------
-; Reset Vector
-;------------------------------------------------------------------------------
 PSECT resetVect,class=CODE,delta=2
 
 ResetVector:
     goto    Setup
 
-;------------------------------------------------------------------------------
-; Main Code
-;------------------------------------------------------------------------------
 PSECT code,class=CODE,delta=2
 
 Setup:
-    ; Default simulator test: 13 * 11 = 143 = 0x008F
-    movlw   13
-    movwf   multiplicand
+    ; Same values as the four-bit hand example: 5 * 3 = 15.
+    movlw   5
+    movwf   x_register
 
-    movlw   11
-    movwf   product_low
+    movlw   3
+    movwf   q_register
 
     call    Multiply8
 
@@ -84,8 +78,8 @@ Stop:
 
 ;------------------------------------------------------------------------------
 ; Multiply8
-; Input:       multiplicand = M, product_low = Q
-; Output:      product_high:product_low = 16-bit product
+; Input:       X = x_register, Q = q_register
+; Output:      A:Q = a_register:q_register
 ; Uses:        WREG, STATUS.C, loop_count
 ; Stack Depth: 1
 ;
@@ -93,31 +87,31 @@ Stop:
 ;   A = 0
 ;   repeat 8 times:
 ;       if Q0 = 1:
-;           A = A + M, preserving carry in C
+;           A = A + X, preserving carry in C
 ;       else:
 ;           C = 0
 ;       shift C:A:Q right
 ;------------------------------------------------------------------------------
 Multiply8:
-    clrf    product_high
+    clrf    a_register
 
     movlw   8
     movwf   loop_count
 
 multiplyLoop:
-    btfss   product_low,0
+    btfss   q_register,0
     goto    noAdd
 
-    movf    multiplicand,w
-    addwf   product_high,f
+    movf    x_register,w
+    addwf   a_register,f
     goto    shiftProduct
 
 noAdd:
-    bcf     C
+    bcf     STATUS,C
 
 shiftProduct:
-    rrf     product_high,f
-    rrf     product_low,f
+    rrf     a_register,f
+    rrf     q_register,f
 
     decfsz  loop_count,f
     goto    multiplyLoop

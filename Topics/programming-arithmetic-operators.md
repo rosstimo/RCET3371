@@ -56,7 +56,7 @@ You should be able to:
 
 Review [Numeric Representation, Width, and Range](numeric-representation-width-range.md) first.
 
-This Topic introduces the programming-language surface. The digital hardware underneath addition/subtraction is developed in [Binary Addition, Adders, and Two's-Complement Subtraction](binary-addition-adders-twos-complement.md). Multiplication without using the language's multiply operator is developed in [Shift-and-Add Binary Multiplication](binary-multiplication-shift-add.md).
+This Topic introduces the programming-language surface. The digital hardware underneath addition/subtraction is developed in [Binary Addition, Adders, and Two's-Complement Subtraction](binary-addition-adders-twos-complement.md). Multiplication without using the language's multiply operator is developed in [Shift-and-Add Binary Multiplication](binary-multiplication-shift-add.md). Division without using the language's divide operator is developed in [Register-Based Binary Division](binary-division-register-algorithm.md).
 
 [Back to top](#top) · [Topics index](README.md)
 
@@ -222,6 +222,18 @@ Do not rely on a slogan alone. Be able to trace the actual expression.
 - C: a library function such as pow() when floating-point exponentiation is needed
 - PIC16F883 pic-as: no general exponentiation instruction; choose an algorithm appropriate to the required integer/fixed-point problem.
 
+<a id="division-by-zero"></a>
+### Division by zero is not portable behavior
+
+A divisor of zero must be treated as a deliberate error case.
+
+- C# integer division by zero throws `DivideByZeroException`.
+- Python division, floor division, and remainder by zero raise `ZeroDivisionError`.
+- C integer division or remainder by zero has undefined behavior.
+- PIC16F883 has no built-in divide instruction, so a software division routine must reject a zero divisor explicitly.
+
+Do not let a cross-language example imply that divide-by-zero behavior is interchangeable.
+
 <a id="assembly-mirror"></a>
 ### PIC16F883 pic-as mirror
 
@@ -344,7 +356,8 @@ A common assembly error is reading SUBWF as W - f. On PIC16F883 it is f - W.
 7. If an 8-bit unsigned value stores 255 and is incremented, what bit pattern remains?
 8. Why should multiplication/division on PIC16F883 be treated as algorithms rather than assumed single instructions?
 9. What is 29 / 8 as quotient and remainder?
-10. Why is C# Math.Pow not equivalent to a built-in exponentiation operator?
+10. Why must a portable division algorithm reject divisor zero explicitly?
+11. Why is C# Math.Pow not equivalent to a built-in exponentiation operator?
 
 [Back to top](#top) · [Topics index](README.md)
 
@@ -360,7 +373,8 @@ A common assembly error is reading SUBWF as W - f. On PIC16F883 it is f - W.
 7. 0000 0000.
 8. The PIC16F883 instruction set has add/subtract/rotate/increment/decrement primitives but no general multiply or divide instruction, so software must compose the operation.
 9. quotient 3, remainder 5.
-10. C# uses a method call such as Math.Pow; there is no C# ** exponentiation operator.
+10. C#, Python, C, and a PIC software routine do not share one automatic divide-by-zero behavior; define and handle the error at the interface.
+11. C# uses a method call such as Math.Pow; there is no C# ** exponentiation operator.
 
 [Back to top](#top) · [Topics index](README.md)
 

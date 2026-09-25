@@ -41,7 +41,7 @@ This is more useful than "add the multiplicand multiplier-times" because executi
 You should be able to:
 
 - explain why an n-bit by n-bit unsigned product needs up to 2n bits;
-- identify M/X as multiplicand, A as accumulator, Q as multiplier/product-low, and C as the carry extension;
+- identify X as multiplicand, A as accumulator, Q as multiplier/product-low, and C as the carry extension;
 - trace the four-bit C:A:Q algorithm one cycle at a time;
 - predict the product before running code;
 - explain why Q0 controls the conditional add;
@@ -70,7 +70,7 @@ The current algorithm is **unsigned**. Signed multiplication needs additional si
 For an n-bit unsigned multiply:
 
 ~~~text
-M (or X) = multiplicand, n bits, unchanged
+X        = multiplicand, n bits, unchanged
 A        = accumulator / high half of product, n bits
 Q        = multiplier initially, low half of product finally, n bits
 C        = one-bit carry extension during A + M
@@ -83,14 +83,14 @@ Initial state:
 C = 0
 A = 0
 Q = multiplier
-M = multiplicand
+X = multiplicand
 ~~~
 
 Repeat exactly n times:
 
 ~~~text
 1. Test Q0.
-2. If Q0 = 1, add M to A and keep the carry in C.
+2. If Q0 = 1, add X to A and keep the carry in C.
    If Q0 = 0, set C = 0.
 3. Shift the combined C:A:Q register right by one bit.
 4. Repeat.
@@ -126,14 +126,14 @@ or:
 
 If Q0 is 0, there is nothing to add for that bit position.
 
-If Q0 is 1, add M into A.
+If Q0 is 1, add X into A.
 
 The following combined shift advances the algorithm to the next multiplier bit while also aligning the partial product.
 
 <a id="combined-shift"></a>
 ### Why the shift is C:A:Q, not three unrelated shifts
 
-Suppose A+M produces a carry. That carry is one bit more significant than A.
+Suppose A+X produces a carry. That carry is one bit more significant than A.
 
 During the right shift:
 
@@ -166,70 +166,65 @@ When Q0=0 and no addition occurs, C must be cleared before the combined shift so
 ## 6. Worked examples
 
 <a id="four-bit-example"></a>
-### Four-bit worked example: 3 × 5
+### Four-bit worked example: 5 × 3
 
-Use:
+Use the same X/A/Q arrangement as the RCET Binary Math hand method:
 
 ~~~text
-M = 0011  (3)
-Q = 0101  (5)
+X = 0101  (5)
 A = 0000
+Q = 0011  (3)
 C = 0
 ~~~
 
-The table shows the state **after the optional add** and **after the combined shift**.
+Repeat once for each of the four multiplier bits.
 
-| Cycle | Q0 | Operation | C | A | Q |
-| ---: | :---: | --- | :---: | :---: | :---: |
-| start |  | initialize | 0 | 0000 | 0101 |
-| 1 | 1 | A=A+M | 0 | 0011 | 0101 |
-| 1 |  | shift C:A:Q right | 0 | 0001 | 1010 |
-| 2 | 0 | no add | 0 | 0001 | 1010 |
-| 2 |  | shift C:A:Q right | 0 | 0000 | 1101 |
-| 3 | 1 | A=A+M | 0 | 0011 | 1101 |
-| 3 |  | shift C:A:Q right | 0 | 0001 | 1110 |
-| 4 | 0 | no add | 0 | 0001 | 1110 |
-| 4 |  | shift C:A:Q right | 0 | 0000 | 1111 |
+| Cycle | Q0 | Operation before shift | C:A:Q after shift |
+| ---: | :---: | --- | --- |
+| start |  | initialize | `0:0000:0011` |
+| 1 | 1 | A = A + X = `0101`, C=0 | `0:0010:1001` |
+| 2 | 1 | A = A + X = `0111`, C=0 | `0:0011:1100` |
+| 3 | 0 | no add, C=0 | `0:0001:1110` |
+| 4 | 0 | no add, C=0 | `0:0000:1111` |
 
 Final product:
 
 ~~~text
 A:Q = 0000 1111 = 15
+
+5 × 3 = 15
 ~~~
 
-Check:
-
-~~~text
-3 × 5 = 15
-~~~
+The least-significant Q bit is consumed before each shift. The bit shifted out of Q after that test has completed its job.
 
 <a id="eight-bit-pic"></a>
 ### Eight-bit PIC16F883 implementation
 
 The full simulator-ready example is in [Examples/BinaryArithmetic/Multiply8](../Examples/BinaryArithmetic/Multiply8/).
 
-The core routine is:
+The core routine keeps the teaching-register names visible:
 
 ~~~assembly
 Multiply8:
-    clrf    product_high
+    clrf    a_register
+
     movlw   8
     movwf   loop_count
 
 multiplyLoop:
-    btfss   product_low,0
+    btfss   q_register,0
     goto    noAdd
 
-    movf    multiplicand,w
-    addwf   product_high,f
+    movf    x_register,w
+    addwf   a_register,f
     goto    shiftProduct
 
 noAdd:
-    bcf     C
+    bcf     STATUS,C
 
 shiftProduct:
-    rrf     product_high,f
-    rrf     product_low,f
+    rrf     a_register,f
+    rrf     q_register,f
 
     decfsz  loop_count,f
     goto    multiplyLoop
@@ -240,53 +235,52 @@ shiftProduct:
 Inputs:
 
 ~~~text
-multiplicand = M
-product_low  = Q = multiplier
+X = x_register = multiplicand
+Q = q_register = multiplier
 ~~~
 
-Outputs:
+Output:
 
 ~~~text
-product_high:product_low = 16-bit product
+A:Q = a_register:q_register = 16-bit product
 ~~~
 
-The example initializes:
+The default simulator input uses the same values as the four-bit hand example:
 
 ~~~text
-13 × 11
+5 × 3
 ~~~
 
-Expected simulator result:
+Expected result:
 
 ~~~text
-product_high = 0x00
-product_low  = 0x8F
-
-0x008F = 143
+a_register = 0x00
+q_register = 0x0F
 ~~~
 
 <a id="test-vectors"></a>
 ### Test vectors
 
-| Multiplicand | Multiplier | Expected 16-bit product |
+| X | Q | Expected A:Q |
 | ---: | ---: | ---: |
-| 3 | 5 | 0x000F |
-| 13 | 11 | 0x008F |
-| 128 | 2 | 0x0100 |
-| 255 | 255 | 0xFE01 |
+| 5 | 3 | `0x000F` |
+| 13 | 11 | `0x008F` |
+| 128 | 2 | `0x0100` |
+| 255 | 255 | `0xFE01` |
 
 The last vector forces carry propagation and is especially useful for verifying the C:A:Q shift.
 
+[verify_algorithms.py](../Examples/BinaryArithmetic/verify_algorithms.py) exhaustively checks every unsigned 8-bit X/Q pair against ordinary multiplication.
+
 [Back to top](#top) · [Topics index](README.md)
 
-<a id="apply-verify-troubleshoot"></a>
 ## 7. Apply, verify, and troubleshoot
 
 For hand work:
 
-1. write M, A, Q, and C at fixed width;
+1. write X, A, Q, and C at fixed width;
 2. record Q0 before any change;
-3. when Q0=1, show A+M and carry separately;
+3. when Q0=1, show A+X and carry separately;
 4. shift C:A:Q as one register;
 5. perform exactly n cycles;
 6. concatenate A:Q only after the final cycle.
@@ -318,9 +312,9 @@ Common defects:
 
 1. Why can an 8-bit by 8-bit product require 16 bits?
 2. In the algorithm, which register is unchanged?
-3. What decides whether M is added to A?
+3. What decides whether X is added to A?
 4. Why is C part of the combined shift?
-5. Trace 2 × 7 using four-bit M/A/Q registers.
+5. Trace 2 × 7 using four-bit X/A/Q registers.
 6. Trace the first two cycles of 7 × 3.
 7. Predict the 16-bit result of 128 × 2.
 8. What fault occurs if C is not cleared during a no-add cycle?
@@ -333,11 +327,11 @@ Common defects:
 ## 9. Answer key
 
 1. Maximum 255 × 255 = 65025, which exceeds eight bits but fits in 16 bits.
-2. M, the multiplicand.
+2. X, the multiplicand.
 3. The current least-significant bit Q0.
-4. A+M can produce an n+1-bit intermediate value; C preserves that extra bit through the shift.
+4. A+X can produce an n+1-bit intermediate value; C preserves that extra bit through the shift.
 5. Final A:Q is 0000 1110 = 14.
-6. Start M=0111, Q=0011. Cycle 1 adds M then shifts; cycle 2 again sees Q0=1, adds M, then shifts.
+6. Start X=0111, Q=0011. Cycle 1 adds M then shifts; cycle 2 again sees Q0=1, adds M, then shifts.
 7. 0x0100.
 8. A stale carry can be shifted into the high product bit and corrupt the result.
 9. One cycle processes one multiplier bit; an 8-bit multiplier has eight bits regardless of its numeric value.
@@ -348,7 +342,7 @@ Common defects:
 <a id="without-notes"></a>
 ## 10. What you should be able to explain without notes
 
-Explain M/A/Q/C, Q0 testing, conditional addition, the combined C:A:Q shift, fixed cycle count, 2n-bit product width, and how PIC16F883 ADDWF plus RRF implements the paper algorithm.
+Explain X/A/Q/C, Q0 testing, conditional addition, the combined C:A:Q shift, fixed cycle count, 2n-bit product width, and how PIC16F883 ADDWF plus RRF implements the paper algorithm.
 
 [Back to top](#top) · [Topics index](README.md)
 
