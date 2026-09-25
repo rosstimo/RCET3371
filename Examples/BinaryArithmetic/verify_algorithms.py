@@ -2,7 +2,7 @@ MASK = 0xFF
 
 
 def multiply8(x_register: int, q_register: int) -> int:
-    """Model the 8-bit C:X:A:Q shift-and-add register algorithm."""
+    """Model the 8-bit X/A/Q shift-and-add register algorithm."""
     x_register &= MASK
     q_register &= MASK
     a_register = 0
