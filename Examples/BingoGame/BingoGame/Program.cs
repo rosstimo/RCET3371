@@ -13,9 +13,26 @@
          */
         static void Main(string[] args)
         {
-            
+            DisplayBoard();
             //pause
             Console.ReadLine();
+        }
+
+        static void DisplayBoard()
+        {
+            // header
+
+            // iterate through array
+
+            for (int row = 0; row < 10; row++)
+            {
+                for (int col = 0; col < 10; col++)
+                {
+                    Console.Write("Col");
+                }
+                Console.WriteLine("row");
+            }
+
         }
     }
 }
