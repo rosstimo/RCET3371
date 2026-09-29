@@ -29,8 +29,9 @@
         private void InitializeComponent()
         {
             ExitButton = new Button();
-            button1 = new Button();
             ConnectButton = new Button();
+            ReadButton = new Button();
+            SendButton = new Button();
             SuspendLayout();
             // 
             // ExitButton
@@ -43,15 +44,6 @@
             ExitButton.UseVisualStyleBackColor = true;
             ExitButton.Click += ExitButton_Click;
             // 
-            // button1
-            // 
-            button1.Location = new Point(0, 0);
-            button1.Name = "button1";
-            button1.Size = new Size(75, 23);
-            button1.TabIndex = 1;
-            button1.Text = "button1";
-            button1.UseVisualStyleBackColor = true;
-            // 
             // ConnectButton
             // 
             ConnectButton.Location = new Point(336, 236);
@@ -62,13 +54,32 @@
             ConnectButton.UseVisualStyleBackColor = true;
             ConnectButton.Click += ConnectButton_Click;
             // 
+            // ReadButton
+            // 
+            ReadButton.Location = new Point(238, 236);
+            ReadButton.Name = "ReadButton";
+            ReadButton.Size = new Size(92, 47);
+            ReadButton.TabIndex = 3;
+            ReadButton.Text = "&Read";
+            ReadButton.UseVisualStyleBackColor = true;
+            // 
+            // SendButton
+            // 
+            SendButton.Location = new Point(140, 236);
+            SendButton.Name = "SendButton";
+            SendButton.Size = new Size(92, 47);
+            SendButton.TabIndex = 4;
+            SendButton.Text = "&Send";
+            SendButton.UseVisualStyleBackColor = true;
+            // 
             // SerialForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(538, 295);
+            Controls.Add(SendButton);
+            Controls.Add(ReadButton);
             Controls.Add(ConnectButton);
-            Controls.Add(button1);
             Controls.Add(ExitButton);
             Name = "SerialForm";
             Text = "Form1";
@@ -78,7 +89,8 @@
         #endregion
 
         private Button ExitButton;
-        private Button button1;
         private Button ConnectButton;
+        private Button ReadButton;
+        private Button SendButton;
     }
 }
