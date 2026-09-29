@@ -1,6 +1,6 @@
 ﻿namespace SerialExample
 {
-    partial class Form1
+    partial class SerialForm
     {
         /// <summary>
         ///  Required designer variable.
