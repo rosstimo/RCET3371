@@ -1,0 +1,88 @@
+name: Validate S27 Course Links
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "README.md"
+      - "Course/**"
+      - "LearningPath/**"
+      - "Topics/**"
+      - "Guides/**"
+      - "References/**"
+      - "Standards/**"
+      - "ProgrammingAssignments/**"
+      - "Examples/**"
+      - "Resources/**"
+      - ".github/workflows/s27-doc-links.yml"
+  push:
+    paths:
+      - "README.md"
+      - "Course/**"
+      - "LearningPath/**"
+      - "Topics/**"
+      - "Guides/**"
+      - "References/**"
+      - "Standards/**"
+      - "ProgrammingAssignments/**"
+      - "Examples/**"
+      - "Resources/**"
+      - ".github/workflows/s27-doc-links.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  links:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Check relative Markdown links
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          from urllib.parse import unquote
+          import re
+          import sys
+
+          roots = [
+              Path("README.md"), Path("Course"), Path("LearningPath"), Path("Topics"),
+              Path("Guides"), Path("References"), Path("Standards"),
+              Path("ProgrammingAssignments"), Path("Examples"), Path("Resources"),
+          ]
+
+          markdown = []
+          for root in roots:
+              if root.is_file():
+                  markdown.append(root)
+              elif root.is_dir():
+                  markdown.extend(root.rglob("*.md"))
+
+          pattern = re.compile(r'!?\[[^\]]*\]\(([^)]+)\)')
+          failures = []
+
+          for source in sorted(set(markdown)):
+              text = source.read_text(encoding="utf-8")
+              for raw in pattern.findall(text):
+                  target = raw.strip().split()[0].strip("<>")
+                  if not target or target.startswith(("#", "http://", "https://", "mailto:")):
+                      continue
+                  path_part = unquote(target.split("#", 1)[0])
+                  if not path_part:
+                      continue
+                  resolved = (source.parent / path_part).resolve()
+                  try:
+                      resolved.relative_to(Path.cwd().resolve())
+                  except ValueError:
+                      failures.append(f"{source}: unsafe/outside link {raw}")
+                      continue
+                  if not resolved.exists():
+                      failures.append(f"{source}: missing target {raw}")
+
+          if failures:
+              print("\n".join(failures))
+              sys.exit(1)
+
+          print(f"Checked {len(markdown)} Markdown files; relative targets exist.")
+          PY

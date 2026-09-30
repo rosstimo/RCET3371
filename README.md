@@ -1,24 +1,42 @@
-# RCET3371
+# RCET 3371 — Advanced Programming
 
-Student-facing course materials for RCET 3371.
+RCET 3371 is an advanced comparative programming and software-systems course.
 
-## Fall 2026
+## Start here
 
-**[Start here: Fall 2026 course path](F26/README.md)**
+**[RCET 3371 Learning Path](LearningPath/README.md)**
 
-The Fall 2026 page identifies the current topic, what to read or practice next, assignments, examples, and upcoming material. Use it as the normal course entry point.
+The Learning Path is the ordered route through the course. Sections are curriculum units, not calendar weeks.
 
-## General course materials and reference
+## Course structure
 
-- [Assignments](00-Assignments/)
-- [Examples](Examples/)
-- [Git resources](git/)
+- [Course guide](Course/README.md)
+- [Learning Path](LearningPath/)
+- [Topics](Topics/) — self-learning concept material
+- [Guides](Guides/) — recurring workflows and tool use
+- [References](References/) — quick lookup
+- [Standards](Standards/) — course requirements
+- [Programming Assignments](ProgrammingAssignments/) — all graded programming/work-product instructions
+- [Examples](Examples/) — runnable and traceable examples
+- [Resources](Resources/) — supplied data, vectors, and assets
 
-## Student guides
+## Grading categories
 
-### Flowcharts
+- **Programming Assignments: 50%**
+- **Quizzes and Assessments: 50%**
 
-- [Flowchart guide](Guides/Flowcharts/RCET-Flowchart-Guide.md) - design workflow, notation, decisions and loops, level of detail, hierarchical charts, interrupts, lab-book documentation, and authoring with Mermaid, draw.io, or pencil and paper.
-- [Flowchart quick reference](Guides/Flowcharts/RCET-Flowchart-Quick-Reference.md) - compact notation, Mermaid, draw.io, and final-check reference.
+Quizzes and assessments may be delivered in Canvas or on paper.
 
-Start with the full guide when learning or reviewing the concepts. Use the quick reference while creating a chart.
+## Languages and environments
+
+The course compares C#/.NET, Python, embedded C/XC8, and PIC assembly/pic-as.
+
+C# is the familiar high-level reference. Python provides a dynamic engineering-tool perspective. Embedded C connects software structure to hardware-facing systems. PIC assembly exposes processor-near behavior.
+
+## How to use this repository
+
+If you are learning independently, follow the Learning Path in order.
+
+If you are working with an instructor, use the same section order while following the instructor's calendar and Canvas due dates.
+
+Durable course material lives in the semantic directories above rather than in semester-named student directories.

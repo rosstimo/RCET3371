@@ -1,0 +1,14 @@
+# noise before start
+11 22 33
+
+# valid frame
+A5 10 04 01 09 29 00 35
+
+# invalid LENGTH=33 (>32), parser should reject/resync
+A5 10 21 00 00
+
+# bad checksum: valid checksum would be 65, final byte deliberately 64
+A5 10 04 02 FF 9C 10 64
+
+# valid identity response after errors; parser must recover
+A5 81 08 52 43 45 54 33 33 37 31 8F

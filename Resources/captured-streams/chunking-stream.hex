@@ -1,0 +1,3 @@
+# Same logical stream as valid telemetry.
+# Feed these bytes using different chunk sizes without changing parsed frames.
+A5 10 04 01 09 29 00 35 A5 10 04 02 FF 9C 10 65 A5 10 04 03 0B B8 7C D8
