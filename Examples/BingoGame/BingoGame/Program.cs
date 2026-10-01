@@ -23,22 +23,46 @@
         static void DisplayBoard()
         {
             string ballNumber;
+            string[] header = { "B", "I", "N", "G", "O" };
+            string seperator = "_";
+            
+            foreach (string letter in header)
+            {
+                Console.Write(letter.PadLeft(3));
+                seperator += "___";
+            }
+            Console.WriteLine();
+            Console.WriteLine(seperator);
+            
             // header
 
             // iterate through array
             int rows = ballTracker.GetLength(0);
             int cols = ballTracker.GetLength(1);
 
+            //test
+            ballTracker[0, 0] = true;
+            ballTracker[14, 4] = true;
+
             for (int row = 0; row < rows; row++)
             {
                 Console.Write("|");
                 for (int col = 0; col < cols; col++)
                 {
-                    ballNumber = ((rows * col) + row + 1).ToString();
-                    Console.Write(ballNumber.PadLeft(2) + "|");
+                    if (ballTracker[row, col])
+                    {
+                        ballNumber = ((rows * col) + row + 1).ToString();
+                    }
+                    else
+                    {
+                        ballNumber = "";
+                    }
+                        Console.Write(ballNumber.PadLeft(2) + "|");
                 }
                 Console.WriteLine();
             }
+            Console.WriteLine();
+            Console.WriteLine("Place User Prompt Here");
         }
     }
 }
