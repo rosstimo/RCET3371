@@ -11,6 +11,8 @@
           [ ] let user quit at any time
           [ ] 
          */
+        static bool[,] ballTracker = new bool[15, 5];
+
         static void Main(string[] args)
         {
             DisplayBoard();
@@ -20,22 +22,23 @@
 
         static void DisplayBoard()
         {
-           string ballNumber;
+            string ballNumber;
             // header
 
             // iterate through array
-    
-            for (int row = 1; row <= 15; row++)
+            int rows = ballTracker.GetLength(0);
+            int cols = ballTracker.GetLength(1);
+
+            for (int row = 0; row < rows; row++)
             {
                 Console.Write("|");
-                for (int col = 1; col <= 5; col++)
+                for (int col = 0; col < cols; col++)
                 {
-                    ballNumber = row.ToString();
+                    ballNumber = ((rows * col) + row + 1).ToString();
                     Console.Write(ballNumber.PadLeft(2) + "|");
                 }
                 Console.WriteLine();
             }
-
         }
     }
 }
