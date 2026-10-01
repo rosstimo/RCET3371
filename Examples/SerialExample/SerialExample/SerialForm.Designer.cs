@@ -28,15 +28,21 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             ExitButton = new Button();
             ConnectButton = new Button();
             ReadButton = new Button();
             SendButton = new Button();
+            SerialTextBox = new TextBox();
+            statusStrip1 = new StatusStrip();
+            StatusLabel = new ToolStripStatusLabel();
+            StatusTimer = new System.Windows.Forms.Timer(components);
+            statusStrip1.SuspendLayout();
             SuspendLayout();
             // 
             // ExitButton
             // 
-            ExitButton.Location = new Point(434, 236);
+            ExitButton.Location = new Point(434, 223);
             ExitButton.Name = "ExitButton";
             ExitButton.Size = new Size(92, 47);
             ExitButton.TabIndex = 0;
@@ -46,7 +52,7 @@
             // 
             // ConnectButton
             // 
-            ConnectButton.Location = new Point(336, 236);
+            ConnectButton.Location = new Point(336, 223);
             ConnectButton.Name = "ConnectButton";
             ConnectButton.Size = new Size(92, 47);
             ConnectButton.TabIndex = 2;
@@ -56,34 +62,69 @@
             // 
             // ReadButton
             // 
-            ReadButton.Location = new Point(238, 236);
+            ReadButton.Location = new Point(238, 223);
             ReadButton.Name = "ReadButton";
             ReadButton.Size = new Size(92, 47);
             ReadButton.TabIndex = 3;
             ReadButton.Text = "&Read";
             ReadButton.UseVisualStyleBackColor = true;
+            ReadButton.Click += ReadButton_Click;
             // 
             // SendButton
             // 
-            SendButton.Location = new Point(140, 236);
+            SendButton.Location = new Point(140, 223);
             SendButton.Name = "SendButton";
             SendButton.Size = new Size(92, 47);
             SendButton.TabIndex = 4;
             SendButton.Text = "&Send";
             SendButton.UseVisualStyleBackColor = true;
+            SendButton.Click += SendButton_Click;
+            // 
+            // SerialTextBox
+            // 
+            SerialTextBox.Location = new Point(173, 74);
+            SerialTextBox.Name = "SerialTextBox";
+            SerialTextBox.Size = new Size(268, 23);
+            SerialTextBox.TabIndex = 5;
+            // 
+            // statusStrip1
+            // 
+            statusStrip1.Items.AddRange(new ToolStripItem[] { StatusLabel });
+            statusStrip1.Location = new Point(0, 273);
+            statusStrip1.Name = "statusStrip1";
+            statusStrip1.Size = new Size(538, 22);
+            statusStrip1.TabIndex = 6;
+            statusStrip1.Text = "statusStrip1";
+            // 
+            // StatusLabel
+            // 
+            StatusLabel.Name = "StatusLabel";
+            StatusLabel.Size = new Size(34, 17);
+            StatusLabel.Text = "none";
+            // 
+            // StatusTimer
+            // 
+            StatusTimer.Enabled = true;
+            StatusTimer.Interval = 250;
+            StatusTimer.Tick += StatusTimer_Tick;
             // 
             // SerialForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(538, 295);
+            Controls.Add(statusStrip1);
+            Controls.Add(SerialTextBox);
             Controls.Add(SendButton);
             Controls.Add(ReadButton);
             Controls.Add(ConnectButton);
             Controls.Add(ExitButton);
             Name = "SerialForm";
             Text = "Form1";
+            statusStrip1.ResumeLayout(false);
+            statusStrip1.PerformLayout();
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -92,5 +133,9 @@
         private Button ConnectButton;
         private Button ReadButton;
         private Button SendButton;
+        private TextBox SerialTextBox;
+        private StatusStrip statusStrip1;
+        private ToolStripStatusLabel StatusLabel;
+        private System.Windows.Forms.Timer StatusTimer;
     }
 }

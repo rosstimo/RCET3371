@@ -20,18 +20,20 @@
 
         static void DisplayBoard()
         {
-            int ballNumber;
+           string ballNumber;
             // header
 
             // iterate through array
     
             for (int row = 1; row <= 15; row++)
             {
+                Console.Write("|");
                 for (int col = 1; col <= 5; col++)
                 {
-                    Console.Write(col);
+                    ballNumber = row.ToString();
+                    Console.Write(ballNumber.PadLeft(2) + "|");
                 }
-                Console.WriteLine(row);
+                Console.WriteLine();
             }
 
         }
