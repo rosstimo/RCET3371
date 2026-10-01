@@ -3,7 +3,7 @@
     internal class Program
     {
         /* TODO
-          [ ] display drawn balls
+          [x] display drawn balls
           [ ] draw a random ball
           [ ] if ball already drawn just draw another
           [ ] don't draw when all balls already drawn
@@ -15,7 +15,9 @@
 
         static void Main(string[] args)
         {
+            DrawBall();
             DisplayBoard();
+            Console.Beep();
             //pause
             Console.ReadLine();
         }
@@ -40,10 +42,6 @@
             int rows = ballTracker.GetLength(0);
             int cols = ballTracker.GetLength(1);
 
-            //test
-            ballTracker[0, 0] = true;
-            ballTracker[14, 4] = true;
-
             for (int row = 0; row < rows; row++)
             {
                 Console.Write("|");
@@ -63,6 +61,13 @@
             }
             Console.WriteLine();
             Console.WriteLine("Place User Prompt Here");
+        }
+
+        static void DrawBall()
+        {
+            ballTracker[0, 0] = true;
+            ballTracker[14, 4] = true;
+
         }
     }
 }
