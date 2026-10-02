@@ -65,11 +65,12 @@
 
         static void DrawBall()
         {
-            
-            ballTracker[0, 0] = true;
-            ballTracker[14, 4] = true;
-            ballTracker[5, 2] = true;
+            Random randy = new Random();
 
+            int row = randy.Next(15);
+            int col = randy.Next(5);
+            
+            ballTracker[row, col] = true;
         }
     }
 }
