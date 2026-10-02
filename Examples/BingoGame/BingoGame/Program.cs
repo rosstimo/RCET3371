@@ -6,13 +6,15 @@
           [x] display drawn balls
           [x] draw a random ball
           [x] if ball already drawn just draw another
-          [ ] don't draw when all balls already drawn
+          [x] don't draw when all balls already drawn
           [ ] let user start a new game any time
           [ ] let user quit at any time
           [ ] 
          */
         static bool[,] ballTracker = new bool[15, 5];
+        static int ballsDrawn = 0;
 
+        static string userPrompt = "Place User Prompt Here";
         static void Main(string[] args)
         {
             string userInput = "";
@@ -20,8 +22,8 @@
             {
                 DrawBall();
                 DisplayBoard();
-                Console.ReadLine();
-            } while (userInput != "Q" || userInput != "q");
+                userInput = Console.ReadLine();
+            } while (userInput != "Q" && userInput != "q");
 
             //pause
             Console.ReadLine();
@@ -32,7 +34,7 @@
             string ballNumber;
             string[] header = { "B", "I", "N", "G", "O" };
             string seperator = "_";
-            
+            Console.Clear();
             foreach (string letter in header)
             {
                 Console.Write(letter.PadLeft(3));
@@ -65,7 +67,8 @@
                 Console.WriteLine();
             }
             Console.WriteLine();
-            Console.WriteLine("Place User Prompt Here");
+            Console.WriteLine(userPrompt);
+            Console.WriteLine($"Balls Drawn: {ballsDrawn}");
         }
 
         static void DrawBall()
@@ -77,10 +80,17 @@
             {
                 row = randy.Next(15);
                 col = randy.Next(5);
+            } while (ballTracker[row, col] && ballsDrawn < 75);
 
-            } while (ballTracker[row,col]);
-            
-            ballTracker[row, col] = true;
+            if (ballsDrawn < 75) 
+            {
+                ballsDrawn++;
+                ballTracker[row, col] = true;
+            }
+            else
+            {
+                userPrompt = "All balls drawn!";
+            }
         }
     }
 }
