@@ -8,13 +8,13 @@
           [x] if ball already drawn just draw another
           [x] don't draw when all balls already drawn
           [ ] let user start a new game any time
-          [ ] let user quit at any time
+          [x] let user quit at any time
           [ ] 
          */
         static bool[,] ballTracker = new bool[15, 5];
         static int ballsDrawn = 0;
 
-        static string userPrompt = "Place User Prompt Here";
+        static string userPrompt = "Press Enter to draw a ball";
         static void Main(string[] args)
         {
             string userInput = "";
@@ -68,7 +68,8 @@
             }
             Console.WriteLine();
             Console.WriteLine(userPrompt);
-            Console.WriteLine($"Balls Drawn: {ballsDrawn}");
+            Console.WriteLine("Press N to start a new game or Q to quit");
+            //Console.WriteLine($"Balls Drawn: {ballsDrawn}");
         }
 
         static void DrawBall()
@@ -87,7 +88,7 @@
                 ballsDrawn++;
                 ballTracker[row, col] = true;
             }
-            else
+            if (ballsDrawn >= 75)
             {
                 userPrompt = "All balls drawn!";
             }
