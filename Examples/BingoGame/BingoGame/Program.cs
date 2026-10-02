@@ -65,8 +65,10 @@
 
         static void DrawBall()
         {
+            
             ballTracker[0, 0] = true;
             ballTracker[14, 4] = true;
+            ballTracker[5, 2] = true;
 
         }
     }
