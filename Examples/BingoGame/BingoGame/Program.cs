@@ -5,7 +5,7 @@
         /* TODO
           [x] display drawn balls
           [x] draw a random ball
-          [ ] if ball already drawn just draw another
+          [x] if ball already drawn just draw another
           [ ] don't draw when all balls already drawn
           [ ] let user start a new game any time
           [ ] let user quit at any time
@@ -15,9 +15,14 @@
 
         static void Main(string[] args)
         {
-            DrawBall();
-            DisplayBoard();
-            Console.Beep();
+            string userInput = "";
+            do
+            {
+                DrawBall();
+                DisplayBoard();
+                Console.ReadLine();
+            } while (userInput != "Q" || userInput != "q");
+
             //pause
             Console.ReadLine();
         }
@@ -66,9 +71,14 @@
         static void DrawBall()
         {
             Random randy = new Random();
+            int row, col;
 
-            int row = randy.Next(15);
-            int col = randy.Next(5);
+            do
+            {
+                row = randy.Next(15);
+                col = randy.Next(5);
+
+            } while (ballTracker[row,col]);
             
             ballTracker[row, col] = true;
         }
