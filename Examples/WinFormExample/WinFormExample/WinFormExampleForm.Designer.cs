@@ -1,6 +1,6 @@
 ﻿namespace WinFormExample
 {
-    partial class Form1
+    partial class WinFormExampleForm
     {
         /// <summary>
         ///  Required designer variable.
