@@ -11,16 +11,13 @@ namespace SerialExample
         }
 
         SerialPort _serialPort = new SerialPort();
-        void SerialPortSetup()
+        void SerialPortSetup(string portName)
         {
             _serialPort.Close();
-            _serialPort.PortName = PortsComboBox.SelectedItem.ToString();
+            _serialPort.PortName = portName;
             _serialPort.BaudRate = 9600;
             _serialPort.DataBits = 8;
             _serialPort.Parity = Parity.None;
-            //_serialPort.StopBits = StopBits.None;
-
-
         }
 
         void SerialConnect()
@@ -57,7 +54,10 @@ namespace SerialExample
         {
             foreach (string port in GetSerialPorts())
             {
-                PortsComboBox.Items.Add(port);
+                if (IsQyAtBoard(port))
+                {
+                    PortsComboBox.Items.Add(port);
+                }
             }
 
             if (PortsComboBox.Items.Count > 0)
@@ -72,6 +72,41 @@ namespace SerialExample
             byte[] thingy = { 0xf0 };
             _serialPort.Write(thingy, 0, 1);
         }
+
+        bool IsQyAtBoard(string portName)
+        {
+            byte[] thingy = { 0xf0 };
+            byte[] input = new byte[1];
+
+            SerialPortSetup(portName);
+            SerialConnect();
+
+            //flush rx buffer
+            input = new byte[_serialPort.BytesToRead];
+            _serialPort.Read(input,  0, input.Length);
+
+            //request settings
+            _serialPort.Write(thingy, 0, 1);
+
+            //wait for reply
+            System.Threading.Thread.Sleep(100);
+
+            //read rx buffer
+            input = new byte[_serialPort.BytesToRead];
+            _serialPort.Read(input,0, input.Length);
+
+            //disconnect
+            _serialPort.Close();
+            //test if QY@ board
+            if (input.Length == 64 && input[58] == 81 && input[59] == 121 && input[60] == 64)
+            {
+                return true;
+            }
+            else 
+            {
+                return false;
+            }
+        }
         
         // Event Handlers Below here ******************************************
         private void ExitButton_Click(object sender, EventArgs e)
@@ -81,7 +116,8 @@ namespace SerialExample
 
         private void ConnectButton_Click(object sender, EventArgs e)
         {
-            SerialPortSetup();
+            
+            SerialPortSetup(PortsComboBox.SelectedItem.ToString());
             SerialConnect();
         }
 
