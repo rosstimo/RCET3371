@@ -14,7 +14,7 @@ namespace SerialExample
         void SerialPortSetup()
         {
             _serialPort.Close();
-            _serialPort.PortName = "COM4";
+            _serialPort.PortName = PortsComboBox.SelectedItem.ToString();
             _serialPort.BaudRate = 9600;
             _serialPort.DataBits = 8;
             _serialPort.Parity = Parity.None;
@@ -36,7 +36,16 @@ namespace SerialExample
 
         void SerialRead()
         {
-            SerialTextBox.Text = _serialPort.ReadExisting();
+            byte[] input = new byte[_serialPort.BytesToRead];
+            int byteNumber = 0;
+            _serialPort.Read(input,0, input.Length);
+
+            foreach (byte b in input)
+            {
+                byteNumber++;
+                ComListBox.Items.Add($"{byteNumber}: {b:X2} : {(char)b} : {b}");
+            }
+
         }
 
         string[] GetSerialPorts()
@@ -57,6 +66,12 @@ namespace SerialExample
             }
 
         }
+
+        void TestQyAtBoard()
+        {
+            byte[] thingy = { 0xf0 };
+            _serialPort.Write(thingy, 0, 1);
+        }
         
         // Event Handlers Below here ******************************************
         private void ExitButton_Click(object sender, EventArgs e)
@@ -72,7 +87,8 @@ namespace SerialExample
 
         private void SendButton_Click(object sender, EventArgs e)
         {
-            SerialSend();
+            //SerialSend();
+            TestQyAtBoard();
         }
 
         private void ReadButton_Click(object sender, EventArgs e)
