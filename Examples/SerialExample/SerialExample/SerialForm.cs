@@ -7,6 +7,7 @@ namespace SerialExample
         public SerialForm()
         {
             InitializeComponent();
+            UpdatePortSelection();
         }
 
         SerialPort _serialPort = new SerialPort();
@@ -38,7 +39,25 @@ namespace SerialExample
             SerialTextBox.Text = _serialPort.ReadExisting();
         }
 
+        string[] GetSerialPorts()
+        {
+            return SerialPort.GetPortNames();
+        }
 
+        void UpdatePortSelection()
+        {
+            foreach (string port in GetSerialPorts())
+            {
+                PortsComboBox.Items.Add(port);
+            }
+
+            if (PortsComboBox.Items.Count > 0)
+            {
+                PortsComboBox.SelectedIndex = 0;
+            }
+
+        }
+        
         // Event Handlers Below here ******************************************
         private void ExitButton_Click(object sender, EventArgs e)
         {

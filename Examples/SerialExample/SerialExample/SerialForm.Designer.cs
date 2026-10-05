@@ -37,6 +37,7 @@
             statusStrip1 = new StatusStrip();
             StatusLabel = new ToolStripStatusLabel();
             StatusTimer = new System.Windows.Forms.Timer(components);
+            PortsComboBox = new ComboBox();
             statusStrip1.SuspendLayout();
             SuspendLayout();
             // 
@@ -108,11 +109,20 @@
             StatusTimer.Interval = 250;
             StatusTimer.Tick += StatusTimer_Tick;
             // 
+            // PortsComboBox
+            // 
+            PortsComboBox.FormattingEnabled = true;
+            PortsComboBox.Location = new Point(173, 103);
+            PortsComboBox.Name = "PortsComboBox";
+            PortsComboBox.Size = new Size(121, 23);
+            PortsComboBox.TabIndex = 7;
+            // 
             // SerialForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(538, 295);
+            Controls.Add(PortsComboBox);
             Controls.Add(statusStrip1);
             Controls.Add(SerialTextBox);
             Controls.Add(SendButton);
@@ -137,5 +147,6 @@
         private StatusStrip statusStrip1;
         private ToolStripStatusLabel StatusLabel;
         private System.Windows.Forms.Timer StatusTimer;
+        private ComboBox PortsComboBox;
     }
 }
