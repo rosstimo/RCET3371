@@ -26,9 +26,9 @@ namespace SerialExample
             _serialPort.Open();
         }
 
-        void SerialSend()
+        void SerialSend(byte[] data)
         {
-            _serialPort.Write("hello");
+            _serialPort.Write(data,0,data.Length);
         }
 
         void SerialRead()
@@ -108,6 +108,13 @@ namespace SerialExample
             }
         }
         
+        byte[] DigitalWriteQyAt(byte pins = 0x00)
+        {
+            byte[] command = { 0x20, pins };
+            //SerialSend(command);
+            return command;
+        }
+
         // Event Handlers Below here ******************************************
         private void ExitButton_Click(object sender, EventArgs e)
         {
@@ -116,15 +123,15 @@ namespace SerialExample
 
         private void ConnectButton_Click(object sender, EventArgs e)
         {
-            
             SerialPortSetup(PortsComboBox.SelectedItem.ToString());
             SerialConnect();
         }
 
         private void SendButton_Click(object sender, EventArgs e)
         {
-            //SerialSend();
-            TestQyAtBoard();
+            // DigitalWriteQyAt(0xAA);
+            SerialSend(DigitalWriteQyAt(0x55));
+            //TestQyAtBoard();
         }
 
         private void ReadButton_Click(object sender, EventArgs e)
