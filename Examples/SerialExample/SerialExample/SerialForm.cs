@@ -115,6 +115,12 @@ namespace SerialExample
             return command;
         }
 
+        byte[] AN1Read()
+        {
+            byte[] command = { 0x51 };
+            return command;
+        }
+
         // Event Handlers Below here ******************************************
         private void ExitButton_Click(object sender, EventArgs e)
         {
@@ -130,7 +136,8 @@ namespace SerialExample
         private void SendButton_Click(object sender, EventArgs e)
         {
             // DigitalWriteQyAt(0xAA);
-            SerialSend(DigitalWriteQyAt(0x55));
+            //SerialSend(DigitalWriteQyAt(0x55));
+            SerialSend(AN1Read());
             //TestQyAtBoard();
         }
 
