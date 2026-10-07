@@ -39,6 +39,8 @@
             StatusTimer = new System.Windows.Forms.Timer(components);
             PortsComboBox = new ComboBox();
             ComListBox = new ListBox();
+            AnalogTimer = new System.Windows.Forms.Timer(components);
+            AN1CheckBox = new CheckBox();
             statusStrip1.SuspendLayout();
             SuspendLayout();
             // 
@@ -126,11 +128,28 @@
             ComListBox.Size = new Size(386, 199);
             ComListBox.TabIndex = 8;
             // 
+            // AnalogTimer
+            // 
+            AnalogTimer.Interval = 250;
+            AnalogTimer.Tick += AnalogTimer_Tick;
+            // 
+            // AN1CheckBox
+            // 
+            AN1CheckBox.AutoSize = true;
+            AN1CheckBox.Location = new Point(12, 79);
+            AN1CheckBox.Name = "AN1CheckBox";
+            AN1CheckBox.Size = new Size(49, 19);
+            AN1CheckBox.TabIndex = 9;
+            AN1CheckBox.Text = "AN1";
+            AN1CheckBox.UseVisualStyleBackColor = true;
+            AN1CheckBox.CheckedChanged += AN1CheckBox_CheckedChanged;
+            // 
             // SerialForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(538, 295);
+            Controls.Add(AN1CheckBox);
             Controls.Add(ComListBox);
             Controls.Add(PortsComboBox);
             Controls.Add(statusStrip1);
@@ -159,5 +178,7 @@
         private System.Windows.Forms.Timer StatusTimer;
         private ComboBox PortsComboBox;
         private ListBox ComListBox;
+        private System.Windows.Forms.Timer AnalogTimer;
+        private CheckBox AN1CheckBox;
     }
 }
