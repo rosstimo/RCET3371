@@ -1,0 +1,14 @@
+# Identity request
+A5 01 00 01
+
+# Identity response: RCET3371
+A5 81 08 52 43 45 54 33 33 37 31 8F
+
+# Telemetry seq=1 temp=23.45 C status=00
+A5 10 04 01 09 29 00 35
+
+# Telemetry seq=2 temp=-1.00 C status=10
+A5 10 04 02 FF 9C 10 65
+
+# Telemetry seq=3 temp=30.00 C status=7C
+A5 10 04 03 0B B8 7C D8

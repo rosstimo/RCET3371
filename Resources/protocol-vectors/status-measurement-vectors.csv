@@ -1,0 +1,9 @@
+name,status_hex,mode,fault,sequence,high_hex,low_hex,raw,voltage
+zero,00,0,0,0,00,00,0,0.000
+mode_max,E0,7,0,0,00,01,1,0.000
+fault,10,0,1,0,00,FF,255,0.019
+sequence_max,0F,0,0,15,01,00,256,0.020
+mixed,7C,3,1,12,80,00,32768,2.500
+full_scale,FF,7,1,15,FF,FF,65535,5.000
+mid_low,21,1,0,1,40,00,16384,1.250
+mid_high,A7,5,0,7,C0,00,49152,3.750

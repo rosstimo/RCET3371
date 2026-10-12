@@ -1,0 +1,13 @@
+# Deterministic capture used for parser exercises.
+# Whitespace separates bytes. Comments describe intent.
+
+# noise then valid ID response
+00 7E A5 81 08 52 43 45 54 33 33 37 31 8F
+
+# valid samples
+A5 90 04 00 01 00 00 95
+A5 90 04 2C 02 40 00 FA
+
+# malformed checksum followed by valid sample
+A5 90 04 2C 03 80 00 00
+A5 90 04 4F 04 FF FF DF
