@@ -144,6 +144,8 @@ Use a **4 MHz external crystal** connected between OSC1/CLKIN and OSC2/CLKOUT wi
 
 In MPLAB X, create a standalone project for **PIC16F883**, select your programmer/debugger (or the simulator), and select **XC8**. Add a C source file named `main.c`.
 
+**Working project:** [cBLink.X](https://github.com/rosstimo/pic_projects/tree/main/c/cBLink.X) in the shared PIC projects repository. Its [`main.c`](https://github.com/rosstimo/pic_projects/blob/main/c/cBLink.X/main.c) contains the verified 4 MHz RC0 blinking LED example. The compact listing below focuses on the key configuration and application code.
+
 ```c
 #include <xc.h>
 
@@ -151,7 +153,7 @@ In MPLAB X, create a standalone project for **PIC16F883**, select your programme
 
 #pragma config FOSC = XT
 #pragma config WDTE = OFF
-#pragma config PWRTE = ON
+#pragma config PWRTE = OFF
 #pragma config MCLRE = ON
 #pragma config LVP = OFF
 
