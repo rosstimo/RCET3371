@@ -15,6 +15,10 @@ You should be able to:
 - inspect compiler-generated assembly/listing rather than assuming one C line equals one instruction;
 - explain why hand-written assembly called from C must follow the compiler's documented interface.
 
+## Preparation
+
+- [Embedded C Jump Start](../../Guides/EmbeddedC/Embedded-C-Jump-Start.md) - review C syntax, bit operations, GPIO, and direct register access before working through the multi-file example.
+
 ## Reference example
 
 - [main.c](examples/main.c)
