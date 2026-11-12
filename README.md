@@ -22,3 +22,7 @@ The Fall 2026 page identifies the current topic, what to read or practice next, 
 - [Flowchart quick reference](Guides/Flowcharts/RCET-Flowchart-Quick-Reference.md) - compact notation, Mermaid, draw.io, and final-check reference.
 
 Start with the full guide when learning or reviewing the concepts. Use the quick reference while creating a chart.
+
+### Embedded C
+
+- [Embedded C Jump Start](Guides/EmbeddedC/Embedded-C-Jump-Start.md) - C language basics for firmware, fixed-width types, bit operations, PIC16F883 GPIO, and introductory hardware exercises.
