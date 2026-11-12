@@ -1,6 +1,6 @@
 # Embedded C Jump Start
 
-**Target:** PIC16F883, MPLAB X IDE, MPLAB XC8 compiler  
+**Target:** PIC16F883, MPLAB X IDE, MPLAB XC8 compiler, external 4 MHz crystal oscillator  
 **Starting point:** You have programmed before, but may not have used C or written firmware for a microcontroller.
 
 This guide introduces the C you need to begin controlling hardware. It is a starting point, not a complete C reference or a substitute for the microcontroller datasheet.
@@ -140,14 +140,16 @@ bool set = (flags & (1u << 2)) != 0; // Test bit 2
 
 **Goal:** Blink an LED attached to RC0. Use a series resistor and connect the LED so a high output turns it on. Provide proper power, ground, and an MCLR pull-up for the circuit. For a 28-pin DIP PIC16F883, RC0 is pin 11.
 
+Use a **4 MHz external crystal** connected between OSC1/CLKIN and OSC2/CLKOUT with load capacitors selected for the crystal. Follow the [PIC16F883 4 MHz Crystal Oscillator guide](https://github.com/rosstimo/RCET3375/blob/main/HowTo/PIC16F883-4MHz-Crystal-Oscillator.md) for the oscillator circuit and verification. The example below selects XT crystal mode.
+
 In MPLAB X, create a standalone project for **PIC16F883**, select your programmer/debugger (or the simulator), and select **XC8**. Add a C source file named `main.c`.
 
 ```c
 #include <xc.h>
 
-#define _XTAL_FREQ 8000000UL
+#define _XTAL_FREQ 4000000UL
 
-#pragma config FOSC = INTRC_NOCLKOUT
+#pragma config FOSC = XT
 #pragma config WDTE = OFF
 #pragma config PWRTE = ON
 #pragma config MCLRE = ON
@@ -155,8 +157,6 @@ In MPLAB X, create a standalone project for **PIC16F883**, select your programme
 
 void main(void)
 {
-    OSCCONbits.IRCF = 0b111; // Select 8 MHz internal oscillator
-
     ANSEL = 0x00;            // Disable analog input functions
     ANSELH = 0x00;
 
@@ -177,11 +177,11 @@ void main(void)
 
 - `#include <xc.h>` provides device-specific register definitions.
 - `#pragma config` sets nonvolatile device configuration options, such as oscillator mode and watchdog behavior.
-- `OSCCON` controls the oscillator. Here `IRCF = 111` selects 8 MHz.
+- `FOSC = XT` selects the external crystal oscillator mode. The crystal and its supporting components must be connected to the PIC; this setting does not generate a clock on its own.
 - `ANSEL` and `ANSELH` select analog or digital input behavior for applicable pins.
 - `TRISC` controls direction: **1 = input**, **0 = output**.
 - `PORTC` accesses the I/O port.
-- `__delay_ms(500)` is a compiler-provided blocking delay. `_XTAL_FREQ` must agree with the actual oscillator frequency; defining it does not set the hardware clock.
+- `__delay_ms(500)` is a compiler-provided blocking delay. `_XTAL_FREQ = 4000000UL` tells XC8 the expected 4 MHz oscillator frequency; defining it does not set the hardware clock.
 
 **Check:** The LED should alternate on and off every 500 ms (one complete cycle per second). Change the delays and verify the new period with an oscilloscope if available.
 
@@ -217,7 +217,7 @@ Keep `ANSELH = 0x00` from the first example: RB0 shares an analog-input function
 | --- | --- |
 | Code builds, but nothing happens | Power and ground, MCLR pull-up, correct device, correct project programmed, LED polarity |
 | Pin never changes | `TRIS` direction, analog/digital configuration, whether another peripheral owns the pin |
-| Delay timing is wrong | Actual oscillator setting versus `_XTAL_FREQ` |
+| Delay timing is wrong | External crystal operation, oscillator mode, and actual frequency versus `_XTAL_FREQ` |
 | Input changes unpredictably | Missing pull-up/pull-down, floating input, button bounce |
 | Unexpected PORT behavior | Read-modify-write effects or shared pins |
 | Build error about a register or bit | Selected device, exact name in `<xc.h>`, and device datasheet |
